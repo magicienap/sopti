@@ -28,11 +28,11 @@ require_once('config.php');
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
-<p>Voici les horaires correspondant aux options s&eacute;lectionn&eacute;es. Pour changer ces options, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.
+<p>Voici les horaires correspondant aux options s&eacute;lectionn&eacute;es. Ils sont affich&eacute;s en ordre d&eacute;croissant de pr&eacute;f&eacute;rence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Le "score" le plus <b>faible</b> indique le <b>meilleur</b> horaire.
+
+<p>Pour changer les options, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.
 
 <p>Pour choisir officiellement un horaire, vous devez visiter votre dossier &eacute;tudiant. Vous trouverez un lien sur la page d'accueil du g&eacute;n&eacute;rateur d'horaires.
-
-<p>Sur chaque horaire, vous verrez appara&icirc;tre un "score"; celui-ci indique &agrave; quel point l'horaire en question correspond &agrave; l'objectif que vous avez choisi (ex: minimisation des trous). Le score le plus <b>faible</b> indique le <b>meilleur</b> horaire.
 
 <p>Merci d'utiliser le g&eacute;n&eacute;rateur d'horaires de l'AEP!
 </div>
@@ -65,7 +65,7 @@ require_once('config.php');
 <?php
 
 	$cmd_initial=$SOPTI_EXEC_DATA . " --html make";
-	$allowed_objectives = array( "minholes", "maxmorningsleep" );
+	$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays" );
 
 	function error($msg)
 	{
@@ -126,6 +126,10 @@ require_once('config.php');
 				if($_POST["period_$period"] == "on") {
 					$cmd .= " -t $period -T noperiod";
 				}
+			}
+			
+			if($_POST["noevening_$i"] == "on") {
+				$cmd .= " -t \"" . ($i+1) . "1745 " . ($i+1) . "2359\" -T notbetween";
 			}
 		}
 		
