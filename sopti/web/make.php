@@ -98,20 +98,11 @@ require_once('config.php');
 		}
 		$cmd .= " -J ${allowed_objectives[$result]}";
 		
-		if($_POST['noevening'] == "on") {
-			$cmd .= " -T noevening";
-		}
-		/*
-		if($_POST['noclosed'] == "on") {
-			$cmd .= " -T noclosed";
-		}
-		*/
-		
 		if(strlen($explicitopen_arg)) {
-			$cmd .= " -t " . escapeshellarg($explicitopen_arg) . " -T explicitopen";
+			$cmd .= " -g " . escapeshellarg($explicitopen_arg) . " -G explicitopen";
 		}
 		else {
-			$cmd .= " -t '' -T explicitopen";
+			$cmd .= " -g '' -G explicitopen";
 		}
 		
 		if($_POST['maxconflicts'] != "") {
@@ -124,16 +115,16 @@ require_once('config.php');
 			for($j=0; $j<count($week_hours); $j++) {
 				$period = ($i+1)*10000+$week_hours[$j];
 				if($_POST["period_$period"] == "on") {
-					$cmd .= " -t $period -T noperiod";
+					$cmd .= " -g $period -G noperiod";
 				}
 			}
 			
 			if($_POST["noevening_$i"] == "on") {
-				$cmd .= " -t \"" . ($i+1) . "1745 " . ($i+1) . "2359\" -T notbetween";
+				$cmd .= " -g \"" . ($i+1) . "1745 " . ($i+1) . "2359\" -G notbetween";
 			}
 		}
 		
-		//print $cmd;
+		print $cmd;
 		passthru($cmd." 2>&1");
 	}
 	else {
