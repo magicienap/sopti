@@ -32,7 +32,7 @@ struct Period
 	
 	void set_room(std::string r) { p_room = r; }
 	void set_period_no(int n) { p_period_no = n; }
-	void set_week(int w) { p_week = w; }
+	void set_week(int w) { p_week = w; }  // 0 = all, 1 = week 1, 2 = week 2
 
 	private:
 	int p_period_no;
