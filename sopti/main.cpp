@@ -283,24 +283,18 @@ void print_schedule_html(StudentSchedule &s)
 		printf("<tr>\n");
 		// Print hour
 		printf("<td class=\"hour\">");
-		//if(j < 5 && !week_finished) {
-			printf("<b>%d</b><br>", hours_week[i]);
-		//}
-		//else if(j >=5 && !weekend_finished){
-		//	printf("<b>%d</b><br>", hours_weekend[i]);
-		//}
+		printf("<b>%d</b><br>", hours_week[i]);
+
 		printf("</td>");
 		
 		for(j=0; j<5; j++) {
 			printf("<td class=\"period\">");
 			if(j < 5 && !week_finished) {
-				//printf("<b>%d</b><br>", hours_week[i]);
 				if(sched[j].find(hours_week[i]) != sched[i].end()) {
 					printf("%s", sched[j][hours_week[i]].c_str());
 				}
 			}
 			else if(j >=5 && !weekend_finished){
-				//printf("<b>%d</b><br>", hours_weekend[i]);
 				if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
 					printf("%s", sched[j][hours_weekend[i]].c_str());
 				}
@@ -308,7 +302,57 @@ void print_schedule_html(StudentSchedule &s)
 			printf("</td>");
 		}
 		printf("</tr>\n");
+	}
+
+	printf("</table>\n");
+	
+	// PRINT WEEKEND SCHEDULE
+	
+	printf("<table class=\"schedule_weekend\">\n");
+	
+	// Don't forget the empty column for the hours
+	printf("<tr><td></td>\n");
+	
+	for(i=5; i<7; i++) {
+		printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
+	}
+	
+	printf("</tr>\n");
+
+	// For each hour
+	for(i=0;; i++) {
+	
+		if(!week_finished && hours_week[i] == -1)
+			week_finished = true;
+			
+		if(!weekend_finished && hours_weekend[i] == -1)
+			weekend_finished = true;
 		
+		if(week_finished && weekend_finished)
+			break;
+	
+		printf("<tr>\n");
+		// Print hour
+		printf("<td class=\"hour\">");
+		printf("<b>%d</b><br>", hours_week[i]);
+
+		printf("</td>");
+		
+		for(j=5; j<7; j++) {
+			printf("<td class=\"period\">");
+			if(j < 5 && !week_finished) {
+				if(sched[j].find(hours_week[i]) != sched[i].end()) {
+					printf("%s", sched[j][hours_week[i]].c_str());
+				}
+			}
+			else if(j >=5 && !weekend_finished){
+				if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
+					printf("%s", sched[j][hours_weekend[i]].c_str());
+				}
+			}
+			printf("</td>");
+		}
+		printf("</tr>\n");
 	}
 
 	printf("</table>\n");
