@@ -31,6 +31,8 @@ class Constraint
 	
 	virtual bool operator()(StudentSchedule &) = 0;
 	
+	virtual ~Constraint() {}
+	
 	private:
 };
 
@@ -53,9 +55,6 @@ class NoConflicts : public Constraint
 		Group::period_list_t::const_iterator it2;
 		std::map<int,int>::iterator it3;
 		int c_hours=0;
-		
-		static int schedno=1;
-		//debug("New schedule #%d<br><br>", schedno++);
 		
 		// Iterate across all courses in the schedule
 		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
@@ -155,8 +154,8 @@ class ExplicitOpen : public Constraint
 	public:
 	ExplicitOpen(std::string s) : Constraint(s)
 	{
-		int start=0;
-		int len;
+		unsigned int start=0;
+		unsigned int len;
 		
 		for(;;) {
 			start = s.find_first_not_of(" ", start);
@@ -183,13 +182,13 @@ class ExplicitOpen : public Constraint
 		StudentSchedule::course_list_t::const_iterator it;
 		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
 			if((*it)->theory_group) {
-				mangled = "t_" + (*it)->course->symbol() + "_" + (*it)->theory_group->name();
+				mangled = "t_" + to_variable_name((*it)->course->symbol()) + "_" + to_variable_name((*it)->theory_group->name());
 				if(p_open.find(mangled) == p_open.end()) {
 					return false;
 				}
 			}
 			if((*it)->lab_group && (*it)->course->type() != COURSE_TYPE_THEORYLABSAME) {
-				mangled = "l_" + (*it)->course->symbol() + "_" + (*it)->lab_group->name();
+				mangled = "l_" + to_variable_name((*it)->course->symbol()) + "_" + to_variable_name((*it)->lab_group->name());
 				if(p_open.find(mangled) == p_open.end()) {
 					return false;
 				}
@@ -201,6 +200,83 @@ class ExplicitOpen : public Constraint
 	
 	private:
 	std::set<std::string> p_open;
+};
+
+class NotBetween : public Constraint
+{
+	public:
+	NotBetween(std::string s) : Constraint(s)
+	{
+		p_min = -1;
+		p_max = -1;
+		
+		unsigned int start=0,len;
+	
+		// Min
+		start = s.find_first_not_of(" ", start);
+		if(start == std::string::npos)
+			goto error;
+		len = s.find_first_of(" ", start);
+		if(len == std::string::npos)
+			len = s.size();
+		len -= start;
+	
+		p_min = atoi(std::string(s, start, len).c_str());
+
+		start += len;
+		if(start >= s.size())
+			goto error;
+		
+		// Max	
+		start = s.find_first_not_of(" ", start);
+		if(start == std::string::npos)
+			goto error;
+		len = s.find_first_of(" ", start);
+		if(len == std::string::npos)
+			len = s.size();
+		len -= start;
+	
+		p_max = atoi(std::string(s, start, len).c_str());
+		
+		
+		return;
+		
+		error:
+		error("invalid parameter to constraint notbetween");
+	}
+	
+	bool operator()(StudentSchedule &sched)
+	{
+		StudentSchedule::course_list_t::const_iterator it;
+		Group::period_list_t::const_iterator it2;
+		
+		// Iterate across all courses in the schedule
+		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
+			int period;
+			if((*it)->theory_group) {
+				// Iterate across all periods of this course
+				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+					period = (*it2)->period_no();
+					if(period >= p_min && period <= p_max) {
+						return false;
+					}
+				}
+			}
+			if((*it)->lab_group) {
+				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+					period = (*it2)->period_no();
+					if(period >= p_min && period <= p_max) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private:
+	int p_min;
+	int p_max;
 };
 
 class NoClosed : public Constraint
