@@ -35,24 +35,9 @@
 #include "constraint.hpp"
 #include "objective.hpp"
 #include "stdsched.h"
+#include "read_csv.hpp"
 
 using namespace std;
-
-#define COURSEFILE_FIELD_CYCLE		0
-#define COURSEFILE_FIELD_SYMBOL		1
-#define COURSEFILE_FIELD_GROUP		2
-#define COURSEFILE_FIELD_CREDITS	3
-#define COURSEFILE_FIELD_ROOM		6
-#define COURSEFILE_FIELD_COURSELAB	7
-#define COURSEFILE_FIELD_LABWEEK	9
-#define COURSEFILE_FIELD_COURSETYPE	10
-#define COURSEFILE_FIELD_TITLE		11
-#define COURSEFILE_FIELD_DAY		13
-#define COURSEFILE_FIELD_TIME		14
-
-#define CLOSEDFILE_FIELD_SYMBOL		1
-#define CLOSEDFILE_FIELD_GROUP		2
-#define CLOSEDFILE_FIELD_COURSELAB	3
 
 #define OUTPUT_HTML	1
 
@@ -320,7 +305,7 @@ void print_schedule_html(StudentSchedule &s)
 		printf("</td>\n");
 		
 		for(j=0; j<5; j++) {
-			printf("<td class=\"period\">");
+			printf("<td>");
 			
 			// Determine the conflict scheme
 			int conflict_mask=0;
@@ -341,20 +326,15 @@ void print_schedule_html(StudentSchedule &s)
 			}
 			
 			// Now print this period
-			//printf("<table class=\"single_period\">"); // week table
 			for(it4=sched_standard[0][j][i].begin(); it4!=sched_standard[0][j][i].end(); it4++) {
-				//printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s)</tr></td>\n", conflict_mask?"period_conflict":"period_noconflict", it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
 				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s)</div>\n", conflict_mask?"period_conflict":"period_noconflict", it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
 			}
 			for(it4=sched_standard[1][j][i].begin(); it4!=sched_standard[1][j][i].end(); it4++) {
-				//printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
 				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</div>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
 			}
 			for(it4=sched_standard[2][j][i].begin(); it4!=sched_standard[2][j][i].end(); it4++) {
-				//printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
 				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</div>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
 			}
-			//printf("</table>"); // week table
 			
 			printf("</td>");
 		}
@@ -364,14 +344,11 @@ void print_schedule_html(StudentSchedule &s)
 	printf("<tr><td class=\"hour\">Heures non standard</td>");
 	for(j=0; j<5; j++) {
 		printf("<td class=\"period\">");
-		//printf("<table class=\"single_period\">");
 		for(it5=sched_nonstandard[0][j].begin(); it5!=sched_nonstandard[0][j].end(); it5++) {
 			for(it4=it5->second.begin(); it4!=it5->second.end(); it4++) {
-				//printf("<tr><td class=\"%s\">%d:%d<br><b>%s</b> (%s)<br>%s (%s)</tr></td>\n", "period_noconflict", (it5->first)/100, (it5->first)%100, it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
-				printf("<div class=\"%s\">%d:%d<br><b>%s</b> (%s)<br>%s (%s)</div>\n", "period_noconflict", (it5->first)/100, (it5->first)%100, it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
+				printf("<div class=\"%s\">%d:%.2d<br><b>%s</b> (%s)<br>%s (%s)</div>\n", "period_noconflict", (it5->first)/100, (it5->first)%100, it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
 			}
 		}
-		//printf("</table>");
 		printf("</td>");
 		/*
 		for(it4=sched_standard[1][j][i].begin(); it4!=sched_standard[1][j][i].end(); it4++) {
@@ -542,6 +519,9 @@ void make(int argc, char **argv)
 				else if(!strcmp(optarg, "maxmorningsleep")) {
 					objective = new MaxMorningSleep();
 				}
+				else if(!strcmp(optarg, "maxfreedays")) {
+					objective = new MaxFreeDays();
+				}
 				else {
 					error("invalid objective");
 				}
@@ -562,6 +542,9 @@ void make(int argc, char **argv)
 				}
 				else if(!strcmp(optarg, "explicitopen")) {
 					constraints.push_back(new ExplicitOpen(next_constraint_arg));
+				}
+				else if(!strcmp(optarg, "notbetween")) {
+					constraints.push_back(new NotBetween(next_constraint_arg));
 				}
 				else {
 					error("unknown constaint (%s)", optarg);
@@ -833,10 +816,10 @@ void get_open_close_form(int argc, char **argv)
 					openclose_vars+="t_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + " ";
 					
 					if((*it2)->closed()) {
-						printf("<div class=\"full_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\">", current_course->symbol().c_str(), (*it2)->name().c_str());
+						printf("<div class=\"full_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\">", to_variable_name(current_course->symbol()).c_str(), to_variable_name((*it2)->name()).c_str());
 					}
 					else {
-						printf("<div class=\"notfull_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\" checked>", current_course->symbol().c_str(), (*it2)->name().c_str());
+						printf("<div class=\"notfull_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\" checked>", to_variable_name(current_course->symbol()).c_str(), to_variable_name((*it2)->name()).c_str());
 					}
 					
 					printf("%s</div>", (*it2)->name().c_str());
@@ -848,7 +831,7 @@ void get_open_close_form(int argc, char **argv)
 				script += script_open;
 				script += script_close;
 								
-				printf("</td><td><input type=\"button\" value=\"Ouvrir toutes\" onClick=\"open_all_t_%s()\"><input type=\"button\" value=\"Fermer toutes\" onClick=\"close_all_t_%s()\"></td>", current_course->symbol().c_str(), current_course->symbol().c_str());
+				printf("</td><td><input type=\"button\" value=\"Ouvrir toutes\" onClick=\"open_all_t_%s()\"><input type=\"button\" value=\"Fermer toutes\" onClick=\"close_all_t_%s()\"></td>", to_variable_name(current_course->symbol()).c_str(), to_variable_name(current_course->symbol()).c_str());
 			}
 			if(current_course->type() == COURSE_TYPE_THEORYLABIND) {
 				printf("</tr>\n<tr><td colspan=\"4\" style=\"height:1; background-color: white;\"></td></tr>\n<tr>\n");
@@ -898,223 +881,10 @@ void get_open_close_form(int argc, char **argv)
 	printf("<script type=\"text/javascript\">\n%s</script>\n", script.c_str());
 }
 
-vector<string> split_string(string s, string sep)
-{
-	unsigned int pos=0;
-	unsigned int start=0; // The starting position of the next search
-	int len; // The length of the next substring
-	vector<string> retval;
-
-	while(start < s.length()) {
-		pos = s.find(sep, start);
-		if(pos == string::npos) {
-			len = s.length() - start;
-		}
-		else {
-			len = pos - start;
-		}
-		retval.push_back(s.substr(start, len));
-		start = start + len + sep.length();
-	}
-
-	return retval;
-}
-
 int poly_period_to_time(int period)
 {
 	return period%10000;
 }
-
-int poly_make_period_no(string day_of_week, string time_str)
-{
-	int retval;
-	char *err;
-	
-	// Convert the time to integer
-	retval = strtol(time_str.c_str(), &err, 10);
-	if(*err != 0) {
-		error("poly_make_period_no: non-numerical time");
-	}
-	
-	// Check if the time makes sense
-	if(retval > 2400 || retval < 0) {
-		error("poly_make_period_no: time out of range");
-	}
-	
-	if(day_of_week == "LUN") {
-		retval += 10000;
-	}
-	else if(day_of_week == "MAR") {
-		retval += 20000;
-	}
-	else if(day_of_week == "MER") {
-		retval += 30000;
-	}
-	else if(day_of_week == "JEU") {
-		retval += 40000;
-	}
-	else if(day_of_week == "VEN") {
-		retval += 50000;
-	}
-	else if(day_of_week == "SAM") {
-		retval += 60000;
-	}
-	else if(day_of_week == "DIM") {
-		retval += 70000;
-	}
-	else {
-		error("poly_make_period_no: invalid day of week");
-	}
-	
-	return retval;
-}
-
-void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
-{
-	ifstream period_list;
-	string tmps;
-	char tmpa[500];
-	vector<string> fields;
-	
-	// Open the file
-	period_list.open(periods_file.c_str());
-	if(period_list.fail()) {
-		error("opening file %s", periods_file.c_str());
-	}
-	
-	// Ignore header line
-	period_list.getline(tmpa, 500);
-	
-	while(1) {
-		period_list.getline(tmpa, 500);
-		if(!period_list.good()) {
-			break;
-		}
-		
-		tmps = tmpa;
-		if(tmps[tmps.size()-1] == '\r')
-			tmps.erase(tmps.size()-1, 1);
-	
-		fields = split_string(tmps, ";");
-		if(fields.size() != 15) {
-			error("invalid course file format (field_num != 15)");
-		}
-		
-		// prepare some variables in advance
-		bool islab;
-		int type;
-		SchoolCourse *current_course;
-				
-		if(fields[COURSEFILE_FIELD_COURSELAB] == "L")
-			islab=true;
-		else if(fields[COURSEFILE_FIELD_COURSELAB] == "C")
-			islab=false;
-		else
-			error("unrecognized course type");
-		
-		if(fields[COURSEFILE_FIELD_COURSETYPE] == "T")
-			type = COURSE_TYPE_THEORYONLY;
-		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "L")
-			type = COURSE_TYPE_LABONLY;
-		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "TL")
-			type = COURSE_TYPE_THEORYLABSAME;
-		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "TLS")
-			type = COURSE_TYPE_THEORYLABIND;
-		
-		// Add course if not exists
-		if(!sopti->course_exists(fields[COURSEFILE_FIELD_SYMBOL])) {
-			SchoolCourse newcourse(fields[COURSEFILE_FIELD_SYMBOL]);
-			newcourse.set_title(fields[COURSEFILE_FIELD_TITLE]);
-			newcourse.set_type(type);
-			sopti->course_add(newcourse);
-		}
-		
-		current_course = sopti->course(fields[COURSEFILE_FIELD_SYMBOL]);
-		
-		// Add group if not exists
-		if(!current_course->group_exists(fields[COURSEFILE_FIELD_GROUP], islab)) {
-			Group newgroup(fields[COURSEFILE_FIELD_GROUP]);
-			newgroup.set_lab(islab);
-			
-			current_course->add_group(newgroup, islab);
-		}
-		
-		// Add period. It should not exist.
-		
-		int period_no = poly_make_period_no(fields[COURSEFILE_FIELD_DAY], fields[COURSEFILE_FIELD_TIME]);
-		if(current_course->group(fields[COURSEFILE_FIELD_GROUP], islab)->has_period(period_no)) {
-			error("two occurences of the same period in course file");
-		}
-		
-		Period newperiod;
-		newperiod.set_room(fields[COURSEFILE_FIELD_ROOM]);
-		newperiod.set_period_no(period_no);
-		if(fields[COURSEFILE_FIELD_LABWEEK] == "I") {
-			newperiod.set_week(1);
-		}
-		else if(fields[COURSEFILE_FIELD_LABWEEK] == "P") {
-			newperiod.set_week(2);
-		}
-		else {
-			newperiod.set_week(0);
-		}
-		current_course->group(fields[COURSEFILE_FIELD_GROUP], islab)->add_period(newperiod);
-	}
-	
-	period_list.close();
-}
-
-void load_closed_from_csv(SchoolSchedule *sopti,  string closed_file)
-{
-	ifstream  closed_list;
-	string tmps;
-	char tmpa[500];
-	vector<string> fields;
-	
-	
-	
-	closed_list.open(closed_file.c_str());
-	if(closed_list.fail()) {
-		error("opening file %s", closed_file.c_str());
-	}
-	
-	// Ignore header line
-	closed_list.getline(tmpa, 500);
-	
-	
-	while(1) {
-		closed_list.getline(tmpa, 500);
-		if(!closed_list.good()) {
-			break;
-		}
-		
-		tmps = tmpa;
-		if(tmps[tmps.size()-1] == '\r')
-			tmps.erase(tmps.size()-1, 1);
-	
-		fields = split_string(tmps, ";");
-		if(fields.size() != 6) {
-			error("invalid closed group file format (field_num != 6)");
-		}
-		
-		// prepare some variables in advance
-		bool islab;
-		
-				
-		if(fields[CLOSEDFILE_FIELD_COURSELAB] == "L")
-			islab=true;
-		else if(fields[CLOSEDFILE_FIELD_COURSELAB] == "C")
-			islab=false;
-		else
-			error("unrecognized course type");
-		
-		sopti->course(fields[CLOSEDFILE_FIELD_SYMBOL])->group(fields[CLOSEDFILE_FIELD_GROUP], islab)->set_closed(true);
-
-	}
-	
-	closed_list.close();
-}
-
 
 void set_default_options()
 {
