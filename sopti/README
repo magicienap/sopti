@@ -1,0 +1,11 @@
+sopti 0.8 (2004/11/09)
+----------------------
+
+Sopti est un générateur d'horaires scolaires optimisés. Pour le moment, il est conçu expressément pour les horaires étudiants de l'École Polytechnique de Montréal.
+
+Ceci est une version de développement. Par conséquent, le programme peut se comporter de manière inattendue, notemment:
+
+  * Les erreurs sont en anglais, mais l'interface web est en français
+  * L'affichage des conflits n'est pas implémenté dans l'interface par ligne de commande
+  
+À part ces problèmes, le programme fonctionne convenablement.
