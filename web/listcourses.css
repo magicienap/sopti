@@ -16,54 +16,24 @@ table.schedule td,table.schedule_weekend td {
 table.schedule {
 	float: left;
 	clear: left;
-	margin-bottom: 20px;
 }
 
 table.schedule_weekend {
 	float: left;
 }
 
-table.group_summary {
-	font-size: 12px;
-	border-spacing: 5px;
-}
-
-table.group_summary th {
-	text-align: left;
-}
-
-table.conflict_table {
-	font-size: 12px;
-	border-collapse:collapse;
-	background-color: #ff8888;
-}
-
 div.make_summary {
 	border: 2px solid;
-	padding: 2px;
-	width: 50%;
-	clear: both;
-	margin-bottom: 20px;
-}
-
-div.make_schedule_info {
-	//margin-top: 10px;
-	width: 935px;
-	//border: 2px solid;
-	//border-color: black;
-	background-color: #777777;
-	color: #FFFFFF;
-	clear: both;
-}
-
-div.make_schedule_info p {
-	margin: 0px;
+	margin: auto;
 }
 
 div.schedule_info {
-	background-color: #EEEEEE;
-	width: 935px;
+	border-left: 2px solid;
 	clear: both;
+}
+
+div.schedule_info p {
+	margin: 5px;
 }
 
 td.weekday,td.hour {

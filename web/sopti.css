@@ -18,3 +18,21 @@ p.news {
 	padding: 5px;
 	align: center;
 }
+
+table.free_period_selector {
+	border: 3px solid;
+	font-size: 12px;
+	border-collapse: collapse;
+}
+
+table.free_period_selector td {
+	font-weight: bold;
+}
+
+table.free_period_selector td.hour,td.weekday,td.empty {
+	background-color:#dddddd;
+}
+
+table.free_period_selector td.hour {
+	text-align: right;
+}
