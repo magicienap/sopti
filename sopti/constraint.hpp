@@ -105,3 +105,32 @@ class NoEvening : public Constraint
 	
 	private:
 };
+
+class NoClosed : public Constraint
+{
+	public:
+	NoClosed() {}
+	
+	bool operator()(StudentSchedule &sched)
+	{
+		StudentSchedule::course_list_t::const_iterator it;
+		Group::period_list_t::const_iterator it2;
+		
+		// Iterate across all courses in the schedule
+		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
+			if((*it)->theory_group) {
+				if((*it)->theory_group->closed()) {
+					return false;
+				}
+			}
+			if((*it)->lab_group) {
+				if((*it)->lab_group->closed()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	private:
+};

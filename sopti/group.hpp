@@ -28,16 +28,18 @@ class Group
 {
 	public:
 	typedef std::vector<Period *> period_list_t;
-	Group(std::string n) { p_group_name = n; p_islab=false; }
+	Group(std::string n) { p_group_name = n; p_islab=false; p_closed=false; }
 	
 	bool has_period(int);
 	Period *periods(int);
 	
-	void set_lab(bool l) { p_islab = l; }
 	void add_period(Period);
+	void set_lab(bool l) { p_islab = l; }
+	void set_closed(bool c) { p_closed = c; }
 	
 	std::string name() { return p_group_name; }
 	bool lab() { return p_islab; }
+	bool closed() { return p_closed; }
 	
 	period_list_t::const_iterator periods_begin() { return p_periods.begin(); }
 	period_list_t::const_iterator periods_end() { return p_periods.end(); }
@@ -47,6 +49,7 @@ class Group
 	std::vector<Period *> p_periods;
 	std::map<int, Period *> p_periods_by_no;
 	bool p_islab;
+	bool p_closed;
 };
 
 #endif // GROUP_HPP

@@ -46,15 +46,23 @@ using namespace std;
 #define COURSEFILE_FIELD_DAY		13
 #define COURSEFILE_FIELD_TIME		14
 
+#define CLOSEDFILE_FIELD_SYMBOL		1
+#define CLOSEDFILE_FIELD_GROUP		2
+#define CLOSEDFILE_FIELD_COURSELAB	3
+
 #define OUTPUT_HTML	1
+
+/* Describes an action that can be passed
+ * at command line. The arguments are
+ * argc and argv, but only containing the
+ * arguments that apply to the action (only
+ * those including and after the action name.
+ */
 
 struct Action {
 	char name[20];
 	void (*func)(int, char **);
 };
-
-void listcourses(int, char **);
-void make(int, char **);
 
 struct Action actions[] =
 	{ { "listcourses", listcourses},
@@ -63,6 +71,7 @@ struct Action actions[] =
 
 string config_file="sopti.conf";
 string course_file="data/courses.csv";
+string closedgroups_file="data/closed.csv";
 string action;
 SchoolSchedule schoolsched;
 int output_fmt=0;
@@ -75,7 +84,6 @@ class SchoolCoursePtrSymAlphaOrder
 		return a->symbol() < b->symbol();
 	}
 };
-
 
 void listcourses(int, char **)
 {
@@ -90,7 +98,7 @@ void listcourses(int, char **)
 	for(it=l_courses.begin(); it!=l_courses.end(); it++) {
 		cout << (*it)->symbol() << " " << (*it)->title();
 		for(it2=(*it)->groups_begin(); it2!=(*it)->groups_end(); it2++) {
-			cout << " " << (*it2)->name() << "(" << ((*it2)->lab()?"L":"T") << ")";
+			cout << " " << (*it2)->name() << "(" << ((*it2)->lab()?"L":"T") << ")" << ((*it2)->closed()?"*":"");
 		}
 		cout << endl;
 	}
@@ -215,10 +223,7 @@ void print_schedule_html(StudentSchedule &s)
 	char days_of_week[][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
 	int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 };
 	int hours_weekend[] = { 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, -1 };
-	unsigned int i,j,k;
-	unsigned int num_lines=2; // Number of lines allocated for each period
-			 // Line 1: Course number and T or L for theorical or lab
-			 // Line 2: Room number and group
+	unsigned int i,j;
 	
 	vector<map<int, string > > sched;
 	sched.resize(7);
@@ -560,6 +565,9 @@ void make(int argc, char **argv)
 				if(!strcmp(optarg, "noevening")) {
 					constraints.push_back(new NoEvening());
 				}
+				else if(!strcmp(optarg, "noclosed")) {
+					constraints.push_back(new NoClosed());
+				}
 				else {
 					error("unknown constaint (%s)", optarg);
 				}
@@ -788,7 +796,7 @@ int poly_make_period_no(string day_of_week, string time_str)
 	return retval;
 }
 
-void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string closed_file)
+void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 {
 	ifstream period_list;
 	string tmps;
@@ -879,6 +887,58 @@ void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string close
 	
 	period_list.close();
 }
+
+void load_closed_from_csv(SchoolSchedule *sopti,  string closed_file)
+{
+	ifstream  closed_list;
+	string tmps;
+	char tmpa[500];
+	vector<string> fields;
+	
+	
+	
+	closed_list.open(closed_file.c_str());
+	if(closed_list.fail()) {
+		error("opening file %s", closed_file.c_str());
+	}
+	
+	// Ignore header line
+	closed_list.getline(tmpa, 500);
+	
+	
+	while(1) {
+		closed_list.getline(tmpa, 500);
+		if(!closed_list.good()) {
+			break;
+		}
+		
+		tmps = tmpa;
+		if(tmps[tmps.size()-1] == '\r')
+			tmps.erase(tmps.size()-1, 1);
+	
+		fields = split_string(tmps, ";");
+		if(fields.size() != 6) {
+			error("invalid closed group file format (field_num != 6)");
+		}
+		
+		// prepare some variables in advance
+		bool islab;
+		
+				
+		if(fields[CLOSEDFILE_FIELD_COURSELAB] == "L")
+			islab=true;
+		else if(fields[CLOSEDFILE_FIELD_COURSELAB] == "C")
+			islab=false;
+		else
+			error("unrecognized course type");
+		
+		sopti->course(fields[CLOSEDFILE_FIELD_SYMBOL])->group(fields[CLOSEDFILE_FIELD_GROUP], islab)->set_closed(true);
+
+	}
+	
+	closed_list.close();
+}
+
 
 void set_default_options()
 {
@@ -975,8 +1035,9 @@ int main(int argc, char **argv)
 	parse_command_line(&argc, &argv);
 	parse_config_file(config_file);
 	
-	load_info_from_csv(&schoolsched, course_file, "Fermes.csv");
-	
+	load_courses_from_csv(&schoolsched, course_file);
+	load_closed_from_csv(&schoolsched, closedgroups_file);
+		
 	for(i=0; actions[i].name[0] != 0; i++) {
 		if(action == actions[i].name) {
 			if(actions[i].func) {
