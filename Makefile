@@ -7,6 +7,8 @@ SOURCES=$(wildcard *.cpp)
 OBJS=$(patsubst %.cpp,%.o,$(SOURCES))
 TARGET=sopti
 
+DIST_OTHER=data/update COPYING legende_cours_poly.txt
+
 # Flags to use for a production executable
 PROD_CXXFLAGS="-O3 -DNODEBUG"
 PROD_TARGET=sopti_prod
