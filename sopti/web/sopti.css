@@ -36,3 +36,8 @@ table.free_period_selector td.hour,td.weekday,td.empty {
 table.free_period_selector td.hour {
 	text-align: right;
 }
+
+div.option_block {
+	margin-left: 30px;
+	margin-bottom: 30px;
+}
