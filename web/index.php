@@ -77,7 +77,7 @@ p, dl {
 				<td>
 				</td>
 				<td class=menulink align=right valign=top>
-                    <a class=menulinkselected href='http://www.aep.polymtl.ca/accueil.php'>Accueil</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/calendrier.php'>Calendrier</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/exec.php'>Exec</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/ca.php'>C.A.</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/dossier.php'>Dossiers en cours</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/ressources.php'>Ressources</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/contacteznous.php'>Contactez-nous</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/faq.php'>F.A.Q.</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/structure.php'>Infos</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/archive.php'>Archives</a><a class=unmenulink> | <a>				</td>
+                    <a><a class=menulink href='http://www.aep.polymtl.ca/accueil.php'>Accueil</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/calendrier.php'>Calendrier</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/exec.php'>Exec</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/ca.php'>C.A.</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/dossier.php'>Dossiers en cours</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/ressources.php'>Ressources</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/contacteznous.php'>Contactez-nous</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/faq.php'>F.A.Q.</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/structure.php'>Infos</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/archive.php'>Archives</a><a class=unmenulink> | <a>				</td>
 			</tr>
 
 			<tr>
@@ -111,7 +111,17 @@ print($string_modif);
 <h2>Nouvelles</h2>
 <div class="sopti_nouvelles_rect">
 <dl>
-<dt>17 d&eacute;cembre 2004
+<dt><div style="background-color:#f9b771; margin-right: 15px; border-width: 2px; border-style: outset;">7 janvier 2005</div>
+<dd>Nouvelles am&eacute;liorations au programme
+	<ul>
+		<li>On peut maintenant bloquer les cours du soir pour certains jours seulement
+		<li>Option pour maximiser le nombre de jours de cong&eacute;
+		<li>Acc&eacute;l&eacute;ration du programme
+		<li>Corrections de bugs, dont un qui emp&ecirc;chait de choisir certains cours des certificats
+	</ul>
+	- Pierre-Marc
+
+<dt><div style="background-color:#f9b771; margin-right: 15px; border-width: 2px; border-style: outset;">17 d&eacute;cembre 2004</div>
 <dd>Quelques am&eacute;liorations
 	<ul>
 		<li>Support pour l'ouverture et fermeture de sections

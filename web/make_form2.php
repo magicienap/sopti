@@ -50,13 +50,15 @@
 	<p><em>L'une ou l'autre de ces options g&eacute;n&eacute;rera la m&ecirc;me liste d'horaires.<br>Seul l'ordre dans lequel ils seront affich&eacute;s sera affect&eacute;.</em>
 	<p><input name="order" type="radio" value="minholes" checked> Minimiser les trous
 	<p><input name="order" type="radio" value="maxmorningsleep"> Maximiser les heures de sommeil le matin
+	<p><input name="order" type="radio" value="maxfreedays"> Maximiser le nombre de jours de cong&eacute;
 </div>
 
 
 <h2>Contraintes particuli&egrave;res</h2>
 
 <div class="option_block">
-	<p><input name="noevening" type="checkbox"> Pas de cours le soir
+	<p>Pas de cours le soir - 
+	<em>Cette option a &eacute;t&eacute; d&eacute;plac&eacute;e dans le tableau des p&eacute;riodes libres ci-dessous.</em>
 	<p>Nombre maximum de p&eacute;riodes avec conflit: <input type="text" name="maxconflicts" value="0" size="2">
 </div>
 
@@ -91,8 +93,29 @@ for($i=0; $i<count($week_hours); $i++) {
 	print "</tr>\n";
 }
 
+// Print Evening checkboxes
+print "<tr>\n<td class=\"hour\">Soir</td>\n";
+for($j=0; $j<5; $j++) {
+	print "<td><center><input name=\"noevening_$j\" type=\"checkbox\"></center></td>\n";
+}
+print "</tr>\n";
+
 ?>
 	</table>
+	
+	<script type="text/javascript">
+		function no_evening()
+		{
+			document.form2.noevening_0.checked=true;
+			document.form2.noevening_1.checked=true;
+			document.form2.noevening_2.checked=true;
+			document.form2.noevening_3.checked=true;
+			document.form2.noevening_4.checked=true;
+		}
+	</script>
+	<br>
+	<input value="Pas de cours du soir" type="button" onClick="no_evening()">
+
 </div>
 
 <h2>Ouvrir / fermer des sections</h2>
