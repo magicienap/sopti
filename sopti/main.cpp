@@ -318,58 +318,62 @@ void print_schedule_html(StudentSchedule &s)
 	
 	// PRINT WEEKEND SCHEDULE
 	
-	printf("<table class=\"schedule_weekend\">\n");
-	
-	// Don't forget the empty column for the hours
-	printf("<tr><td></td>\n");
-	
-	for(i=5; i<7; i++) {
-		printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
-	}
-	
-	printf("</tr>\n");
-
-	// For each hour
-	for(i=0;; i++) {
-		if(!weekend_finished && hours_weekend[i] == -1)
-			weekend_finished = true;
+	if(!sched[5].empty() || !sched[6].empty()) {
+		// print only if we have weekend courses
 		
-		if(weekend_finished)
-			break;
-	
-		printf("<tr>\n");
-		// Print hour
-		printf("<td class=\"hour\">");
-		printf("<b>%d:%.2d</b><br>", hours_weekend[i]/100, hours_weekend[i]%100);
-
-		printf("</td>\n");
+		printf("<table class=\"schedule_weekend\">\n");
 		
-		for(j=5; j<7; j++) {
-			printf("<td class=\"period\">");
-			if(sched[j].find(hours_weekend[i]) != sched[j].end()) {
+		// Don't forget the empty column for the hours
+		printf("<tr><td></td>\n");
+		
+		for(i=5; i<7; i++) {
+			printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
+		}
+		
+		printf("</tr>\n");
+	
+		// For each hour
+		for(i=0;; i++) {
+			if(!weekend_finished && hours_weekend[i] == -1)
+				weekend_finished = true;
 			
-				// If there is only one course
-				if(sched[j][hours_weekend[i]].size() == 1) {
-					printf("%s", sched[j][hours_weekend[i]][0].c_str());
+			if(weekend_finished)
+				break;
+		
+			printf("<tr>\n");
+			// Print hour
+			printf("<td class=\"hour\">");
+			printf("<b>%d:%.2d</b><br>", hours_weekend[i]/100, hours_weekend[i]%100);
+	
+			printf("</td>\n");
+			
+			for(j=5; j<7; j++) {
+				printf("<td class=\"period\">");
+				if(sched[j].find(hours_weekend[i]) != sched[j].end()) {
+				
+					// If there is only one course
+					if(sched[j][hours_weekend[i]].size() == 1) {
+						printf("%s", sched[j][hours_weekend[i]][0].c_str());
+					}
+					else {
+						unsigned int k;
+						printf("<table class=\"conflict_table\">\n");
+						for(k=0; k<sched[j][hours_weekend[i]].size(); k++) {
+							printf("<tr><td>%s</td></tr>\n", sched[j][hours_weekend[i]][k].c_str());
+						}
+						printf("</table>\n");
+					}
 				}
 				else {
-					unsigned int k;
-					printf("<table class=\"conflict_table\">\n");
-					for(k=0; k<sched[j][hours_weekend[i]].size(); k++) {
-						printf("<tr><td>%s</td></tr>\n", sched[j][hours_weekend[i]][k].c_str());
-					}
-					printf("</table>\n");
+					printf("&nbsp;");
 				}
+				printf("</td>");
 			}
-			else {
-				printf("&nbsp;");
-			}
-			printf("</td>");
+			printf("</tr>\n");
 		}
-		printf("</tr>\n");
+	
+		printf("</table>\n");
 	}
-
-	printf("</table>\n");
 }
 
 void print_schedule(StudentSchedule &s)
