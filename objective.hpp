@@ -32,5 +32,7 @@ class MinHoles
 	float operator()(Schedule *)
 	{
 		float retval=0.;
+		
+		
 	}
 };
