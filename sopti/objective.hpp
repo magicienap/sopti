@@ -33,7 +33,6 @@ class MinHoles : public Objective
 	public:
 	float operator()(StudentSchedule *s)
 	{
-		float retval=0.;
 		int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, -1 };
 		unsigned int i,j;
 		std::set<int> occupied_periods;

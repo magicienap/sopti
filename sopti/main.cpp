@@ -225,6 +225,7 @@ void usage()
 	"  * make\n"
 	"    -c <course> - add this course to the schedule\n"
 	"                  (repeat this option for each course)\n"
+	"    -J <objective> - order results by criteria (minholes)\n"
 	"    -T <constraint> - use constraint (noevening)\n"
 	"\n";
 	
