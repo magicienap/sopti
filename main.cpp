@@ -30,6 +30,7 @@
 #include "schoolcourse.hpp"
 #include "studentschedule.hpp"
 #include "constraint.hpp"
+#include "objective.hpp"
 
 using namespace std;
 
@@ -237,6 +238,7 @@ void make(int argc, char **argv)
 	vector<string> requested_courses;
 	vector<Constraint *> constraints;
 	int max_scheds=10;
+	Objective *objective=0;
 	
 	int c;
 	
@@ -273,6 +275,9 @@ void make(int argc, char **argv)
 				break;
 				
 			case 'J':
+				if(!strcmp(optarg, "minholes")) {
+					objective = new MinHoles();
+				}
 				break;
 				
 			case 'j':
@@ -309,9 +314,29 @@ void make(int argc, char **argv)
 	
 	make_recurse(sched, requested_courses, constraints, solutions);
 	
-	vector<StudentSchedule>::iterator it;
-	for(it=solutions.begin(); it!=solutions.end(); it++) {
-		print_schedule(*it);
+	if(objective) {
+		multimap<float, StudentSchedule *> scores;
+		vector<StudentSchedule>::iterator it;
+		multimap<float, StudentSchedule *>::const_iterator it2;
+		
+		// Order the solutions by score
+		for(it=solutions.begin(); it!=solutions.end(); it++) {
+			// Caution, if 2 have the same score, it will not insert
+			scores.insert(pair<float, StudentSchedule *>(objective->operator()(&*it), &*it));
+		}
+		// Print the solutions in order
+		for(it2=scores.begin(); it2!=scores.end(); it2++) {
+			printf("Score: %f\n",it2->first);
+			print_schedule(*(it2->second));
+			
+		}
+
+	}
+	else {
+		vector<StudentSchedule>::iterator it;
+		for(it=solutions.begin(); it!=solutions.end(); it++) {
+			print_schedule(*it);
+		}
 	}
 	
 	debug("got %d solutions!", solutions.size());
@@ -616,6 +641,7 @@ void parse_command_line(int *argc, char ***argv)
 	}
 
 	if(optind >= *argc) {
+		usage();
 		error("no action specified on command line");
 	}
 	
