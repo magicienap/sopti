@@ -26,15 +26,18 @@ struct Period
 	public:
 	Period() {}
 	
-	std::string room() { return p_room; }
-	int period_no() { return p_period_no; }
+	std::string room() const { return p_room; }
+	int period_no() const { return p_period_no; }
+	int week() const { return p_week; }
 	
 	void set_room(std::string r) { p_room = r; }
 	void set_period_no(int n) { p_period_no = n; }
+	void set_week(int w) { p_week = w; }
 
 	private:
 	int p_period_no;
 	std::string p_room;
+	int p_week;
 };
 
 #endif // PERIOD_HPP
