@@ -132,6 +132,35 @@ class MaxMorningSleep : public Objective
 	}
 };
 
+class MaxFreeDays : public Objective
+{
+	public:
+	float operator()(StudentSchedule *s)
+	{
+		std::set<int> occupied_days;
+		
+		StudentSchedule::course_list_t::const_iterator it;
+		Group::period_list_t::const_iterator it2;
+		
+		for(it=s->st_courses_begin(); it!=s->st_courses_end(); it++) {
+			// If has theorical class
+			if((*it)->theory_group) {
+				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+					occupied_days.insert((*it2)->period_no()/10000);
+				}
+			}
+			// If has lab class
+			if((*it)->lab_group) {
+				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+					occupied_days.insert((*it2)->period_no()/10000);
+				}
+			}
+		}
+		
+		return occupied_days.size();
+	}
+};
+
 class NullObjective : public Objective
 {
 	public:
