@@ -47,31 +47,63 @@ class NoConflicts : public Constraint
 	
 	bool operator()(StudentSchedule &sched)
 	{
-		std::set<int> used_periods;
+		std::map<int,int> used_periods;
 	
 		StudentSchedule::course_list_t::const_iterator it;
 		Group::period_list_t::const_iterator it2;
+		std::map<int,int>::iterator it3;
 		int c_hours=0;
+		
+		static int schedno=1;
+		debug("New schedule #%d<br><br>", schedno++);
 		
 		// Iterate across all courses in the schedule
 		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
 			if((*it)->theory_group) {
 				// Iterate across all periods of this course
 				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
-					if(used_periods.find((*it2)->period_no()) != used_periods.end()) {
-						if(++c_hours >= p_max_conflict_periods)
-							return false;
+					int week_mask;
+					if((*it2)->week() == 0)
+						week_mask = ~0;
+					else
+						week_mask = (1 << ((*it2)->week()-1));
+						
+					it3 = used_periods.find((*it2)->period_no());
+					if(it3 != used_periods.end()) {
+						if(it3->second & week_mask) {
+							debug("conflict between %x and %x<br>", it3->second, week_mask);
+							if(++c_hours >= p_max_conflict_periods)
+								return false;
+						}
+						debug("no conflict between %x and %x<br>", it3->second, week_mask);
+						it3->second |= week_mask;
 					}
-					used_periods.insert((*it2)->period_no());
+					else {
+						used_periods[(*it2)->period_no()] = week_mask;
+					}
 				}
 			}
 			if((*it)->lab_group) {
 				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
-					if(used_periods.find((*it2)->period_no()) != used_periods.end()) {
-						if(++c_hours > p_max_conflict_periods)
-							return false;
+					int week_mask;
+					if((*it2)->week() == 0)
+						week_mask = ~0;
+					else
+						week_mask = (1 << ((*it2)->week()-1));
+						
+					it3 = used_periods.find((*it2)->period_no());
+					if(it3 != used_periods.end()) {
+						if(it3->second & week_mask) {
+							debug("conflict between %x and %x<br>", it3->second, week_mask);
+							if(++c_hours >= p_max_conflict_periods)
+								return false;
+						}
+						debug("no conflict between %x and %x<br>", it3->second, week_mask);
+						it3->second |= week_mask;
 					}
-					used_periods.insert((*it2)->period_no());
+					else {
+						used_periods[(*it2)->period_no()] = week_mask;
+					}
 				}
 			}
 		}
