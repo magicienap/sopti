@@ -36,7 +36,7 @@ class Constraint
 class NoConflicts : public Constraint
 {
 	public:
-	NoConflicts(SchoolSchedule *ss) { p_school_sched = ss; }
+	NoConflicts() {}
 	
 	bool operator()(StudentSchedule &sched)
 	{
@@ -68,6 +68,40 @@ class NoConflicts : public Constraint
 		return true;
 	}
 	
+};
+
+
+
+class NoEvening : public Constraint
+{
+	public:
+	NoEvening() {}
+	
+	bool operator()(StudentSchedule &sched)
+	{
+		const int last_allowed=1645;
+		
+		StudentSchedule::course_list_t::const_iterator it;
+		Group::period_list_t::const_iterator it2;
+		
+		// Iterate across all courses in the schedule
+		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
+			if((*it)->theory_group) {
+				// Iterate across all periods of this course
+				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+					if(poly_period_to_time((*it2)->period_no()) > last_allowed)
+						return false;
+				}
+			}
+			if((*it)->lab_group) {
+				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+					if(poly_period_to_time((*it2)->period_no()) > last_allowed)
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	private:
-	SchoolSchedule *p_school_sched;
 };

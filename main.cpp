@@ -163,6 +163,12 @@ void print_schedule(StudentSchedule &s)
 				}
 			}
 			else if(j >=5 && !weekend_finished){
+				if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
+					printf("%-15s", sched[j][hours_weekend[i]].c_str());
+				}
+				else {
+					printf("               ");
+				}
 			}
 		}
 		
@@ -241,7 +247,7 @@ void make(int argc, char **argv)
 	vector<StudentSchedule> solutions;
 	
 	// Prepare constraints
-	NoConflicts noc(&schoolsched);
+	NoConflicts noc;
 	constraints.push_back(&noc);
 	
 	make_recurse(sched, requested_courses, constraints, solutions);
@@ -368,6 +374,11 @@ vector<string> split_string(string s, string sep)
 	}
 
 	return retval;
+}
+
+int poly_period_to_time(int period)
+{
+	return period%(period/10000);
 }
 
 int poly_make_period_no(string day_of_week, string time_str)
