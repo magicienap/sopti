@@ -115,8 +115,6 @@ class MaxMorningSleep : public Objective
 	
 		// For each day monday-friday
 		for(i=0; i<5; i++) {
-			bool day_started=false;
-			
 			for(j=0; hours_sleep[j]!=-1; j++) {
 				
 				if(occupied_periods.find(10000*(i+1)+hours_sleep[j]) == occupied_periods.end()) {
