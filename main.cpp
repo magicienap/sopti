@@ -286,15 +286,11 @@ void print_schedule_html(StudentSchedule &s)
 		
 		for(j=0; j<5; j++) {
 			printf("<td class=\"period\">");
-			if(j < 5 && !week_finished) {
-				if(sched[j].find(hours_week[i]) != sched[i].end()) {
-					printf("%s", sched[j][hours_week[i]].c_str());
-				}
+			if(sched[j].find(hours_week[i]) != sched[i].end()) {
+				printf("%s", sched[j][hours_week[i]].c_str());
 			}
-			else if(j >=5 && !weekend_finished){
-				if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
-					printf("%s", sched[j][hours_weekend[i]].c_str());
-				}
+			else {
+				printf("&nbsp;");
 			}
 			printf("</td>");
 		}
@@ -333,15 +329,11 @@ void print_schedule_html(StudentSchedule &s)
 		
 		for(j=5; j<7; j++) {
 			printf("<td class=\"period\">");
-			if(j < 5 && !week_finished) {
-				if(sched[j].find(hours_week[i]) != sched[i].end()) {
-					printf("%s", sched[j][hours_week[i]].c_str());
-				}
+			if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
+				printf("%s", sched[j][hours_weekend[i]].c_str());
 			}
-			else if(j >=5 && !weekend_finished){
-				if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
-					printf("%s", sched[j][hours_weekend[i]].c_str());
-				}
+			else {
+				printf("&nbsp;");
 			}
 			printf("</td>");
 		}
