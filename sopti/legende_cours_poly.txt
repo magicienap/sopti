@@ -1,0 +1,65 @@
+CHAMP 1: Cycle
+--------------
+BA : baccalaureat
+ES : cycles superieurs
+EP : certificats
+
+CHAMP 2: Sigle
+--------------
+
+CHAMP 3: Groupe
+---------------
+
+CHAMP 4: Nombre de credits
+--------------------------
+
+CHAMP 5: Places disponibles dans la salle?
+------------------------------------------
+
+CHAMP 6: ?
+----------
+
+CHAMP 7: Local
+--------------
+
+CHAMP 8: Cours ou lab
+---------------------
+C : cours
+L : lab
+
+CHAMP 9: Frequence des labs
+---------------------------
+A : Jamais (toujours associe a un T au champ 11)
+B : Aux deux semaines
+H : hebdomadaire
+
+CHAMP 10: Moment des labs
+-------------------------
+I : Jours impairs
+P : Jours pairs
+rien : non-applicable
+
+CHAMP 11: Type de cours
+-----------------------
+T : cours theoriques seulement
+L : labs seulement
+TL : cours theoriques et labs (memes groupes)
+TLS : cours theoriques et labs (groupes independants)
+
+CHAMP 12: Titre du cours
+------------------------
+
+CHAMP 13: Nombre de places disponibles
+--------------------------------------
+
+CHAMP 14: Jour de la semaine
+----------------------------
+LUN : lundi
+MAR : mardi
+MER : mercredi
+JEU : jeudi
+VEN : vendredi
+
+CHAMP 15: Heure
+---------------
+En format militaire 
