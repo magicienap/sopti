@@ -59,6 +59,7 @@ MAR : mardi
 MER : mercredi
 JEU : jeudi
 VEN : vendredi
+SAM : samedi
 
 CHAMP 15: Heure
 ---------------

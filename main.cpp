@@ -60,6 +60,7 @@ struct Action actions[] =
 	  { 0, 0 } };
 
 string config_file="sopti.conf";
+string course_file="data/courses.csv";
 string action;
 SchoolSchedule schoolsched;
 
@@ -355,13 +356,13 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 	else if(schoolsched.course(course_to_add)->type() == COURSE_TYPE_THEORYLABIND){
 		for(it=schoolsched.course(course_to_add)->groups_begin(); it!=schoolsched.course(course_to_add)->groups_end(); it++) {
 			if(!(*it)->lab()) {
-				StudentSchedule tmps(ss);
 				newcourse.theory_group = (*it);
 				
 				// Try all labs
 				
 				for(it2=schoolsched.course(course_to_add)->groups_begin(); it2!=schoolsched.course(course_to_add)->groups_end(); it2++) {
 					if((*it2)->lab()) {
+						StudentSchedule tmps(ss);
 						newcourse.lab_group = (*it2);
 						tmps.add_st_course(newcourse);
 						test_and_recurse(tmps, remaining_courses, constraints, solutions);
@@ -556,6 +557,7 @@ void parse_command_line(int *argc, char ***argv)
 		int option_index = 0;
 		static struct option long_options[] = {
 			{"help", 0, 0, 'h'},
+			{"coursefile", 1, 0, 2},
 			{0, 0, 0, 0}
 		};
 	
@@ -567,6 +569,10 @@ void parse_command_line(int *argc, char ***argv)
 	
 		switch (c) {
 	
+		case 2:
+			course_file=optarg;
+			break;
+		
 		case '?':
 			error("invalid argument");
 			break;
@@ -625,7 +631,7 @@ int main(int argc, char **argv)
 	parse_command_line(&argc, &argv);
 	parse_config_file(config_file);
 	
-	load_info_from_csv(&schoolsched, "data/courses.csv", "Fermes.csv");
+	load_info_from_csv(&schoolsched, course_file, "Fermes.csv");
 	
 	debug("selected action: %s", action.c_str());
 	
