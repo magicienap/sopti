@@ -4,6 +4,9 @@
 #include <iostream>
 #include <map>
 
+#include <getopt.h>
+
+#include "globals.hpp"
 #include "sopti.hpp"
 #include "course.hpp"
 
@@ -16,6 +19,9 @@ using namespace std;
 #define COURSEFILE_FIELD_ROOM		6
 #define COURSEFILE_FIELD_COURSELAB	7
 #define COURSEFILE_FIELD_TITLE		11
+
+string config_file="sopti.conf";
+
 
 vector<string> split_string(string s, string sep)
 {
@@ -47,6 +53,7 @@ void load_info_from_csv(Sopti *sopti, string periods_file, string closed_file)
 	vector<string> fields;
 	
 	period_list.open(periods_file.c_str());
+	// Check error on open
 	// Ignore header line
 	period_list.getline(tmpa, 500);
 	
@@ -73,8 +80,8 @@ void load_info_from_csv(Sopti *sopti, string periods_file, string closed_file)
 		}
 		
 		// Add group if not exists
-		Group newgroup(atoi(fields[COURSEFILE_FIELD_GROUP]));
-		newgroup.set_
+		//Group newgroup(atoi(fields[COURSEFILE_FIELD_GROUP]));
+		//newgroup.set_
 		
 		
 		/*
@@ -84,16 +91,50 @@ void load_info_from_csv(Sopti *sopti, string periods_file, string closed_file)
 	}
 }
 
-void set_default_options(vector<string> options)
+void set_default_options()
 {
-	options["config_file"] = "sopti.conf";
+	config_file = "sopti.conf";
 }
 
-void parse_command_line(int argc, char **argv, vector<string> options)
+void parse_command_line(int *argc, char ***argv)
 {
+	int c;
+	
+	/* TODO: set at 0, and handle errors */
+	opterr = 0;
+
+	while (1) {
+		int option_index = 0;
+		static struct option long_options[] = {
+			{"help", 0, 0, 'h'},
+			{0, 0, 0, 0}
+		};
+	
+		/* + indicates to stop at the first non-argument option */
+		c = getopt_long (*argc, *argv, "+h",
+				long_options, &option_index);
+		if (c == -1)
+			break;
+	
+		switch (c) {
+	
+		case '?':
+			break;
+	
+		default:
+			error("getopt returned unknown code %d\n", c);
+		}
+	}
+
+	if(optind >= *argc) {
+		error("no action specified on command line");
+	}
+	
+	*argc -= optind;
+	*argv += optind;
 }
 
-void parse_config_file(string conffile_name, map<string> &options)
+void parse_config_file(string conffile_name)
 {
 	ifstream conffile;
 	string tmps;
@@ -104,7 +145,7 @@ void parse_config_file(string conffile_name, map<string> &options)
 	
 	while(1) {
 		conffile.getline(tmpa, 500);
-		if(!period_list.good()) {
+		if(!conffile.good()) {
 			break;
 		}
 		
@@ -117,7 +158,7 @@ void parse_config_file(string conffile_name, map<string> &options)
 			abort();
 		}
 		
-		options[fields[0]] = fields[1];
+		//options[fields[0]] = fields[1];
 	}
 }
 
@@ -125,13 +166,11 @@ int main(int argc, char **argv)
 {
 	Sopti s;
 	
-	map<string> options;
+	set_default_options();
+	parse_command_line(&argc, &argv);
+	parse_config_file(config_file);
 	
-	set_default_options(options);
-	parse_command_line(options);
-	parse_config_file(options["config_file"], options);
-	
-	load_info_from_csv(&s, "Horsage.csv", "Fermes.csv");
+	load_info_from_csv(&s, "data/courses.csv", "Fermes.csv");
 	
 	Sopti::course_list_t::const_iterator it;
 	for(it = s.courses_begin(); it!=s.courses_end(); it++) {

@@ -1,8 +1,12 @@
+#include <set>
+
+#include "period.hpp"
+
 class Group
 {
 	public:
 	
 	private:
 	int p_group_num;
-	set<Period> p_periods;
+	std::set<Period> p_periods;
 };
