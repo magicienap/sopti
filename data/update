@@ -1,0 +1,15 @@
+COURSE_URL="http://www.gegi.polymtl.ca/info/lanctot/java/Horsage.csv"
+CLOSED_URL="http://www.gegi.polymtl.ca/info/lanctot/java/Fermes.csv"
+DATESTRING=`date +%Y%m%d%H%M%S`
+
+echo "Date string is $DATESTRING"
+
+wget -O "courses."$DATESTRING $COURSE_URL
+wget -O "closed."$DATESTRING $CLOSED_URL
+
+chmod a+r "courses."$DATESTRING
+chmod a+r "closed."$DATESTRING
+
+rm -f courses.csv closed.csv
+ln -s "courses."$DATESTRING courses.csv
+ln -s "closed."$DATESTRING closed.csv
