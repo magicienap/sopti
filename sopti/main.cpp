@@ -497,6 +497,7 @@ void usage()
 	"Global options:\n"
 	"  --course_file <course_file> - specify course file explicitly\n"
 	"  --closed_file <closed_file> - specify closed groups file explicitly\n"
+	"  --html - enable html output\n"
 	"\n"
 	"Action options:\n"
 	"  * make\n"
@@ -504,6 +505,7 @@ void usage()
 	"                  (repeat this option for each course)\n"
 	"    -J <objective> - order results by criteria (minholes)\n"
 	"    -T <constraint> - use constraint (noevening)\n"
+	"    -t <argument> - specify the argument for the next constraint\n"
 	"\n";
 	
 	fprintf(stderr, usage_text);
@@ -517,6 +519,7 @@ void make(int argc, char **argv)
 	vector<Constraint *> constraints;
 	int max_scheds=10;
 	Objective *objective=0;
+	string next_constraint_arg;
 	
 	int c;
 	
@@ -564,10 +567,13 @@ void make(int argc, char **argv)
 				
 			case 'T':
 				if(!strcmp(optarg, "noevening")) {
-					constraints.push_back(new NoEvening());
+					constraints.push_back(new NoEvening(next_constraint_arg));
 				}
 				else if(!strcmp(optarg, "noclosed")) {
-					constraints.push_back(new NoClosed());
+					constraints.push_back(new NoClosed(next_constraint_arg));
+				}
+				else if(!strcmp(optarg, "noperiod")) {
+					constraints.push_back(new NoPeriod(next_constraint_arg));
 				}
 				else {
 					error("unknown constaint (%s)", optarg);
@@ -575,6 +581,7 @@ void make(int argc, char **argv)
 				break;
 				
 			case 't':
+				next_constraint_arg=optarg;
 				break;
 	
 			case '?':
@@ -591,7 +598,7 @@ void make(int argc, char **argv)
 	vector<StudentSchedule> solutions;
 	
 	// Prepare constraints
-	NoConflicts noc;
+	NoConflicts noc("");
 	constraints.push_back(&noc);
 	
 	make_recurse(sched, requested_courses, constraints, solutions);
