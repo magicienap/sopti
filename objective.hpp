@@ -21,7 +21,16 @@
 class Objective
 {
 	public:
-	float operator()(Schedule *);
+	virtual float operator()(Schedule *)=0;
 	
 	private:
+};
+
+class MinHoles
+{
+	public:
+	float operator()(Schedule *)
+	{
+		float retval=0.;
+	}
 };

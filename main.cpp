@@ -98,8 +98,8 @@ void print_schedule(StudentSchedule &s)
 	char days_of_week[][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
 	int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 };
 	int hours_weekend[] = { 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, -1 };
-	int i,j,k;
-	int num_lines=2; // Number of lines allocated for each period
+	unsigned int i,j,k;
+	unsigned int num_lines=2; // Number of lines allocated for each period
 			 // Line 1: Course number and T or L for theorical or lab
 			 // Line 2: Room number and group
 	
