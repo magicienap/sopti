@@ -1,0 +1,7 @@
+CXXFLAGS=-g -I. -DNODEBUG
+CFLAGS=-g
+
+sopti: error.o  group.o  main.o  schoolcourse.o  schoolschedule.o  studentschedule.o getopt1.o getopt.o make_message.o
+	g++ $(CXXFLAGS) -o $@ $+
+
+
