@@ -4,6 +4,7 @@
 
 CXXFLAGS=-g -Wall
 SOURCES=$(wildcard *.cpp) 
+HEADERS=$(wildcard *.hpp)
 OBJS=$(patsubst %.cpp,%.o,$(SOURCES))
 TARGET=sopti
 
