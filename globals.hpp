@@ -25,6 +25,7 @@ void debug(const char *fmt, ...);
 extern std::string config_file;
 
 int poly_period_to_time(int period);
+std::string to_variable_name(std::string s);
 
 /* Action prototypes */
 
