@@ -604,7 +604,7 @@ void make(int argc, char **argv)
 		}
 		// Print the solutions in order
 		for(it2=scores.begin(); it2!=scores.end(); it2++) {
-			if(output_fmt = OUTPUT_HTML)
+			if(output_fmt == OUTPUT_HTML)
 				printf("<div class=\"schedule_info\">Score: %f</div>\n", it2->first);
 			else
 				printf("Score: %f\n",it2->first);
