@@ -1,6 +1,5 @@
-# ireader Makefile
+# sopti Makefile
 # Pierre-Marc Fournier
-# July 23 2004
 
 CXXFLAGS=-g -Wall
 SOURCES=$(wildcard *.cpp) 
