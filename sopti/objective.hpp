@@ -16,23 +16,69 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "schedule.hpp"
+#include <set>
+ 
+#include "studentschedule.hpp"
 
 class Objective
 {
 	public:
-	virtual float operator()(Schedule *)=0;
+	virtual float operator()(StudentSchedule *)=0;
 	
 	private:
 };
 
-class MinHoles
+class MinHoles : public Objective
 {
 	public:
-	float operator()(Schedule *)
+	float operator()(StudentSchedule *s)
 	{
 		float retval=0.;
+		int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, -1 };
+		unsigned int i,j;
+		std::set<int> occupied_periods;
+		int holes=0;
+		StudentSchedule::course_list_t::const_iterator it;
+		Group::period_list_t::const_iterator it2;
 		
-		
+		for(it=s->st_courses_begin(); it!=s->st_courses_end(); it++) {
+			// If has theorical class
+			if((*it)->theory_group) {
+				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+					occupied_periods.insert((*it2)->period_no());
+					debug("inserted %d", (*it2)->period_no());
+				}
+			}
+			// If has lab class
+			if((*it)->lab_group) {
+				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+					occupied_periods.insert((*it2)->period_no());
+					debug("inserted %d", (*it2)->period_no());
+				}
+			}
+		}
+	
+		// For each day monday-friday
+		for(i=0; i<5; i++) {
+			int accum=0; // Temporary counter of free periods
+			bool day_started=false;
+			
+			for(j=0; hours_week[j]!=-1; j++) {
+				
+				if(occupied_periods.find(10000*(i+1)+hours_week[j]) == occupied_periods.end()) {
+					// If free period
+					if(day_started) {
+						accum++;
+					}
+				}
+				else {
+					// In period
+					day_started=true;
+					holes+=accum;
+					accum=0;
+				}
+			}
+		}
+		return holes;
 	}
 };
