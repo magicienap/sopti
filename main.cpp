@@ -497,22 +497,21 @@ void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string close
 			Group newgroup(fields[COURSEFILE_FIELD_GROUP]);
 			newgroup.set_lab(islab);
 			
-			if(fields[COURSE_FIELD_LABWEEK] == "I") {
-				newgroup.set_week(1);
-			}
-			else if(fields[COURSE_FIELD_LABWEEK] == "P") {
-				newgroup.set_week(2);
-			}
-			else {
-				newgroup.set_week(0);
-			}
-
 			sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->add_group(newgroup, islab);
 		}
 		
 		Period newperiod;
 		newperiod.set_room(fields[COURSEFILE_FIELD_ROOM]);
 		newperiod.set_period_no(poly_make_period_no(fields[COURSEFILE_FIELD_DAY], fields[COURSEFILE_FIELD_TIME]));
+		if(fields[COURSEFILE_FIELD_LABWEEK] == "I") {
+			newperiod.set_week(1);
+		}
+		else if(fields[COURSEFILE_FIELD_LABWEEK] == "P") {
+			newperiod.set_week(2);
+		}
+		else {
+			newperiod.set_week(0);
+		}
 		sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group(fields[COURSEFILE_FIELD_GROUP], islab)->add_period(newperiod);
 	}
 }
