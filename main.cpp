@@ -285,7 +285,7 @@ void print_schedule_html(StudentSchedule &s)
 		printf("<tr>\n");
 		// Print hour
 		printf("<td class=\"hour\">");
-		printf("<b>%d:%d</b><br>", hours_week[i]/100, hours_week[i]%100);
+		printf("<b>%d:%.2d</b><br>", hours_week[i]/100, hours_week[i]%100);
 
 		printf("</td>");
 		
@@ -328,7 +328,7 @@ void print_schedule_html(StudentSchedule &s)
 		printf("<tr>\n");
 		// Print hour
 		printf("<td class=\"hour\">");
-		printf("<b>%d:%d</b><br>", hours_weekend[i]/100, hours_weekend[i]%100);
+		printf("<b>%d:%.2d</b><br>", hours_weekend[i]/100, hours_weekend[i]%100);
 
 		printf("</td>");
 		
