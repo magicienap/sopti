@@ -1,3 +1,18 @@
+sopti-0.11 (2005/01/06)
+* corrections et améliorations esthétiques
+* ajouts au fichier ChangeLog, récemment négligé
+* correction d'un bug d'affichage d'heure non standard
+* support pour enlever les cours du soir de certains jours seulement
+* maximisation du nombre de jours de congé
+* diminution d'environ 20% de la taille de la page d'horaires
+* correction d'un bug avec les cours dont le sigle comprend un -
+* nouveau script d'update de données résistant aux pannes réseau
+
+sopti-0.10
+* support pour ouverture et fermeture de sections
+* améliorations esthétiques
+
 sopti-0.9
 * ajout de config.php
-* modifications cosmetiques aux php pour site AEP
+* modifications cosmétiques aux php pour site AEP
+* correction d'un bug dans le support pour les conflits
