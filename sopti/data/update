@@ -4,8 +4,8 @@ DATESTRING=`date +%Y%m%d%H%M%S`
 
 echo "Date string is $DATESTRING"
 
-wget -O "courses."$DATESTRING $COURSE_URL
-wget -O "closed."$DATESTRING $CLOSED_URL
+wget -N -O "courses."$DATESTRING $COURSE_URL
+wget -N -O "closed."$DATESTRING $CLOSED_URL
 
 chmod a+r "courses."$DATESTRING
 chmod a+r "closed."$DATESTRING

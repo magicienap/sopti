@@ -586,6 +586,11 @@ void make(int argc, char **argv)
 	constraints.push_back(&noc);
 	
 	make_recurse(sched, requested_courses, constraints, solutions);
+
+	if(solutions.size() == 0) {
+		printf("no solution found!\n");
+		return;
+	}
 	
 	if(objective) {
 		multimap<float, StudentSchedule *> scores;
@@ -599,8 +604,8 @@ void make(int argc, char **argv)
 		}
 		// Print the solutions in order
 		for(it2=scores.begin(); it2!=scores.end(); it2++) {
-			if(output_style = OUTPUT_HTML) {
-				printf("<div class="schedule_info">Score: %f</div>\n");
+			if(output_fmt = OUTPUT_HTML)
+				printf("<div class=\"schedule_info\">Score: %f</div>\n", it2->first);
 			else
 				printf("Score: %f\n",it2->first);
 			print_schedule(*(it2->second));
