@@ -23,3 +23,6 @@ void error(const char *fmt, ...);
 void debug(const char *fmt, ...);
 
 extern std::string config_file;
+
+int poly_period_to_time(int period);
+
