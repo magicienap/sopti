@@ -433,6 +433,12 @@ void make(int argc, char **argv)
 				if(!strcmp(optarg, "minholes")) {
 					objective = new MinHoles();
 				}
+				else if(!strcmp(optarg, "maxmorningsleep")) {
+					objective = new MaxMorningSleep();
+				}
+				else {
+					error("invalid objective");
+				}
 				break;
 				
 			case 'j':

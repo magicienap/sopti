@@ -82,6 +82,58 @@ class MinHoles : public Objective
 	}
 };
 
+class MaxMorningSleep : public Objective
+{
+	public:
+	float operator()(StudentSchedule *s)
+	{
+		int hours_sleep[] = { 830, 930, 1030, 1130, -1 };
+		unsigned int i,j;
+		std::set<int> occupied_periods;
+		int add_sleep=0;
+		const int max_sleep=20;
+		
+		StudentSchedule::course_list_t::const_iterator it;
+		Group::period_list_t::const_iterator it2;
+		
+		for(it=s->st_courses_begin(); it!=s->st_courses_end(); it++) {
+			// If has theorical class
+			if((*it)->theory_group) {
+				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+					occupied_periods.insert((*it2)->period_no());
+					debug("inserted %d", (*it2)->period_no());
+				}
+			}
+			// If has lab class
+			if((*it)->lab_group) {
+				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+					occupied_periods.insert((*it2)->period_no());
+					debug("inserted %d", (*it2)->period_no());
+				}
+			}
+		}
+	
+		// For each day monday-friday
+		for(i=0; i<5; i++) {
+			bool day_started=false;
+			
+			for(j=0; hours_sleep[j]!=-1; j++) {
+				
+				if(occupied_periods.find(10000*(i+1)+hours_sleep[j]) == occupied_periods.end()) {
+					// If free period
+					add_sleep++;
+				}
+				else {
+					// In period
+					break;
+
+				}
+			}
+		}
+		return max_sleep-add_sleep;
+	}
+};
+
 class NullObjective : public Objective
 {
 	public:
