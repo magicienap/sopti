@@ -1,6 +1,9 @@
 AC_INIT(sopti, 0.8)
+dnl AC_CONFIG_HEADERS(config.h)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(sopti, 0.8)
+
+AC_PROG_CC
 
 AC_PROG_CXX
 AC_STDC_HEADERS
