@@ -33,6 +33,7 @@
 #include "schoolcourse.hpp"
 #include "studentschedule.hpp"
 #include "constraint.hpp"
+#include "group_constraint.hpp"
 #include "objective.hpp"
 #include "stdsched.h"
 #include "read_csv.hpp"
@@ -459,16 +460,168 @@ void usage()
 	fprintf(stderr, usage_text);
 }
 
-void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> &constraints, vector<StudentSchedule> &solutions);
+inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoolschedule, vector<GroupConstraint *> *group_constraints, set<Group *> *accepted_groups)
+{
+	vector<string>::const_iterator it;
+	SchoolCourse::group_list_t::const_iterator it2;
+	vector<GroupConstraint *>::const_iterator it3;
+	
+	// For all courses
+	for(it=requested_courses->begin(); it!=requested_courses->end(); it++) {
+		// For all groups
+		for(it2=schoolschedule->course(*it)->groups_begin(); it2!=schoolschedule->course(*it)->groups_end(); it2++) {
+			int success=1;
+			for(it3=group_constraints->begin(); it3!=group_constraints->end(); it3++) {
+				if((**it3)(*it2, schoolschedule->course(*it)) == false) {
+					success=0;
+					break;
+				}
+			}
+			if(success) {
+				accepted_groups->insert(*it2);
+			}
+		}
+	}
+}
+
+void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions);
+
+/* Test the student schedule with the constraints before continuing the recursion */
+
+inline void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
+{
+	vector<Constraint *>::iterator it;
+	for(it=constraints->begin(); it!=constraints->end(); it++) {
+		if(!((**it)(ss))) {
+			//debug("constraint failed");
+			return;
+		}
+	}
+	
+	// If we get here, all the constraints were satisfied
+	
+	make_recurse(ss, remaining_courses, constraints, accepted_groups, solutions);
+}
+
+/*
+inline bool test_group_constraints(Group *group, SchoolCourse *course, vector<GroupConstraint *> *group_constraints)
+{
+	vector<GroupConstraint *>::const_iterator it;
+
+	for(it=group_constraints->begin(); it!=group_constraints->end(); it++) {
+		if(!((**it)(group, course))) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+*/
+
+void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
+{
+	SchoolCourse *course_to_add;
+
+	if(remaining_courses.size() == 0) {
+		solutions.push_back(ss);
+		return;
+	}
+	
+	course_to_add = schoolsched.course(remaining_courses.back());
+	remaining_courses.pop_back();
+
+	StudentCourse newcourse;
+	newcourse.course = course_to_add;
+		
+	SchoolCourse::group_list_t::const_iterator it,it2;
+	
+	if(course_to_add->type() == COURSE_TYPE_THEORYONLY){
+		// This course has only theorical sessions
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
+			if(!(*it)->lab()) {
+				if(accepted_groups->find(*it) == accepted_groups->end())
+					continue;
+					
+				StudentSchedule tmps(ss);
+				newcourse.theory_group = (*it);
+				newcourse.lab_group = 0;
+				tmps.add_st_course(newcourse);
+				test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+			}
+		}
+	}
+	else if(course_to_add->type() == COURSE_TYPE_LABONLY){
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
+			if((*it)->lab()) {
+				if(accepted_groups->find(*it) == accepted_groups->end())
+					continue;
+				
+				StudentSchedule tmps(ss);
+				newcourse.theory_group = 0;
+				newcourse.lab_group = (*it);
+				tmps.add_st_course(newcourse);
+				test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+			}
+		}
+	}
+	else if(course_to_add->type() == COURSE_TYPE_THEORYLABIND){
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
+			if(!(*it)->lab()) {
+				if(accepted_groups->find(*it) == accepted_groups->end())
+					continue;
+				
+				newcourse.theory_group = (*it);
+				
+				// Try all labs
+				
+				for(it2=course_to_add->groups_begin(); it2!=course_to_add->groups_end(); it2++) {
+					if((*it2)->lab()) {
+						if(accepted_groups->find(*it) == accepted_groups->end())
+							continue;
+						
+						StudentSchedule tmps(ss);
+						newcourse.lab_group = (*it2);
+						tmps.add_st_course(newcourse);
+						test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+					}
+				}
+			}
+		}
+	}
+	else if(course_to_add->type() == COURSE_TYPE_THEORYLABSAME){
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
+			if(!(*it)->lab()) {
+				if(accepted_groups->find(*it) == accepted_groups->end())
+					continue;
+				if(accepted_groups->find(course_to_add->group((*it)->name(), true)) == accepted_groups->end())
+					continue;
+				
+				StudentSchedule tmps(ss);
+				newcourse.theory_group = (*it);
+				if(!course_to_add->group_exists((*it)->name(), true)) {
+					error("a lab group does not exist for a course with same-lab-group policy");
+				}
+				
+				newcourse.lab_group = course_to_add->group((*it)->name(), true);
+				tmps.add_st_course(newcourse);
+				test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+			}
+		}
+	}
+}
+
 
 void make(int argc, char **argv)
 {
 	vector<string> requested_courses;
 	vector<Constraint *> constraints;
+	vector<GroupConstraint *> group_constraints;
+	set<Group *> accepted_groups;
 	int max_scheds=10;
 	NullObjective null_obj;
 	Objective *objective=&null_obj;
 	string next_constraint_arg;
+	string next_group_constraint_arg;
 	string max_conflicts_str="0";
 	
 	int c,i;
@@ -490,7 +643,7 @@ void make(int argc, char **argv)
 		};
 	
 		/* + indicates to stop at the first non-argument option */
-		c = getopt_long (argc, argv, "c:n:J:j:T:t:",
+		c = getopt_long (argc, argv, "c:n:J:j:T:t:G:g:",
 				long_options, &option_index);
 		if (c == -1)
 			break;
@@ -531,28 +684,33 @@ void make(int argc, char **argv)
 				break;
 				
 			case 'T':
-				if(!strcmp(optarg, "noevening")) {
-					constraints.push_back(new NoEvening(next_constraint_arg));
-				}
-				else if(!strcmp(optarg, "noclosed")) {
-					constraints.push_back(new NoClosed(next_constraint_arg));
+				error("unknown constaint (%s)", optarg);
+				break;
+				
+			case 't':
+				next_constraint_arg=optarg;
+				break;
+				
+			case 'G':
+				if(!strcmp(optarg, "noclosed")) {
+					group_constraints.push_back(new NoClosed(next_group_constraint_arg));
 				}
 				else if(!strcmp(optarg, "noperiod")) {
-					constraints.push_back(new NoPeriod(next_constraint_arg));
+					group_constraints.push_back(new NoPeriod(next_group_constraint_arg));
 				}
 				else if(!strcmp(optarg, "explicitopen")) {
-					constraints.push_back(new ExplicitOpen(next_constraint_arg));
+					group_constraints.push_back(new ExplicitOpen(next_group_constraint_arg));
 				}
 				else if(!strcmp(optarg, "notbetween")) {
-					constraints.push_back(new NotBetween(next_constraint_arg));
+					group_constraints.push_back(new NotBetween(next_group_constraint_arg));
 				}
 				else {
 					error("unknown constaint (%s)", optarg);
 				}
 				break;
 				
-			case 't':
-				next_constraint_arg=optarg;
+			case 'g':
+				next_group_constraint_arg=optarg;
 				break;
 				
 			case 'C':
@@ -568,6 +726,10 @@ void make(int argc, char **argv)
 		}
 	}
 	
+	// Find acceptable groups
+	
+	test_groups(&requested_courses, &schoolsched, &group_constraints, &accepted_groups);
+	
 	// Making an empty schedule, to begin the recursion with
 	StudentSchedule sched;
 	vector<StudentSchedule> solutions;
@@ -576,7 +738,7 @@ void make(int argc, char **argv)
 	NoConflicts noc(max_conflicts_str);
 	constraints.push_back(&noc);
 	
-	make_recurse(sched, requested_courses, constraints, solutions);
+	make_recurse(sched, requested_courses, &constraints, &accepted_groups, solutions);
 
 	if(solutions.size() == 0) {
 		if(output_fmt == OUTPUT_HTML) {
@@ -626,100 +788,6 @@ void make(int argc, char **argv)
 		print_schedule(*(it2->second));
 	}
 	//debug("got %d solutions!", solutions.size());
-}
-
-void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> &constraints, vector<StudentSchedule> &solutions);
-
-/* Test the student schedule with the constraints before continuing the recursion */
-
-void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> &constraints, vector<StudentSchedule> &solutions)
-{
-	vector<Constraint *>::iterator it;
-	for(it=constraints.begin(); it!=constraints.end(); it++) {
-		if(!((**it)(ss))) {
-			//debug("constraint failed");
-			return;
-		}
-	}
-	
-	// If we get here, all the constraints were satisfied
-	
-	make_recurse(ss, remaining_courses, constraints, solutions);
-}
-
-void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> &constraints, vector<StudentSchedule> &solutions)
-{
-	SchoolCourse *course_to_add;
-
-	if(remaining_courses.size() == 0) {
-		solutions.push_back(ss);
-		return;
-	}
-	
-	course_to_add = schoolsched.course(remaining_courses.back());
-	remaining_courses.pop_back();
-
-	StudentCourse newcourse;
-	newcourse.course = course_to_add;
-		
-	SchoolCourse::group_list_t::const_iterator it,it2;
-	
-	if(course_to_add->type() == COURSE_TYPE_THEORYONLY){
-		// This course has only theorical sessions
-		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
-			if(!(*it)->lab()) {
-				StudentSchedule tmps(ss);
-				newcourse.theory_group = (*it);
-				newcourse.lab_group = 0;
-				tmps.add_st_course(newcourse);
-				test_and_recurse(tmps, remaining_courses, constraints, solutions);
-			}
-		}
-	}
-	else if(course_to_add->type() == COURSE_TYPE_LABONLY){
-		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
-			if((*it)->lab()) {
-				StudentSchedule tmps(ss);
-				newcourse.theory_group = 0;
-				newcourse.lab_group = (*it);
-				tmps.add_st_course(newcourse);
-				test_and_recurse(tmps, remaining_courses, constraints, solutions);
-			}
-		}
-	}
-	else if(course_to_add->type() == COURSE_TYPE_THEORYLABIND){
-		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
-			if(!(*it)->lab()) {
-				newcourse.theory_group = (*it);
-				
-				// Try all labs
-				
-				for(it2=course_to_add->groups_begin(); it2!=course_to_add->groups_end(); it2++) {
-					if((*it2)->lab()) {
-						StudentSchedule tmps(ss);
-						newcourse.lab_group = (*it2);
-						tmps.add_st_course(newcourse);
-						test_and_recurse(tmps, remaining_courses, constraints, solutions);
-					}
-				}
-			}
-		}
-	}
-	else if(course_to_add->type() == COURSE_TYPE_THEORYLABSAME){
-		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
-			if(!(*it)->lab()) {
-				StudentSchedule tmps(ss);
-				newcourse.theory_group = (*it);
-				if(!course_to_add->group_exists((*it)->name(), true)) {
-					error("a lab group does not exist for a course with same-lab-group policy");
-				}
-				
-				newcourse.lab_group = course_to_add->group((*it)->name(), true);
-				tmps.add_st_course(newcourse);
-				test_and_recurse(tmps, remaining_courses, constraints, solutions);
-			}
-		}
-	}
 }
 
 string to_variable_name(string s)

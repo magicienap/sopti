@@ -10,4 +10,4 @@ EXTRA_sopti_SOURCES = getopt.c getopt1.c
 EXTRA_DIST = legende_cours_poly.txt data/update web/*.php web/config.php.example web/*.css web/*.gif
 # noinst_SCRIPTS = data/update
 
-noinst_HEADERS = constraint.hpp globals.hpp group.hpp objective.hpp period.hpp schoolcourse.hpp schoolschedule.hpp studentschedule.hpp getopt.h make_message.h stdsched.h read_csv.hpp
+noinst_HEADERS = constraint.hpp group_constraint.hpp globals.hpp group.hpp objective.hpp period.hpp schoolcourse.hpp schoolschedule.hpp studentschedule.hpp getopt.h make_message.h stdsched.h read_csv.hpp

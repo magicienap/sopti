@@ -113,8 +113,7 @@ class NoConflicts : public Constraint
 	int p_max_conflict_periods;
 };
 
-
-
+/*
 class NoEvening : public Constraint
 {
 	public:
@@ -347,3 +346,4 @@ class NoPeriod : public Constraint
 	long p_period;
 };
 
+*/
