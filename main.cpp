@@ -259,7 +259,7 @@ void print_schedule_html(StudentSchedule &s)
 	// Don't forget the empty column for the hours
 	printf("<tr><td></td>\n");
 	
-	for(i=0; i<7; i++) {
+	for(i=0; i<5; i++) {
 		printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
 	}
 	
