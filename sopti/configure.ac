@@ -1,0 +1,11 @@
+AC_INIT(sopti, 0.8)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(sopti, 0.8)
+
+AC_PROG_CXX
+AC_STDC_HEADERS
+
+AC_CHECK_FUNCS(getopt_long)
+AM_CONDITIONAL(NEED_GETOPT_LONG, test $ac_cv_func_getopt_long = no)
+
+AC_OUTPUT([Makefile])
