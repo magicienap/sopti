@@ -46,6 +46,7 @@ using namespace std;
 #define COURSEFILE_FIELD_DAY		13
 #define COURSEFILE_FIELD_TIME		14
 
+#define OUTPUT_HTML	1
 
 struct Action {
 	char name[20];
@@ -64,6 +65,7 @@ string config_file="sopti.conf";
 string course_file="data/courses.csv";
 string action;
 SchoolSchedule schoolsched;
+int output_fmt=0;
 
 class SchoolCoursePtrSymAlphaOrder
 {
@@ -94,7 +96,7 @@ void listcourses(int, char **)
 	}
 }
 
-void print_schedule(StudentSchedule &s)
+void print_schedule_ascii(StudentSchedule &s)
 {
 	char days_of_week[][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
 	int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 };
@@ -206,6 +208,238 @@ void print_schedule(StudentSchedule &s)
 
 	
 	printf("\n");
+}
+
+void print_schedule_html(StudentSchedule &s)
+{
+	char days_of_week[][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
+	int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 };
+	int hours_weekend[] = { 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, -1 };
+	unsigned int i,j,k;
+	unsigned int num_lines=2; // Number of lines allocated for each period
+			 // Line 1: Course number and T or L for theorical or lab
+			 // Line 2: Room number and group
+	
+	vector<map<int, string > > sched;
+	sched.resize(7);
+	
+	StudentSchedule::course_list_t::const_iterator it;
+	Group::period_list_t::const_iterator it2;
+	for(it=s.st_courses_begin(); it!=s.st_courses_end(); it++) {
+		// If has theorical class
+		if((*it)->theory_group) {
+			for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+				int num_day = (*it2)->period_no()/10000-1;
+				
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it)->course->symbol() + "(T)" + "<br>");
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it2)->room() + "(" + (*it)->theory_group->name() + ")");
+			}
+		}
+		// If has lab class
+		if((*it)->lab_group) {
+			for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+				int num_day = (*it2)->period_no()/10000-1;
+				string lab_week_str;
+				
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it)->course->symbol() + "(L)" + "<br>");
+				
+				if((*it2)->week()) {
+					char *tmp;
+					asprintf(&tmp, "%d", (*it2)->week());
+					lab_week_str = string("B") + string(tmp);
+					free(tmp);
+				}
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it2)->room() + "(" + (*it)->lab_group->name() + ") " + lab_week_str);
+			}
+		}
+	}
+	
+	printf("<table class="schedule">\n");
+	
+	printf("<tr>\n");
+	
+	for(i=0; i<7; i++) {
+		printf("<td class="weekday">%s</td>", days_of_week[i]);
+	}
+	
+	printf("</tr>\n");
+
+	bool week_finished=false;
+	bool weekend_finished=false;
+	
+	// For each hour
+	for(i=0;; i++) {
+	
+		if(!week_finished && hours_week[i] == -1)
+			week_finished = true;
+			
+		if(!weekend_finished && hours_weekend[i] == -1)
+			weekend_finished = true;
+		
+		if(week_finished && weekend_finished)
+			break;
+	
+		// Print hour
+		
+		
+		printf("<tr>\n");
+		for(j=0; j<7; j++) {
+			printf("<td class="period">");
+			if(j < 5 && !week_finished) {
+				printf("<b>%d</b><br>", hours_week[i]);
+				if(sched[j].find(hours_week[i]) != sched[i].end()) {
+					printf("%s", sched[j][hours_week[i]].c_str());
+				}
+			}
+			else if(j >=5 && !weekend_finished){
+				printf("<b>%d</b><br>", hours_weekend[i]);
+				if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
+					printf("%s", sched[j][hours_weekend[i]].c_str());
+				}
+			}
+			printf("</td>");
+		}
+		printf("</tr>\n");
+		
+	}
+
+	printf("</table>\n");
+}
+
+
+/*
+void print_schedule_html2(StudentSchedule &s)
+{
+	char days_of_week[][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
+	int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 };
+	int hours_weekend[] = { 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, -1 };
+	int hours_whole_week = {
+		{ 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 }, // Monday
+		{ 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 }, // Tuesday
+		{ 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 }, // Wednesday
+		{ 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 }, // Thursday
+		{ 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 }, // Friday
+		{ 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600,   -1,   -1,   -1,   -1, -1 }, // Saturday
+		{ 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600,   -1,   -1,   -1,   -1, -1 }  // Sunday
+	};
+	
+	unsigned int i,j,k;
+	unsigned int num_lines=2; // Number of lines allocated for each period
+			 // Line 1: Course number and T or L for theorical or lab
+			 // Line 2: Room number and group
+	
+	vector<map<int, vector<string> > > sched;
+	sched.resize(7);
+	
+	// Load the data in the structure
+	StudentSchedule::course_list_t::const_iterator it;
+	Group::period_list_t::const_iterator it2;
+	for(it=s.st_courses_begin(); it!=s.st_courses_end(); it++) {
+		// If has theorical class
+		if((*it)->theory_group) {
+			for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+				int num_day = (*it2)->period_no()/10000-1;
+				
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(T)");
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it2)->room() + "(" + (*it)->theory_group->name() + ")");
+			}
+		}
+		// If has lab class
+		if((*it)->lab_group) {
+			for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+				int num_day = (*it2)->period_no()/10000-1;
+				string lab_week_str;
+				
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(L)");
+				
+				if((*it2)->week()) {
+					char *tmp;
+					asprintf(&tmp, "%d", (*it2)->week());
+					lab_week_str = string("B") + string(tmp);
+					free(tmp);
+				}
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it2)->room() + "(" + (*it)->lab_group->name() + ") " + lab_week_str);
+			}
+		}
+	}
+	
+	for(i=0; i<7; i++) {
+		if(i == 5)
+			printf(" | ");
+	
+		printf("%-15s", days_of_week[i]);
+	}
+	printf("\n");
+
+	bool week_finished=false;
+	bool weekend_finished=false;
+	
+	// For each hour
+	for(i=0;; i++) {
+	
+		if(!week_finished && hours_week[i] == -1)
+			week_finished = true;
+			
+		if(!weekend_finished && hours_weekend[i] == -1)
+			weekend_finished = true;
+		
+		if(week_finished && weekend_finished)
+			break;
+	
+		// Print hour for each day
+		for(j=0; j<7; j++) {
+			if(j == 5)
+				printf(" | ");
+		
+			if(j < 5 && !week_finished) {
+				printf("%-15d", hours_week[i]);
+			}
+			else if(j >=5 && !weekend_finished){
+				printf("%-15d", hours_weekend[i]);
+			}
+		}
+		
+		printf("\n");
+		
+		for(k=0; k<num_lines; k++) {
+			for(j=0; j<7; j++) {
+				if(j == 5)
+					printf(" | ");
+			
+				if(j < 5 && !week_finished) {
+					if(sched[j].find(hours_week[i]) != sched[i].end() && sched[j][hours_week[i]].size() > k) {
+						printf("%-15s", sched[j][hours_week[i]][k].c_str());
+					}
+					else {
+						printf("               ");
+					}
+				}
+				else if(j >=5 && !weekend_finished){
+					if(sched[j].find(hours_weekend[i]) != sched[i].end() && sched[j][hours_weekend[i]].size() > k) {
+						printf("%-15s", sched[j][hours_weekend[i]][k].c_str());
+					}
+					else {
+						printf("               ");
+					}
+				}
+			}
+			printf("\n");
+		}
+		
+		printf("\n");
+	}
+
+	
+	printf("\n");
+}
+*/
+
+void print_schedule(StudentSchedule &s)
+{
+	if(output_fmt == OUTPUT_HTML)
+		print_schedule_html(s);
+	else
+		print_schedule_ascii(s);
 }
 
 void usage()
@@ -617,6 +851,7 @@ void parse_command_line(int *argc, char ***argv)
 		static struct option long_options[] = {
 			{"help", 0, 0, 'h'},
 			{"coursefile", required_argument, 0, 'c'},
+			{"html", 0, 0, 3},
 			{0, 0, 0, 0}
 		};
 	
@@ -629,6 +864,10 @@ void parse_command_line(int *argc, char ***argv)
 	
 		case 'c':
 			course_file=optarg;
+			break;
+			
+		case 3:
+			output_fmt = OUTPUT_HTML;
 			break;
 		
 		case '?':
@@ -702,10 +941,12 @@ int main(int argc, char **argv)
 		}
 	}
 	
+	// Action not found
 	usage();
 	error("action not found: %s", action.c_str());
 	
 	found:
 	
+	// Action was found and executed
 	return 0;
 }
