@@ -19,19 +19,7 @@
 
 </center>
 
-<form method="POST" action="make.php">
-
-<?php
-/*
-$course_file="../../sopti_run/data/courses.csv";
-
-$info = stat($course_file);
-$unix_modif = $info[9];
-$string_modif = date("r", $unix_modif);
-
-print "Derni&egrave;re mise a jour du fichier de cours: ".$string_modif
-*/
-?>
+<form method="POST" action="make.php" name="form2">
 
 <?php
 	// Sanitize the courses
@@ -45,8 +33,6 @@ print "Derni&egrave;re mise a jour du fichier de cours: ".$string_modif
 ?>
 
 <p>&nbsp;
-
-<form>
 
 <h2>Cours demand&eacute;s</h2>
 <div class="option_block">
@@ -71,7 +57,6 @@ print "Derni&egrave;re mise a jour du fichier de cours: ".$string_modif
 
 <div class="option_block">
 	<p><input name="noevening" type="checkbox"> Pas de cours le soir
-	<p><input name="noclosed" type="checkbox" checked> Groupes avec places disponibles seulement
 	<p>Nombre maximum de p&eacute;riodes avec conflit: <input type="text" name="maxconflicts" value="0" size="2">
 </div>
 
@@ -112,7 +97,30 @@ for($i=0; $i<count($week_hours); $i++) {
 
 <h2>Ouvrir / fermer des sections</h2>
 <div class="option_block">
-	<p>Option en d&eacute;veloppement; disponible bient&ocirc;t!
+	<p>Cocher les sections qui doivent &ecirc;tre consid&eacute;r&eacute;es comme ouvertes. Par d&eacute;faut, seules les sections o&ugrave; il reste de la place sont coch&eacute;es.
+	<p><b>Case coch&eacute;e: </b> Section ouverte<br>
+	   <b>Case non coch&eacute;e: </b> Section ferm&eacute;e<br>
+	   <b style="background-color:#ffaaaa;">Case rouge:</b> Section pleine
+	   
+
+<?php
+require_once('config.php');
+
+$cmd=$SOPTI_EXEC_DATA . " get_open_close_form";
+
+if(strlen($courses_raw) != 0) {
+	$courses = explode(" ", $courses_raw);
+	foreach ($courses as $key => $val) {
+		$cmd .= " -c " . escapeshellarg($val);
+	}
+
+	passthru($cmd." 2>&1");
+}
+else {
+	print("<p>Aucun cours!");
+}
+?>
+
 </div>
 
 <h2>Terminer</h2>
