@@ -7,8 +7,8 @@
 #include <getopt.h>
 
 #include "globals.hpp"
-#include "sopti.hpp"
-#include "course.hpp"
+#include "schoolschedule.hpp"
+#include "schoolcourse.hpp"
 
 using namespace std;
 
@@ -20,8 +20,110 @@ using namespace std;
 #define COURSEFILE_FIELD_COURSELAB	7
 #define COURSEFILE_FIELD_TITLE		11
 
-string config_file="sopti.conf";
 
+struct Action {
+	char name[20];
+	void (*func)(int, char **);
+};
+
+void listcourses(int, char **);
+void make(int, char **);
+
+struct Action actions[] =
+	{ { "listcourses", listcourses},
+	  { "make", make},
+	  { 0, 0 } };
+
+string config_file="sopti.conf";
+string action;
+SchoolSchedule schoolsched;
+
+class SchoolCoursePtrSymAlphaOrder
+{
+	public:
+	SchoolCoursePtrSymAlphaOrder() {}
+	bool operator()(const SchoolCourse *a, const SchoolCourse *b) {
+		return a->symbol() < b->symbol();
+	}
+};
+
+
+void listcourses(int, char **)
+{
+	vector<SchoolCourse *>::iterator it;
+	vector<SchoolCourse *> l_courses;
+	SchoolCourse::group_list_t::const_iterator it2;
+	
+	// Sort the courses before printing them
+	l_courses.insert(l_courses.end(), schoolsched.courses_begin(), schoolsched.courses_end());
+	sort<vector<SchoolCourse *>::iterator, SchoolCoursePtrSymAlphaOrder>(l_courses.begin(), l_courses.end(), SchoolCoursePtrSymAlphaOrder());
+
+	for(it=l_courses.begin(); it!=l_courses.end(); it++) {
+		cout << (*it)->symbol() << " " << (*it)->title();
+		for(it2=(*it)->groups_begin(); it2!=(*it)->groups_end(); it2++) {
+			cout << " " << (*it2)->name() << "(" << ((*it2)->lab()?"L":"T") << ")";
+		}
+		cout << endl;
+	}
+}
+
+void make(int argc, char **argv)
+{
+	vector<string> requested_courses;
+	int max_scheds=10;
+	
+	int c;
+	
+	opterr = 0;
+
+	while (1) {
+		int option_index = 0;
+		static struct option long_options[] = {
+			{"course", 1, 0, 'c'},
+			{"count", 1, 0, 'n'},
+			{"objective", 1, 0, 'J'},
+			{"objective-args", 1, 0, 'j'},
+			{"constraint", 1, 0, 'T'},
+			{"constraint-args", 1, 0, 't'},
+			{0, 0, 0, 0}
+		};
+	
+		/* + indicates to stop at the first non-argument option */
+		c = getopt_long (argc, argv, "cnJjTt",
+				long_options, &option_index);
+		if (c == -1)
+			break;
+	
+		switch (c) {
+			case 'c':
+				requested_courses.push_back(optarg);
+				break;
+				
+			case 'n':
+				max_scheds=atoi(optarg);
+				break;
+				
+			case 'J':
+				break;
+				
+			case 'j':
+				break;
+				
+			case 'T':
+				break;
+				
+			case 't':
+				break;
+	
+			case '?':
+				error("invalid argument");
+				break;
+		
+			default:
+				error("getopt returned unknown code %d\n", c);
+		}
+	}
+}
 
 vector<string> split_string(string s, string sep)
 {
@@ -45,7 +147,7 @@ vector<string> split_string(string s, string sep)
 	return retval;
 }
 
-void load_info_from_csv(Sopti *sopti, string periods_file, string closed_file)
+void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string closed_file)
 {
 	ifstream period_list;
 	string tmps;
@@ -72,22 +174,35 @@ void load_info_from_csv(Sopti *sopti, string periods_file, string closed_file)
 			abort();
 		}
 		
+		// extract vars
+		bool islab;
+				
+		if(fields[COURSEFILE_FIELD_COURSELAB] == "L")
+			islab=1;
+		else if(fields[COURSEFILE_FIELD_COURSELAB] == "C")
+			islab=0;
+		else
+			error("unrecognized course type");
+		
+		
 		// Add course if not exists
 		if(!sopti->course_exists(fields[COURSEFILE_FIELD_SYMBOL])) {
-			Course newcourse(fields[COURSEFILE_FIELD_SYMBOL]);
+			SchoolCourse newcourse(fields[COURSEFILE_FIELD_SYMBOL]);
 			newcourse.set_title(fields[COURSEFILE_FIELD_TITLE]);
 			sopti->course_add(newcourse);
 		}
 		
 		// Add group if not exists
-		//Group newgroup(atoi(fields[COURSEFILE_FIELD_GROUP]));
-		//newgroup.set_
+		if(!sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group_exists(fields[COURSEFILE_FIELD_GROUP], islab)) {
+			Group newgroup(fields[COURSEFILE_FIELD_GROUP]);
+			newgroup.set_lab(islab);
+
+			sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->add_group(newgroup, islab);
+		}
 		
-		
-		/*
 		Period newperiod;
-		sopti->courses(fields[COURSEFILE_FIELD_SYMBOL]).add_period(newperiod);
-		*/
+		newperiod.set_room(fields[COURSEFILE_FIELD_ROOM]);
+		sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group(fields[COURSEFILE_FIELD_GROUP], islab)->add_period(newperiod);
 	}
 }
 
@@ -100,7 +215,6 @@ void parse_command_line(int *argc, char ***argv)
 {
 	int c;
 	
-	/* TODO: set at 0, and handle errors */
 	opterr = 0;
 
 	while (1) {
@@ -119,6 +233,7 @@ void parse_command_line(int *argc, char ***argv)
 		switch (c) {
 	
 		case '?':
+			error("invalid argument");
 			break;
 	
 		default:
@@ -132,6 +247,11 @@ void parse_command_line(int *argc, char ***argv)
 	
 	*argc -= optind;
 	*argv += optind;
+	
+	action = **argv;
+	
+	*argc--;
+	*argv--;
 }
 
 void parse_config_file(string conffile_name)
@@ -164,16 +284,28 @@ void parse_config_file(string conffile_name)
 
 int main(int argc, char **argv)
 {
-	Sopti s;
+	int i;
 	
 	set_default_options();
 	parse_command_line(&argc, &argv);
 	parse_config_file(config_file);
 	
-	load_info_from_csv(&s, "data/courses.csv", "Fermes.csv");
+	load_info_from_csv(&schoolsched, "data/courses.csv", "Fermes.csv");
 	
-	Sopti::course_list_t::const_iterator it;
-	for(it = s.courses_begin(); it!=s.courses_end(); it++) {
-		cout << it->symbol() << " " << it->title() << endl;
+	debug("selected action: %s", action.c_str());
+	
+	for(i=0; actions[i].name[0] != 0; i++) {
+		if(action == actions[i].name) {
+			if(actions[i].func) {
+				actions[i].func(argc, argv);
+			}
+			goto found;
+		}
 	}
+	
+	error("action not found: %s", action.c_str());
+	
+	found:
+	
+	return 0;
 }
