@@ -42,6 +42,7 @@ void error(const char *fmt, ...)
 
 void debug(const char *fmt, ...)
 {
+#ifndef NODEBUG
         char buf[1000];
         va_list ap;
 
@@ -52,4 +53,5 @@ void debug(const char *fmt, ...)
         va_end(ap);
 
         cerr << "debug : " << buf << endl;
+#endif
 }

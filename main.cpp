@@ -599,7 +599,10 @@ void make(int argc, char **argv)
 		}
 		// Print the solutions in order
 		for(it2=scores.begin(); it2!=scores.end(); it2++) {
-			printf("Score: %f\n",it2->first);
+			if(output_style = OUTPUT_HTML) {
+				printf("<div class="schedule_info">Score: %f</div>\n");
+			else
+				printf("Score: %f\n",it2->first);
 			print_schedule(*(it2->second));
 			
 		}
