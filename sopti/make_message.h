@@ -2,8 +2,7 @@
 extern "C" {
 #endif
 
-char *
-              make_message(const char *fmt, ...);
+char *make_message(const char *fmt, ...);
 
 #ifdef __cplusplus
 }
