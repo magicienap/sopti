@@ -43,7 +43,7 @@ void error(const char *fmt, ...)
 
 void debug(const char *fmt, ...)
 {
-#ifndef DEBUG
+#ifdef DEBUG
         char buf[1000];
         va_list ap;
 
