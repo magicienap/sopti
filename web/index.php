@@ -111,15 +111,17 @@ print($string_modif);
 <h2>Nouvelles</h2>
 <div class="sopti_nouvelles_rect">
 <dl>
-<dt>15 décembre 2004
-<dd>Le syst&egrave;me est maintenant en place avec presque toutes les fonctionnalit&eacute;s initialement pr&eacute;vues. Les probl&egrave;mes qui restent sont:
+<dt>17 d&eacute;cembre 2004
+<dd>Quelques am&eacute;liorations
 	<ul>
-		<li>Le support pour l'ouverture et la fermeture de sections n'est pas termin&eacute;
-		<li>Certains messages d'erreur sont encore en anglais
-		<li>Il faut optimiser la vitesse du syst&egrave;me
+		<li>Support pour l'ouverture et fermeture de sections
+		<li>Optimisations de vitesse
+		<li>Correction d'un bug avec les conflits (merci &agrave; J&eacute;r&ocirc;me Blais-Morin)
 	</ul>
-	Ces probl&egrave;mes devraient &ecirc;tre r&eacute;solus sous peu.<br>
-	- Pierre-Marc Fournier
+	Je remercie tous ceux et celles qui nous ont &eacute;crit pour donner leurs commentaires! Plusieurs
+	personnes nous ont soulign&eacute; que le programme est un peu lent. Cette version devrait &ecirc;tre
+	 plus rapide, et nous essaierons d'augmenter encore la vitesse dans l'avenir.<br>- Pierre-Marc
+
 </dl>
 </div>
 

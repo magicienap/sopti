@@ -17,16 +17,21 @@ table.schedule td.hour {
 	font-size: inherit;
 }
 
-table.single_period td.period_noconflict {
+div.period_noconflict {
 	border-style: none;
 	font-size: 12px;
 }
 
-table.single_period td.period_conflict {
+div.period_conflict {
 	border-color: #ff0000;
 	border-style: solid;
 	border-width: 2px;
 	font-size: 12px;
+}
+
+div.period_noconflict,div.period_conflict {
+	margin: 1px;
+	padding: 1px;
 }
 
 table.schedule td,table.schedule_weekend td {
