@@ -1,0 +1,10 @@
+<b>NOUVELLES</b><br><br>
+
+Ce programme est en version beta. Il est fourni sans aucune garantie.
+<br><br>
+* Le syst&egrave;me ne tient pas encore compte du fait que certains groupes peuvent &ecirc;tre pleins<br>
+* Le seul type d'optimisation impl&eacute;ment&eacute; est la minimisation
+des trous<br>
+* Les cours qui sont a des heures non-standard (17:45 par exemple) ne sont pas affich&eacute;s
+<br><br>
+Pour des informations, contactez <a href="mailto:pierre-marc.fournier@polymtl.ca">Pierre-Marc Fournier</a>
