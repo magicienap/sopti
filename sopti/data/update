@@ -1,15 +1,43 @@
+#!/bin/sh
+
+if [ -e lock ];
+then
+	echo "update locked; quitting" > /dev/stderr;
+	exit 1;
+fi
+
+touch lock;
+
 COURSE_URL="http://www.gegi.polymtl.ca/info/lanctot/java/Horsage.csv"
 CLOSED_URL="http://www.gegi.polymtl.ca/info/lanctot/java/Fermes.csv"
-DATESTRING=`date +%Y%m%d%H%M%S`
+WGETFAIL=0  # false
 
-echo "Date string is $DATESTRING"
+wget -O "courses.csv.new" $COURSE_URL 2> /dev/null || WGETFAIL=1;
+if [ $WGETFAIL -eq 0 ];
+then
+	wget -O "closed.csv.new" $CLOSED_URL 2> /dev/null || WGETFAIL=1;
+fi
 
-wget -N -O "courses."$DATESTRING $COURSE_URL
-wget -N -O "closed."$DATESTRING $CLOSED_URL
+if [ $WGETFAIL -eq 1 ];
+then
+ 	echo "wget failed" > /dev/stderr;
+	rm lock;
+	exit 1;
+fi
 
-chmod a+r "courses."$DATESTRING
-chmod a+r "closed."$DATESTRING
+if [ ! -s courses.csv.new ];
+then
+	echo "new courses.csv is empty";
+	rm lock;
+	exit 1;
+fi
 
 rm -f courses.csv closed.csv
-ln -s "courses."$DATESTRING courses.csv
-ln -s "closed."$DATESTRING closed.csv
+mv courses.csv.new courses.csv
+mv closed.csv.new closed.csv
+
+chmod 644 "courses.csv"
+chmod 644 "closed.csv"
+
+rm -f lock
+
