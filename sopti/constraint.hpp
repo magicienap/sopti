@@ -80,7 +80,7 @@ class NoEvening : public Constraint
 	
 	bool operator()(StudentSchedule &sched)
 	{
-		const int last_allowed=1645;
+		const int last_allowed=1745;
 		
 		StudentSchedule::course_list_t::const_iterator it;
 		Group::period_list_t::const_iterator it2;
@@ -149,8 +149,6 @@ class NoPeriod : public Constraint
 	
 	bool operator()(StudentSchedule &sched)
 	{
-		const int last_allowed=1645;
-		
 		StudentSchedule::course_list_t::const_iterator it;
 		Group::period_list_t::const_iterator it2;
 		
