@@ -98,18 +98,28 @@ p, dl {
 <p><font size="-1">Session en cours:</font><br><strong>hiver 2005</strong>
 <p><a href="make_form1.php" target="_blank"><font size="+3">Démarrer</font></a><br><font size="-1">(générer des horaires)</font></p>
 <p><a href="listcourses.php" target="_blank">Liste des cours offerts</a>
+<p><font size="-2">Derni&egrave;re mise &agrave; jour des donn&eacute;es:<br>
+<?php
+require_once('config.php');
+$info = stat($SOPTI_COURSEFILE);
+$unix_modif = $info[9];
+$string_modif = date("r", $unix_modif);
+print($string_modif);
+?></font>
 </div></center>
 
 <h2>Nouvelles</h2>
 <div class="sopti_nouvelles_rect">
 <dl>
-<dt>8 décembre 2004
-<dd>Mise en ligne de la nouvelle page d'accueil style AEP. Le système est fonctionnel. Le lancement du site est prévu pour le 15 décembre 2004. D'ici là, diverses tâches restent à faire:
+<dt>15 décembre 2004
+<dd>Le syst&egrave;me est maintenant en place avec presque toutes les fonctionnalit&eacute;s initialement pr&eacute;vues. Les probl&egrave;mes qui restent sont:
 	<ul>
-		<li>Adapter l'interface à la nouvelle page d'accueil (ne pas afficher deux fois des nouvelles!)
-		<li>Clarifier et améliorer le formulaire de génération d'horaires et la page d'horaires
-		<li>Ajouter le support pour les cours à des heures non standard, car il y en a beaucoup dans les certificats
-		<li>Trouver un nom à ce programme
+		<li>Le support pour l'ouverture et la fermeture de sections n'est pas termin&eacute;
+		<li>Certains messages d'erreur sont encore en anglais
+		<li>Il faut optimiser la vitesse du syst&egrave;me
+	</ul>
+	Ces probl&egrave;mes devraient &ecirc;tre r&eacute;solus sous peu.<br>
+	- Pierre-Marc Fournier
 </dl>
 </div>
 

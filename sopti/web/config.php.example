@@ -2,5 +2,6 @@
 
 $SOPTI_EXEC_DATA="/home/pmf/devel/sopti/sopti --coursefile /home/pmf/devel/sopti/data/courses.csv --closedfile /home/pmf/devel/sopti/data/closed.csv";
 $SOPTI_EXEC="/home/pmf/devel/sopti/sopti";
-
+$SOPTI_COURSEFILE="/home/pmf/devel/sopti/data/courses.csv";
+$SOPTI_COUNTERFILE="/home/pmf/devel/sopti/data/count.txt";
 ?>
