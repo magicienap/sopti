@@ -117,7 +117,7 @@ for($i=0; $i<count($week_hours); $i++) {
 
 <h2>Terminer</h2>
 <div class="option_block">
-	<p style="width:400px;"><b>Avertissement</b><br>Nous nous sommes efforc&eacute;s de nous faire en sorte que ce programme fonctionne correctement. Cependant, il est en cours de d&eacute;veloppement, et des probl&egrave;mes pourraient survenir. Il est donc fourni aucune garantie.
+	<p style="width:400px;"><b>Avertissement</b><br>Nous nous sommes efforc&eacute;s de faire en sorte que ce programme fonctionne correctement. Cependant, il est en cours de d&eacute;veloppement, et des probl&egrave;mes pourraient survenir. Il est donc fourni sans aucune garantie.
 	<p><input type="submit" value="Afficher les horaires">
 </div>
 

@@ -13,18 +13,25 @@ table.single_period {
 	border-style: none;
 }
 
+table.schedule td.hour {
+	font-size: inherit;
+}
+
 table.single_period td.period_noconflict {
 	border-style: none;
+	font-size: 12px;
 }
 
 table.single_period td.period_conflict {
 	border-color: #ff0000;
 	border-style: solid;
 	border-width: 2px;
+	font-size: 12px;
 }
 
 table.schedule td,table.schedule_weekend td {
-	border: 1px solid;
+	border-width: 1px;
+	border-style: solid;
 	width: 110px;
 }
 
@@ -32,6 +39,9 @@ table.schedule {
 	float: left;
 	clear: left;
 	margin-bottom: 20px;
+	border-style: solid;
+	border-color: #000000;
+	border-width: 2px;
 }
 
 table.schedule_weekend {
@@ -64,8 +74,7 @@ div.make_summary {
 div.make_schedule_info {
 	//margin-top: 10px;
 	width: 685px;
-	//border: 2px solid;
-	//border-color: black;
+	border-style: none;
 	background-color: #777777;
 	color: #FFFFFF;
 	clear: both;
@@ -79,6 +88,17 @@ div.schedule_info {
 	background-color: #EEEEEE;
 	width: 685px;
 	clear: both;
+}
+
+div.errormsg {
+	font-size:12px;
+	border-width: 4px;
+	border-color: #ff0000;
+	border-style: solid;
+}
+
+div.errormsg p {
+	margin-left: 10px;
 }
 
 td.weekday,td.hour {
