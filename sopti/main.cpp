@@ -274,10 +274,7 @@ void print_schedule_html(StudentSchedule &s)
 		if(!week_finished && hours_week[i] == -1)
 			week_finished = true;
 			
-		if(!weekend_finished && hours_weekend[i] == -1)
-			weekend_finished = true;
-		
-		if(week_finished && weekend_finished)
+		if(week_finished)
 			break;
 	
 		printf("<tr>\n");
@@ -321,20 +318,16 @@ void print_schedule_html(StudentSchedule &s)
 
 	// For each hour
 	for(i=0;; i++) {
-	
-		if(!week_finished && hours_week[i] == -1)
-			week_finished = true;
-			
 		if(!weekend_finished && hours_weekend[i] == -1)
 			weekend_finished = true;
 		
-		if(week_finished && weekend_finished)
+		if(weekend_finished)
 			break;
 	
 		printf("<tr>\n");
 		// Print hour
 		printf("<td class=\"hour\">");
-		printf("<b>%d</b><br>", hours_week[i]);
+		printf("<b>%d</b><br>", hours_weekend[i]);
 
 		printf("</td>");
 		
