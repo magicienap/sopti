@@ -279,6 +279,7 @@ void print_schedule_html(StudentSchedule &s)
 		if(week_finished && weekend_finished)
 			break;
 	
+		printf("<tr>\n");
 		// Print hour
 		printf("<td class=\"hour\">");
 		//if(j < 5 && !week_finished) {
@@ -289,8 +290,6 @@ void print_schedule_html(StudentSchedule &s)
 		//}
 		printf("</td>");
 		
-		
-		printf("<tr>\n");
 		for(j=0; j<5; j++) {
 			printf("<td class=\"period\">");
 			if(j < 5 && !week_finished) {
