@@ -228,7 +228,7 @@ struct ScheduledPeriod {
 	Period *period;
 };
 
-void print_schedule_html2(StudentSchedule &s)
+void print_schedule_html(StudentSchedule &s)
 {
 	int i,j;
 	
@@ -442,165 +442,10 @@ void print_schedule_html2(StudentSchedule &s)
 	*/
 }
 
-void print_schedule_html(StudentSchedule &s)
-{
-	char days_of_week[][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
-	int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 };
-	int hours_weekend[] = { 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, -1 };
-	unsigned int i,j;
-	
-	vector<map<int, vector<string> > > sched;
-	sched.resize(7);
-	
-	StudentSchedule::course_list_t::const_iterator it;
-	Group::period_list_t::const_iterator it2;
-	for(it=s.st_courses_begin(); it!=s.st_courses_end(); it++) {
-		// If has theorical class
-		if((*it)->theory_group) {
-			for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
-				int num_day = (*it2)->period_no()/10000-1;
-				
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(T)" + "<br>\n" + (*it2)->room() + "(" + (*it)->theory_group->name() + ")");
-			}
-		}
-		// If has lab class
-		if((*it)->lab_group) {
-			for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
-				int num_day = (*it2)->period_no()/10000-1;
-				string lab_week_str;
-				
-				if((*it2)->week()) {
-					char *tmp;
-					tmp = make_message("%d", (*it2)->week());
-					lab_week_str = string("B") + string(tmp);
-					free(tmp);
-				}
-				
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(L)" + "<br>" + (*it2)->room() + "(" + (*it)->lab_group->name() + ") " + lab_week_str);
-			}
-		}
-	}
-	
-	printf("<table class=\"schedule\">\n");
-	
-	// Don't forget the empty column for the hours
-	printf("<tr><td></td>\n");
-	
-	for(i=0; i<5; i++) {
-		printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
-	}
-	
-	printf("</tr>\n");
-
-	bool week_finished=false;
-	bool weekend_finished=false;
-	
-	// For each hour
-	for(i=0;; i++) {
-	
-		if(!week_finished && hours_week[i] == -1)
-			week_finished = true;
-			
-		if(week_finished)
-			break;
-	
-		printf("<tr>\n");
-		// Print hour
-		printf("<td class=\"hour\">");
-		printf("<b>%d:%.2d</b><br>", hours_week[i]/100, hours_week[i]%100);
-
-		printf("</td>\n");
-		
-		for(j=0; j<5; j++) {
-			printf("<td class=\"period\">");
-			if(sched[j].find(hours_week[i]) != sched[j].end()) {
-				// If there is only one course
-				if(sched[j][hours_week[i]].size() == 1) {
-					printf("%s", sched[j][hours_week[i]][0].c_str());
-				}
-				else {
-					unsigned int k;
-					printf("<table class=\"conflict_table\">\n");
-					for(k=0; k<sched[j][hours_week[i]].size(); k++) {
-						printf("<tr><td>%s</td></tr>\n", sched[j][hours_week[i]][k].c_str());
-					}
-					printf("</table>\n");
-				}
-			}
-			else {
-				printf("&nbsp;");
-			}
-			printf("</td>");
-		}
-		printf("</tr>\n");
-	}
-
-	printf("</table>\n");
-	
-	// PRINT WEEKEND SCHEDULE
-	
-	if(!sched[5].empty() || !sched[6].empty()) {
-		// print only if we have weekend courses
-		
-		printf("<table class=\"schedule_weekend\">\n");
-		
-		// Don't forget the empty column for the hours
-		printf("<tr><td></td>\n");
-		
-		for(i=5; i<7; i++) {
-			printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
-		}
-		
-		printf("</tr>\n");
-	
-		// For each hour
-		for(i=0;; i++) {
-			if(!weekend_finished && hours_weekend[i] == -1)
-				weekend_finished = true;
-			
-			if(weekend_finished)
-				break;
-		
-			printf("<tr>\n");
-			// Print hour
-			printf("<td class=\"hour\">");
-			printf("<b>%d:%.2d</b><br>", hours_weekend[i]/100, hours_weekend[i]%100);
-	
-			printf("</td>\n");
-			
-			for(j=5; j<7; j++) {
-				printf("<td class=\"period\">");
-				if(sched[j].find(hours_weekend[i]) != sched[j].end()) {
-				
-					// If there is only one course
-					if(sched[j][hours_weekend[i]].size() == 1) {
-						printf("%s", sched[j][hours_weekend[i]][0].c_str());
-					}
-					else {
-						unsigned int k;
-						printf("<table class=\"conflict_table\">\n");
-						for(k=0; k<sched[j][hours_weekend[i]].size(); k++) {
-							printf("<tr><td>%s</td></tr>\n", sched[j][hours_weekend[i]][k].c_str());
-						}
-						printf("</table>\n");
-					}
-				}
-				else {
-					printf("&nbsp;");
-				}
-				printf("</td>");
-			}
-			printf("</tr>\n");
-		}
-	
-		printf("</table>\n");
-	}
-}
-
 void print_schedule(StudentSchedule &s)
 {
 	if(output_fmt == OUTPUT_HTML)
-		print_schedule_html2(s);
+		print_schedule_html(s);
 	else
 		print_schedule_ascii(s);
 }
@@ -671,7 +516,12 @@ void make(int argc, char **argv)
 		switch (c) {
 			case 'c':
 				if(!schoolsched.course_exists(optarg)) {
-					error("course does not exist: %s", optarg);
+					if(output_fmt == OUTPUT_HTML) {
+						error("<div class=\"errormsg\"><p>Ce cours n'existe pas: %s\n<p>Pour changer les param&egrave;tres, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.</div>", optarg);
+					}
+					else {
+						error("course does not exist: %s", optarg);
+					}
 				}
 				requested_courses.push_back(optarg);
 				break;
@@ -738,7 +588,12 @@ void make(int argc, char **argv)
 	make_recurse(sched, requested_courses, constraints, solutions);
 
 	if(solutions.size() == 0) {
-		printf("no solution found!\n");
+		if(output_fmt == OUTPUT_HTML) {
+			printf("<div class=\"errormsg\"><p>Aucune solution trouv&eacute;e!<p>Causes possibles:<ul><li>Certaines sections sont pleines<li>Les cours s&eacute;lectionn&eacute;s entrent en conflit\n</ul><p>Pour changer les param&egrave;tres, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.</div>");
+		}
+		else {
+			printf("No solution found!");
+		}
 		return;
 	}
 	

@@ -38,7 +38,7 @@ print "Derni&egrave;re mise a jour du fichier de cours: ".$string_modif
 
 <div class="option_block">
 	<h2>Cours d&eacute;sir&eacute;s</h2>
-	<p>&Eacute;crire les sigles des cours d&eacute;sir&eacute;s, s&eacute;par&eacute;s par un espace. Ex: ING1040.<br>
+	<p>&Eacute;crire les sigles des cours d&eacute;sir&eacute;s, s&eacute;par&eacute;s par un espace. Ex: ING1040 ING1035 ING1010<br>
 	<a href="listcourses.php" target="_blank">Voir la liste des cours offerts</a>
 	<p><textarea name="courses" cols="50" rows="2"></textarea>
 </div>

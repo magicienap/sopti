@@ -36,7 +36,7 @@ void error(const char *fmt, ...)
 
         va_end(ap);
 
-        cerr << "error : " << buf << endl;
+        cerr << buf << endl;
 
         exit(1);
 }
