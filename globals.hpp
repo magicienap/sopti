@@ -26,3 +26,7 @@ extern std::string config_file;
 
 int poly_period_to_time(int period);
 
+/* Action prototypes */
+
+void listcourses(int, char **);
+void make(int, char **);
