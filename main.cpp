@@ -97,10 +97,12 @@ void print_schedule(StudentSchedule &s)
 	char days_of_week[][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
 	int hours_week[] = { 830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645, 1800, 1900, 2000, 2100, -1 };
 	int hours_weekend[] = { 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, -1 };
-	int i;
-	int j;
+	int i,j,k;
+	int num_lines=2; // Number of lines allocated for each period
+			 // Line 1: Course number and T or L for theorical or lab
+			 // Line 2: Room number and group
 	
-	vector<map<int, string> > sched;
+	vector<map<int, vector<string> > > sched;
 	sched.resize(7);
 	
 	StudentSchedule::course_list_t::const_iterator it;
@@ -111,19 +113,33 @@ void print_schedule(StudentSchedule &s)
 			for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
 				int num_day = (*it2)->period_no()/10000-1;
 				
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] = (*it)->course->symbol() + "(T)";
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(T)");
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it2)->room() + "(" + (*it)->theory_group->name() + ")");
 			}
 		}
+		// If has lab class
 		if((*it)->lab_group) {
 			for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
 				int num_day = (*it2)->period_no()/10000-1;
+				string lab_week_str;
 				
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] = (*it)->course->symbol() + "(L)";
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(L)");
+				
+				if((*it2)->week()) {
+					char *tmp;
+					asprintf(&tmp, "%d", (*it2)->week());
+					lab_week_str = string("B") + string(tmp);
+					free(tmp);
+				}
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it2)->room() + "(" + (*it)->lab_group->name() + ") " + lab_week_str);
 			}
 		}
 	}
 	
 	for(i=0; i<7; i++) {
+		if(i == 5)
+			printf(" | ");
+	
 		printf("%-15s", days_of_week[i]);
 	}
 	printf("\n");
@@ -145,6 +161,9 @@ void print_schedule(StudentSchedule &s)
 	
 		// Print hour
 		for(j=0; j<7; j++) {
+			if(j == 5)
+				printf(" | ");
+		
 			if(j < 5 && !week_finished) {
 				printf("%-15d", hours_week[i]);
 			}
@@ -155,23 +174,29 @@ void print_schedule(StudentSchedule &s)
 		
 		printf("\n");
 		
-		for(j=0; j<7; j++) {
-			if(j < 5 && !week_finished) {
-				if(sched[j].find(hours_week[i]) != sched[i].end()) {
-					printf("%-15s", sched[j][hours_week[i]].c_str());
+		for(k=0; k<num_lines; k++) {
+			for(j=0; j<7; j++) {
+				if(j == 5)
+					printf(" | ");
+			
+				if(j < 5 && !week_finished) {
+					if(sched[j].find(hours_week[i]) != sched[i].end() && sched[j][hours_week[i]].size() > k) {
+						printf("%-15s", sched[j][hours_week[i]][k].c_str());
+					}
+					else {
+						printf("               ");
+					}
 				}
-				else {
-					printf("               ");
+				else if(j >=5 && !weekend_finished){
+					if(sched[j].find(hours_weekend[i]) != sched[i].end() && sched[j][hours_weekend[i]].size() > k) {
+						printf("%-15s", sched[j][hours_weekend[i]][k].c_str());
+					}
+					else {
+						printf("               ");
+					}
 				}
 			}
-			else if(j >=5 && !weekend_finished){
-				if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
-					printf("%-15s", sched[j][hours_weekend[i]].c_str());
-				}
-				else {
-					printf("               ");
-				}
-			}
+			printf("\n");
 		}
 		
 		printf("\n");
