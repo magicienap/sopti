@@ -496,6 +496,7 @@ void usage()
 	"\n"
 	"Global options:\n"
 	"  --course_file <course_file> - specify course file explicitly\n"
+	"  --closed_file <closed_file> - specify closed groups file explicitly\n"
 	"\n"
 	"Action options:\n"
 	"  * make\n"
@@ -956,6 +957,7 @@ void parse_command_line(int *argc, char ***argv)
 		static struct option long_options[] = {
 			{"help", 0, 0, 'h'},
 			{"coursefile", required_argument, 0, 'c'},
+			{"closedfile", required_argument, 0, 4},
 			{"html", 0, 0, 3},
 			{0, 0, 0, 0}
 		};
@@ -974,7 +976,11 @@ void parse_command_line(int *argc, char ***argv)
 		case 3:
 			output_fmt = OUTPUT_HTML;
 			break;
-		
+
+		case 4:
+			closedgroups_file=optarg;
+			break;
+
 		case '?':
 			usage();
 			error("invalid argument");
