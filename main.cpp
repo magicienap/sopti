@@ -341,17 +341,20 @@ void print_schedule_html(StudentSchedule &s)
 			}
 			
 			// Now print this period
-			printf("<table class=\"single_period\">"); // week table
+			//printf("<table class=\"single_period\">"); // week table
 			for(it4=sched_standard[0][j][i].begin(); it4!=sched_standard[0][j][i].end(); it4++) {
-				printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s)</tr></td>\n", conflict_mask?"period_conflict":"period_noconflict", it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
+				//printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s)</tr></td>\n", conflict_mask?"period_conflict":"period_noconflict", it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
+				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s)</div>\n", conflict_mask?"period_conflict":"period_noconflict", it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
 			}
 			for(it4=sched_standard[1][j][i].begin(); it4!=sched_standard[1][j][i].end(); it4++) {
-				printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
+				//printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
+				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</div>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
 			}
 			for(it4=sched_standard[2][j][i].begin(); it4!=sched_standard[2][j][i].end(); it4++) {
-				printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
+				//printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
+				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</div>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
 			}
-			printf("</table>"); // week table
+			//printf("</table>"); // week table
 			
 			printf("</td>");
 		}
@@ -361,13 +364,14 @@ void print_schedule_html(StudentSchedule &s)
 	printf("<tr><td class=\"hour\">Heures non standard</td>");
 	for(j=0; j<5; j++) {
 		printf("<td class=\"period\">");
-		printf("<table class=\"single_period\">");
+		//printf("<table class=\"single_period\">");
 		for(it5=sched_nonstandard[0][j].begin(); it5!=sched_nonstandard[0][j].end(); it5++) {
 			for(it4=it5->second.begin(); it4!=it5->second.end(); it4++) {
-				printf("<tr><td class=\"%s\">%d:%d<br><b>%s</b> (%s)<br>%s (%s)</tr></td>\n", "period_noconflict", (it5->first)/100, (it5->first)%100, it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
+				//printf("<tr><td class=\"%s\">%d:%d<br><b>%s</b> (%s)<br>%s (%s)</tr></td>\n", "period_noconflict", (it5->first)/100, (it5->first)%100, it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
+				printf("<div class=\"%s\">%d:%d<br><b>%s</b> (%s)<br>%s (%s)</div>\n", "period_noconflict", (it5->first)/100, (it5->first)%100, it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
 			}
 		}
-		printf("</table>");
+		//printf("</table>");
 		printf("</td>");
 		/*
 		for(it4=sched_standard[1][j][i].begin(); it4!=sched_standard[1][j][i].end(); it4++) {
@@ -662,24 +666,24 @@ void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vect
 
 void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> &constraints, vector<StudentSchedule> &solutions)
 {
-	string course_to_add;
+	SchoolCourse *course_to_add;
 
 	if(remaining_courses.size() == 0) {
 		solutions.push_back(ss);
 		return;
 	}
 	
-	course_to_add = remaining_courses.back();
+	course_to_add = schoolsched.course(remaining_courses.back());
 	remaining_courses.pop_back();
 
 	StudentCourse newcourse;
-	newcourse.course = schoolsched.course(course_to_add);
+	newcourse.course = course_to_add;
 		
 	SchoolCourse::group_list_t::const_iterator it,it2;
 	
-	if(schoolsched.course(course_to_add)->type() == COURSE_TYPE_THEORYONLY){
+	if(course_to_add->type() == COURSE_TYPE_THEORYONLY){
 		// This course has only theorical sessions
-		for(it=schoolsched.course(course_to_add)->groups_begin(); it!=schoolsched.course(course_to_add)->groups_end(); it++) {
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if(!(*it)->lab()) {
 				StudentSchedule tmps(ss);
 				newcourse.theory_group = (*it);
@@ -689,8 +693,8 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 			}
 		}
 	}
-	else if(schoolsched.course(course_to_add)->type() == COURSE_TYPE_LABONLY){
-		for(it=schoolsched.course(course_to_add)->groups_begin(); it!=schoolsched.course(course_to_add)->groups_end(); it++) {
+	else if(course_to_add->type() == COURSE_TYPE_LABONLY){
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if((*it)->lab()) {
 				StudentSchedule tmps(ss);
 				newcourse.theory_group = 0;
@@ -700,14 +704,14 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 			}
 		}
 	}
-	else if(schoolsched.course(course_to_add)->type() == COURSE_TYPE_THEORYLABIND){
-		for(it=schoolsched.course(course_to_add)->groups_begin(); it!=schoolsched.course(course_to_add)->groups_end(); it++) {
+	else if(course_to_add->type() == COURSE_TYPE_THEORYLABIND){
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if(!(*it)->lab()) {
 				newcourse.theory_group = (*it);
 				
 				// Try all labs
 				
-				for(it2=schoolsched.course(course_to_add)->groups_begin(); it2!=schoolsched.course(course_to_add)->groups_end(); it2++) {
+				for(it2=course_to_add->groups_begin(); it2!=course_to_add->groups_end(); it2++) {
 					if((*it2)->lab()) {
 						StudentSchedule tmps(ss);
 						newcourse.lab_group = (*it2);
@@ -718,16 +722,16 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 			}
 		}
 	}
-	else if(schoolsched.course(course_to_add)->type() == COURSE_TYPE_THEORYLABSAME){
-		for(it=schoolsched.course(course_to_add)->groups_begin(); it!=schoolsched.course(course_to_add)->groups_end(); it++) {
+	else if(course_to_add->type() == COURSE_TYPE_THEORYLABSAME){
+		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if(!(*it)->lab()) {
 				StudentSchedule tmps(ss);
 				newcourse.theory_group = (*it);
-				if(!schoolsched.course(course_to_add)->group_exists((*it)->name(), true)) {
+				if(!course_to_add->group_exists((*it)->name(), true)) {
 					error("a lab group does not exist for a course with same-lab-group policy");
 				}
 				
-				newcourse.lab_group = schoolsched.course(course_to_add)->group((*it)->name(), true);
+				newcourse.lab_group = course_to_add->group((*it)->name(), true);
 				tmps.add_st_course(newcourse);
 				test_and_recurse(tmps, remaining_courses, constraints, solutions);
 			}
