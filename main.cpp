@@ -24,6 +24,7 @@
 
 #include <getopt.h>
 #include <string.h>
+#include "make_message.h"
 
 #include "globals.hpp"
 #include "schoolschedule.hpp"
@@ -139,7 +140,7 @@ void print_schedule_ascii(StudentSchedule &s)
 				
 				if((*it2)->week()) {
 					char *tmp;
-					asprintf(&tmp, "%d", (*it2)->week());
+					tmp = make_message("%d", (*it2)->week());
 					lab_week_str = string("B") + string(tmp);
 					free(tmp);
 				}
@@ -247,7 +248,7 @@ void print_schedule_html(StudentSchedule &s)
 				
 				if((*it2)->week()) {
 					char *tmp;
-					asprintf(&tmp, "%d", (*it2)->week());
+					tmp = make_message("%d", (*it2)->week());
 					lab_week_str = string("B") + string(tmp);
 					free(tmp);
 				}
