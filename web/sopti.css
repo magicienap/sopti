@@ -19,6 +19,21 @@ p.news {
 	align: center;
 }
 
+div.step_box {
+	border: 3px solid;
+	width: 500px;
+}
+
+p.step_current {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+p.step_notcurrent {
+	font-size: 14px;
+	color: #888888;
+}
+
 table.free_period_selector {
 	border: 3px solid;
 	font-size: 12px;
