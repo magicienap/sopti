@@ -1,3 +1,6 @@
+#ifndef SCHOOLSCHEDULE_HPP
+#define SCHOOLSCHEDULE_HPP
+
 #include <map>
 #include <vector>
 #include <string>
@@ -36,3 +39,5 @@ class SchoolSchedule
 	// The courses, ordered by symbol
 	std::map<std::string, SchoolCourse *> p_courses_order_sym;
 };
+
+#endif // SCHOOLSCHEDULE_HPP
