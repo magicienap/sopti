@@ -244,6 +244,7 @@ void make(int argc, char **argv)
 	int c;
 	
 	opterr = 0;
+	optind=1;
 
 	while (1) {
 		int option_index = 0;
@@ -615,19 +616,18 @@ void parse_command_line(int *argc, char ***argv)
 		int option_index = 0;
 		static struct option long_options[] = {
 			{"help", 0, 0, 'h'},
-			{"coursefile", 1, 0, 2},
+			{"coursefile", required_argument, 0, 'c'},
 			{0, 0, 0, 0}
 		};
 	
 		/* + indicates to stop at the first non-argument option */
-		c = getopt_long (*argc, *argv, "+h",
-				long_options, &option_index);
+		c = getopt_long (*argc, *argv, "+hc:", long_options, &option_index);
 		if (c == -1)
 			break;
 	
 		switch (c) {
 	
-		case 2:
+		case 'c':
 			course_file=optarg;
 			break;
 		
