@@ -81,3 +81,12 @@ class MinHoles : public Objective
 		return holes;
 	}
 };
+
+class NullObjective : public Objective
+{
+	public:
+	float operator()(StudentSchedule *)
+	{
+		return 0.;
+	}
+};
