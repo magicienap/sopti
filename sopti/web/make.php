@@ -28,7 +28,7 @@ require_once('config.php');
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
-<p>Voici les horaires correspondant &agrave; aux options s&eacute;lectionn&eacute;es. Pour changer ces options, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.
+<p>Voici les horaires correspondant aux options s&eacute;lectionn&eacute;es. Pour changer ces options, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.
 
 <p>Pour choisir officiellement un horaire, vous devez visiter votre dossier &eacute;tudiant. Vous trouverez un lien sur la page d'accueil du g&eacute;n&eacute;rateur d'horaires.
 
