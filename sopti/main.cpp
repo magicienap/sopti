@@ -23,6 +23,7 @@
 #include <map>
 
 #include <getopt.h>
+#include <string.h>
 
 #include "globals.hpp"
 #include "schoolschedule.hpp"
@@ -38,6 +39,7 @@ using namespace std;
 #define COURSEFILE_FIELD_CREDITS	3
 #define COURSEFILE_FIELD_ROOM		6
 #define COURSEFILE_FIELD_COURSELAB	7
+#define COURSEFILE_FIELD_LABWEEK	9
 #define COURSEFILE_FIELD_COURSETYPE	10
 #define COURSEFILE_FIELD_TITLE		11
 #define COURSEFILE_FIELD_DAY		13
@@ -228,6 +230,12 @@ void make(int argc, char **argv)
 				break;
 				
 			case 'T':
+				if(!strcmp(optarg, "noevening")) {
+					constraints.push_back(new NoEvening());
+				}
+				else {
+					error("unknown constaint (%s)", optarg);
+				}
 				break;
 				
 			case 't':
@@ -378,7 +386,7 @@ vector<string> split_string(string s, string sep)
 
 int poly_period_to_time(int period)
 {
-	return period%(period/10000);
+	return period%10000;
 }
 
 int poly_make_period_no(string day_of_week, string time_str)
@@ -488,6 +496,16 @@ void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string close
 		if(!sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group_exists(fields[COURSEFILE_FIELD_GROUP], islab)) {
 			Group newgroup(fields[COURSEFILE_FIELD_GROUP]);
 			newgroup.set_lab(islab);
+			
+			if(fields[COURSE_FIELD_LABWEEK] == "I") {
+				newgroup.set_week(1);
+			}
+			else if(fields[COURSE_FIELD_LABWEEK] == "P") {
+				newgroup.set_week(2);
+			}
+			else {
+				newgroup.set_week(0);
+			}
 
 			sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->add_group(newgroup, islab);
 		}
