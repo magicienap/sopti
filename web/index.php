@@ -29,7 +29,7 @@ print "Derni&egrave;re mise a jour du fichier de cours: ".$string_modif
 </p>
 
 <h2>1. S&eacute;lectionner les cours</h2>
-<p>&Eacute;crire les sigles des cours d&eacute;sir&eacute;s, s&eacute;par&eacute;s par un espace.
+<p>&Eacute;crire les sigles des cours d&eacute;sir&eacute;s, s&eacute;par&eacute;s par un espace. Les lettres doivent &egrave;tre en majuscules (ex: ING1040)
 <p><textarea name="courses" cols="50" rows="2"></textarea>
 
 <br>
@@ -44,6 +44,8 @@ print "Derni&egrave;re mise a jour du fichier de cours: ".$string_modif
 
 <h2>3. Contraintes particulieres</h2>
 <p><input name="noevening" type="checkbox"> Pas de cours le soir
+<p><input name="noclosed" type="checkbox" checked> Pas de groupes sans places disponibles
+
 
 <h2>4. Terminer</h2>
 

@@ -8,7 +8,7 @@
 <body>
 
 <?php
-$cmd_initial="../../sopti_run/sopti --html --coursefile ../../sopti_run/data/courses.csv make";
+$cmd_initial="../../sopti_run/sopti --html --coursefile ../../sopti_run/data/courses.csv --closedfile ../../sopti_run/data/closed.csv make";
 $allowed_objectives = array( "minholes" );
 
 function error($msg)
@@ -47,6 +47,10 @@ $cmd .= " -J ${allowed_objectives[$result]}";
 
 if($_POST['noevening'] == "on") {
 	$cmd .= " -T noevening";
+}
+
+if($_POST['noclosed'] == "on") {
+        $cmd .= " -T noclosed";
 }
 
 //print "Command: $cmd";
