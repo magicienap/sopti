@@ -22,4 +22,18 @@ void Group::add_period(Period p)
 {
 	Period *tmp = new Period(p);
 	p_periods.push_back(tmp);
+	p_periods_by_no[p.period_no()] = tmp;
+}
+
+bool Group::has_period(int p)
+{
+	return p_periods_by_no.find(p) != p_periods_by_no.end();
+}
+
+Period *Group::periods(int p)
+{
+	if(!has_period(p))
+		return 0;
+
+	return p_periods_by_no[p];
 }

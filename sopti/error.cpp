@@ -17,6 +17,7 @@
  */
 
 #include <stdarg.h>
+#include <stdlib.h>
 #include <iostream>
 
 #include "globals.hpp"
@@ -36,7 +37,7 @@ void error(const char *fmt, ...)
 
         cerr << "error : " << buf << endl;
 
-        abort();
+        exit(1);
 }
 
 void debug(const char *fmt, ...)

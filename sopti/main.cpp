@@ -207,6 +207,29 @@ void print_schedule(StudentSchedule &s)
 	printf("\n");
 }
 
+void usage()
+{
+	const char usage_text[]=
+	"Usage:\n"
+	"sopti [GLOBAL_OPTIONS] ACTION [ACTION_OPTIONS]\n"
+	"\n"
+	"Actions:\n"
+	"  listcourses - print a list of courses\n"
+	"  make - make schedules\n"
+	"\n"
+	"Global options:\n"
+	"  --course_file <course_file> - specify course file explicitly\n"
+	"\n"
+	"Action options:\n"
+	"  * make\n"
+	"    -c <course> - add this course to the schedule\n"
+	"                  (repeat this option for each course)\n"
+	"    -T <constraint> - use constraint (noevening)\n"
+	"\n";
+	
+	fprintf(stderr, usage_text);
+}
+
 void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> &constraints, vector<StudentSchedule> &solutions);
 
 void make(int argc, char **argv)
@@ -466,8 +489,12 @@ void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string close
 	char tmpa[500];
 	vector<string> fields;
 	
+	// Open the file
 	period_list.open(periods_file.c_str());
-	// Check error on open
+	if(period_list.fail()) {
+		error("opening file %s", periods_file.c_str());
+	}
+	
 	// Ignore header line
 	period_list.getline(tmpa, 500);
 	
@@ -483,32 +510,28 @@ void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string close
 	
 		fields = split_string(tmps, ";");
 		if(fields.size() != 15) {
-			abort();
+			error("invalid course file format (field_num != 15)");
 		}
 		
-		// extract vars
+		// prepare some variables in advance
 		bool islab;
 		int type;
 				
 		if(fields[COURSEFILE_FIELD_COURSELAB] == "L")
-			islab=1;
+			islab=true;
 		else if(fields[COURSEFILE_FIELD_COURSELAB] == "C")
-			islab=0;
+			islab=false;
 		else
 			error("unrecognized course type");
 		
-		if(fields[COURSEFILE_FIELD_COURSETYPE] == "T") {
+		if(fields[COURSEFILE_FIELD_COURSETYPE] == "T")
 			type = COURSE_TYPE_THEORYONLY;
-		}
-		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "L") {
+		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "L")
 			type = COURSE_TYPE_LABONLY;
-		}
-		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "TL") {
+		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "TL")
 			type = COURSE_TYPE_THEORYLABSAME;
-		}
-		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "TLS") {
+		else if(fields[COURSEFILE_FIELD_COURSETYPE] == "TLS")
 			type = COURSE_TYPE_THEORYLABIND;
-		}
 		
 		// Add course if not exists
 		if(!sopti->course_exists(fields[COURSEFILE_FIELD_SYMBOL])) {
@@ -526,9 +549,16 @@ void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string close
 			sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->add_group(newgroup, islab);
 		}
 		
+		// Add period. It should not exist.
+		
+		int period_no = poly_make_period_no(fields[COURSEFILE_FIELD_DAY], fields[COURSEFILE_FIELD_TIME]);
+		if(sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group(fields[COURSEFILE_FIELD_GROUP], islab)->has_period(period_no)) {
+			error("two occurences of the same period in course file");
+		}
+		
 		Period newperiod;
 		newperiod.set_room(fields[COURSEFILE_FIELD_ROOM]);
-		newperiod.set_period_no(poly_make_period_no(fields[COURSEFILE_FIELD_DAY], fields[COURSEFILE_FIELD_TIME]));
+		newperiod.set_period_no(period_no);
 		if(fields[COURSEFILE_FIELD_LABWEEK] == "I") {
 			newperiod.set_week(1);
 		}
@@ -540,6 +570,8 @@ void load_info_from_csv(SchoolSchedule *sopti, string periods_file, string close
 		}
 		sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group(fields[COURSEFILE_FIELD_GROUP], islab)->add_period(newperiod);
 	}
+	
+	period_list.close();
 }
 
 void set_default_options()
@@ -574,6 +606,7 @@ void parse_command_line(int *argc, char ***argv)
 			break;
 		
 		case '?':
+			usage();
 			error("invalid argument");
 			break;
 	
@@ -633,8 +666,6 @@ int main(int argc, char **argv)
 	
 	load_info_from_csv(&schoolsched, course_file, "Fermes.csv");
 	
-	debug("selected action: %s", action.c_str());
-	
 	for(i=0; actions[i].name[0] != 0; i++) {
 		if(action == actions[i].name) {
 			if(actions[i].func) {
@@ -644,6 +675,7 @@ int main(int argc, char **argv)
 		}
 	}
 	
+	usage();
 	error("action not found: %s", action.c_str());
 	
 	found:

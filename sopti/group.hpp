@@ -2,6 +2,7 @@
 #define GROUP_HPP
 
 #include <vector>
+#include <map>
 
 #include "period.hpp"
 
@@ -29,6 +30,9 @@ class Group
 	typedef std::vector<Period *> period_list_t;
 	Group(std::string n) { p_group_name = n; p_islab=false; }
 	
+	bool has_period(int);
+	Period *periods(int);
+	
 	void set_lab(bool l) { p_islab = l; }
 	void add_period(Period);
 	
@@ -41,6 +45,7 @@ class Group
 	private:
 	std::string p_group_name;
 	std::vector<Period *> p_periods;
+	std::map<int, Period *> p_periods_by_no;
 	bool p_islab;
 };
 
