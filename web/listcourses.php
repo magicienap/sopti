@@ -8,7 +8,9 @@
 <body>
 
 <?php
-$cmd_initial="../../sopti_run/sopti --coursefile ../../sopti_run/data/courses.csv --closedfile ../../sopti_run/data/closed.csv listcourses";
+require_once('config.php');
+
+$cmd_initial=$SOPTI_EXEC_DATA . " listcourses";
 
 function error($msg)
 {
@@ -19,6 +21,8 @@ function error($msg)
 $cmd = $cmd_initial;
 
 ?>
+
+<h1>Liste des cours offerts</h1>
 
 <pre>
 L&eacute;gende:

@@ -8,7 +8,9 @@
 <body>
 
 <?php
-$cmd_initial="../../sopti_run/sopti --html --coursefile ../../sopti_run/data/courses.csv --closedfile ../../sopti_run/data/closed.csv make";
+require_once('config.php');
+
+$cmd_initial=$SOPTI_EXEC_DATA . " --html make";
 $allowed_objectives = array( "minholes", "maxmorningsleep" );
 
 function error($msg)
