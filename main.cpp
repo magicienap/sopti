@@ -254,12 +254,12 @@ void print_schedule_html(StudentSchedule &s)
 		}
 	}
 	
-	printf("<table class="schedule">\n");
+	printf("<table class=\"schedule\">\n");
 	
 	printf("<tr>\n");
 	
 	for(i=0; i<7; i++) {
-		printf("<td class="weekday">%s</td>", days_of_week[i]);
+		printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
 	}
 	
 	printf("</tr>\n");
@@ -284,7 +284,7 @@ void print_schedule_html(StudentSchedule &s)
 		
 		printf("<tr>\n");
 		for(j=0; j<7; j++) {
-			printf("<td class="period">");
+			printf("<td class=\"period\">");
 			if(j < 5 && !week_finished) {
 				printf("<b>%d</b><br>", hours_week[i]);
 				if(sched[j].find(hours_week[i]) != sched[i].end()) {
