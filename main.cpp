@@ -21,7 +21,9 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <algorithm>
 
+#include <stdio.h>
 #include <getopt.h>
 #include <string.h>
 #include "make_message.h"
