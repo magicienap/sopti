@@ -225,7 +225,7 @@ void print_schedule_html(StudentSchedule &s)
 	int hours_weekend[] = { 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, -1 };
 	unsigned int i,j;
 	
-	vector<map<int, string > > sched;
+	vector<map<int, vector<string> > > sched;
 	sched.resize(7);
 	
 	StudentSchedule::course_list_t::const_iterator it;
@@ -236,8 +236,7 @@ void print_schedule_html(StudentSchedule &s)
 			for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
 				int num_day = (*it2)->period_no()/10000-1;
 				
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it)->course->symbol() + "(T)" + "<br>");
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it2)->room() + "(" + (*it)->theory_group->name() + ")");
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(T)" + "<br>\n" + (*it2)->room() + "(" + (*it)->theory_group->name() + ")");
 			}
 		}
 		// If has lab class
@@ -246,15 +245,14 @@ void print_schedule_html(StudentSchedule &s)
 				int num_day = (*it2)->period_no()/10000-1;
 				string lab_week_str;
 				
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it)->course->symbol() + "(L)" + "<br>");
-				
 				if((*it2)->week()) {
 					char *tmp;
 					asprintf(&tmp, "%d", (*it2)->week());
 					lab_week_str = string("B") + string(tmp);
 					free(tmp);
 				}
-				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)] += ((*it2)->room() + "(" + (*it)->lab_group->name() + ") " + lab_week_str);
+				
+				sched[num_day][(*it2)->period_no()%((num_day+1)*10000)].push_back((*it)->course->symbol() + "(L)" + "<br>" + (*it2)->room() + "(" + (*it)->lab_group->name() + ") " + lab_week_str);
 			}
 		}
 	}
@@ -287,12 +285,23 @@ void print_schedule_html(StudentSchedule &s)
 		printf("<td class=\"hour\">");
 		printf("<b>%d:%.2d</b><br>", hours_week[i]/100, hours_week[i]%100);
 
-		printf("</td>");
+		printf("</td>\n");
 		
 		for(j=0; j<5; j++) {
 			printf("<td class=\"period\">");
-			if(sched[j].find(hours_week[i]) != sched[i].end()) {
-				printf("%s", sched[j][hours_week[i]].c_str());
+			if(sched[j].find(hours_week[i]) != sched[j].end()) {
+				// If there is only one course
+				if(sched[j][hours_week[i]].size() == 1) {
+					printf("%s", sched[j][hours_week[i]][0].c_str());
+				}
+				else {
+					unsigned int k;
+					printf("<table class=\"conflict_table\">\n");
+					for(k=0; k<sched[j][hours_week[i]].size(); k++) {
+						printf("<tr><td>%s</td></tr>\n", sched[j][hours_week[i]][k].c_str());
+					}
+					printf("</table>\n");
+				}
 			}
 			else {
 				printf("&nbsp;");
@@ -330,12 +339,24 @@ void print_schedule_html(StudentSchedule &s)
 		printf("<td class=\"hour\">");
 		printf("<b>%d:%.2d</b><br>", hours_weekend[i]/100, hours_weekend[i]%100);
 
-		printf("</td>");
+		printf("</td>\n");
 		
 		for(j=5; j<7; j++) {
 			printf("<td class=\"period\">");
-			if(sched[j].find(hours_weekend[i]) != sched[i].end()) {
-				printf("%s", sched[j][hours_weekend[i]].c_str());
+			if(sched[j].find(hours_weekend[i]) != sched[j].end()) {
+			
+				// If there is only one course
+				if(sched[j][hours_weekend[i]].size() == 1) {
+					printf("%s", sched[j][hours_weekend[i]][0].c_str());
+				}
+				else {
+					unsigned int k;
+					printf("<table class=\"conflict_table\">\n");
+					for(k=0; k<sched[j][hours_weekend[i]].size(); k++) {
+						printf("<tr><td>%s</td></tr>\n", sched[j][hours_weekend[i]][k].c_str());
+					}
+					printf("</table>\n");
+				}
 			}
 			else {
 				printf("&nbsp;");
@@ -393,6 +414,7 @@ void make(int argc, char **argv)
 	NullObjective null_obj;
 	Objective *objective=&null_obj;
 	string next_constraint_arg;
+	string max_conflicts_str="0";
 	
 	int c,i;
 	
@@ -408,6 +430,7 @@ void make(int argc, char **argv)
 			{"objective-args", 1, 0, 'j'},
 			{"constraint", 1, 0, 'T'},
 			{"constraint-args", 1, 0, 't'},
+			{"max-conflicts", 1, 0, 'C'},
 			{0, 0, 0, 0}
 		};
 	
@@ -462,6 +485,10 @@ void make(int argc, char **argv)
 			case 't':
 				next_constraint_arg=optarg;
 				break;
+				
+			case 'C':
+				max_conflicts_str = optarg;
+				break;
 	
 			case '?':
 				error("invalid command line");
@@ -477,7 +504,7 @@ void make(int argc, char **argv)
 	vector<StudentSchedule> solutions;
 	
 	// Prepare constraints
-	NoConflicts noc("");
+	NoConflicts noc(max_conflicts_str);
 	constraints.push_back(&noc);
 	
 	make_recurse(sched, requested_courses, constraints, solutions);

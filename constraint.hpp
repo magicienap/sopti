@@ -37,7 +37,13 @@ class Constraint
 class NoConflicts : public Constraint
 {
 	public:
-	NoConflicts(std::string s) : Constraint(s) {}
+	NoConflicts(std::string s) : Constraint(s) {
+		char *endptr;
+		p_max_conflict_periods = strtol(s.c_str(), &endptr, 10);
+		if(*endptr != 0) {
+			error("Invalid max conflict periods (%s)", s.c_str());
+		}	
+	}
 	
 	bool operator()(StudentSchedule &sched)
 	{
@@ -45,6 +51,7 @@ class NoConflicts : public Constraint
 	
 		StudentSchedule::course_list_t::const_iterator it;
 		Group::period_list_t::const_iterator it2;
+		int c_hours=0;
 		
 		// Iterate across all courses in the schedule
 		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
@@ -52,7 +59,8 @@ class NoConflicts : public Constraint
 				// Iterate across all periods of this course
 				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
 					if(used_periods.find((*it2)->period_no()) != used_periods.end()) {
-						return false;
+						if(++c_hours >= p_max_conflict_periods)
+							return false;
 					}
 					used_periods.insert((*it2)->period_no());
 				}
@@ -60,7 +68,8 @@ class NoConflicts : public Constraint
 			if((*it)->lab_group) {
 				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
 					if(used_periods.find((*it2)->period_no()) != used_periods.end()) {
-						return false;
+						if(++c_hours > p_max_conflict_periods)
+							return false;
 					}
 					used_periods.insert((*it2)->period_no());
 				}
@@ -69,6 +78,8 @@ class NoConflicts : public Constraint
 		return true;
 	}
 	
+	private:
+	int p_max_conflict_periods;
 };
 
 
