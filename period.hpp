@@ -1,3 +1,6 @@
+#ifndef PERIOD_HPP
+#define PERIOD_HPP
+
 #include <string>
 
 struct Period
@@ -15,3 +18,5 @@ struct Period
 	int p_period_no;
 	std::string p_room;
 };
+
+#endif // PERIOD_HPP
