@@ -22,7 +22,7 @@
 #include "studentschedule.hpp"
 #include "schoolschedule.hpp"
 
-/* A constraint returns true if it is realized */
+/* A constraint returns true if it is passed, false if it is failed */
 
 class Constraint
 {
@@ -55,7 +55,7 @@ class NoConflicts : public Constraint
 		int c_hours=0;
 		
 		static int schedno=1;
-		debug("New schedule #%d<br><br>", schedno++);
+		//debug("New schedule #%d<br><br>", schedno++);
 		
 		// Iterate across all courses in the schedule
 		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
@@ -71,11 +71,11 @@ class NoConflicts : public Constraint
 					it3 = used_periods.find((*it2)->period_no());
 					if(it3 != used_periods.end()) {
 						if(it3->second & week_mask) {
-							debug("conflict between %x and %x<br>", it3->second, week_mask);
-							if(++c_hours >= p_max_conflict_periods)
+							//debug("conflict between %x and %x<br>", it3->second, week_mask);
+							if(++c_hours > p_max_conflict_periods)
 								return false;
 						}
-						debug("no conflict between %x and %x<br>", it3->second, week_mask);
+						//debug("no conflict between %x and %x<br>", it3->second, week_mask);
 						it3->second |= week_mask;
 					}
 					else {
@@ -94,11 +94,11 @@ class NoConflicts : public Constraint
 					it3 = used_periods.find((*it2)->period_no());
 					if(it3 != used_periods.end()) {
 						if(it3->second & week_mask) {
-							debug("conflict between %x and %x<br>", it3->second, week_mask);
-							if(++c_hours >= p_max_conflict_periods)
+							//debug("conflict between %x and %x<br>", it3->second, week_mask);
+							if(++c_hours > p_max_conflict_periods)
 								return false;
 						}
-						debug("no conflict between %x and %x<br>", it3->second, week_mask);
+						//debug("no conflict between %x and %x<br>", it3->second, week_mask);
 						it3->second |= week_mask;
 					}
 					else {
@@ -148,6 +148,59 @@ class NoEvening : public Constraint
 	}
 	
 	private:
+};
+
+class ExplicitOpen : public Constraint
+{
+	public:
+	ExplicitOpen(std::string s) : Constraint(s)
+	{
+		int start=0;
+		int len;
+		
+		for(;;) {
+			start = s.find_first_not_of(" ", start);
+			if(start == std::string::npos)
+				break;
+			len = s.find_first_of(" ", start);
+			if(len == std::string::npos)
+				len = s.size();
+			len -= start;
+				
+			p_open.insert(std::string(s, start, len));
+			
+			start += len;
+			if(start >= s.size())
+				break;
+		}
+	}
+	
+	bool operator()(StudentSchedule &sched)
+	{
+		std::string mangled;
+		
+		// Iterate across all courses in the schedule
+		StudentSchedule::course_list_t::const_iterator it;
+		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
+			if((*it)->theory_group) {
+				mangled = "t_" + (*it)->course->symbol() + "_" + (*it)->theory_group->name();
+				if(p_open.find(mangled) == p_open.end()) {
+					return false;
+				}
+			}
+			if((*it)->lab_group && (*it)->course->type() != COURSE_TYPE_THEORYLABSAME) {
+				mangled = "l_" + (*it)->course->symbol() + "_" + (*it)->lab_group->name();
+				if(p_open.find(mangled) == p_open.end()) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	private:
+	std::set<std::string> p_open;
 };
 
 class NoClosed : public Constraint
