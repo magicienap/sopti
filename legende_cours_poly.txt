@@ -35,8 +35,8 @@ H : hebdomadaire
 
 CHAMP 10: Moment des labs
 -------------------------
-I : Jours impairs
-P : Jours pairs
+I : Jours impairs (B1)
+P : Jours pairs (B2)
 rien : non-applicable
 
 CHAMP 11: Type de cours
