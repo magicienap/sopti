@@ -30,3 +30,4 @@ int poly_period_to_time(int period);
 
 void listcourses(int, char **);
 void make(int, char **);
+void get_open_close_form(int argc, char **argv);

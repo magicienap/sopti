@@ -71,6 +71,7 @@ struct Action {
 struct Action actions[] =
 	{ { "listcourses", listcourses},
 	  { "make", make},
+	  { "get_open_close_form", get_open_close_form},
 	  { 0, 0 } };
 
 string config_file="sopti.conf";
@@ -555,6 +556,9 @@ void make(int argc, char **argv)
 				else if(!strcmp(optarg, "noperiod")) {
 					constraints.push_back(new NoPeriod(next_constraint_arg));
 				}
+				else if(!strcmp(optarg, "explicitopen")) {
+					constraints.push_back(new ExplicitOpen(next_constraint_arg));
+				}
 				else {
 					error("unknown constaint (%s)", optarg);
 				}
@@ -592,7 +596,7 @@ void make(int argc, char **argv)
 			printf("<div class=\"errormsg\"><p>Aucune solution trouv&eacute;e!<p>Causes possibles:<ul><li>Certaines sections sont pleines<li>Les cours s&eacute;lectionn&eacute;s entrent en conflit\n</ul><p>Pour changer les param&egrave;tres, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.</div>");
 		}
 		else {
-			printf("No solution found!");
+			error("No solution found!");
 		}
 		return;
 	}
@@ -603,7 +607,6 @@ void make(int argc, char **argv)
 	
 	// Order the solutions by score
 	for(it=solutions.begin(); it!=solutions.end(); it++) {
-		// Caution, if 2 have the same score, it will not insert
 		scores.insert(pair<float, StudentSchedule *>(objective->operator()(&*it), &*it));
 	}
 	// Print the summary
@@ -647,7 +650,7 @@ void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vect
 	vector<Constraint *>::iterator it;
 	for(it=constraints.begin(); it!=constraints.end(); it++) {
 		if(!((**it)(ss))) {
-			debug("constraint failed");
+			//debug("constraint failed");
 			return;
 		}
 	}
@@ -730,6 +733,165 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 			}
 		}
 	}
+}
+
+string to_variable_name(string s)
+{
+	string retval = s;
+	int i;
+	
+	for(i=s.size()-1; i>=0; i--) {
+		if(!(retval[i]>='a' && retval[i] <= 'z' || retval[i]>='A' && retval[i] <= 'Z' || retval[i]>='0' && retval[i] <= '9')) {
+			retval[i] = '_';
+		}
+	}
+	
+	return retval;
+}
+
+void get_open_close_form(int argc, char **argv)
+{
+	vector<string> requested_courses;
+	int c;
+	
+	// reset getopt
+	opterr = 0;
+	optind=1;
+	
+	while (1) {
+		int option_index = 0;
+		static struct option long_options[] = {
+			{"course", 1, 0, 'c'},
+			{0, 0, 0, 0}
+		};
+	
+		c = getopt_long (argc, argv, "c:",
+				long_options, &option_index);
+		if (c == -1)
+			break;
+	
+		switch (c) {
+			case 'c':
+				/* Verify later if courses exist */
+				requested_courses.push_back(optarg);
+				break;
+	
+			case '?':
+				error("invalid command line");
+				break;
+		
+			default:
+				error("getopt returned unknown code %d\n", c);
+		}
+	}
+	
+	vector<string>::const_iterator it;
+	SchoolCourse::group_list_t::const_iterator it2;
+	string script;
+	string openclose_vars;
+	
+	printf("<table class=\"openclose_table\">\n");
+	
+	for(it=requested_courses.begin(); it!=requested_courses.end(); it++) {
+	
+		if(!schoolsched.course_exists(*it)) {
+			printf("<tr class=\"openclose_row\">\n<td class=\"course_sym\">%s</td><td colspan=\"3\">Ce cours n'existe pas!</td></tr>", it->c_str());
+		}
+		else {
+			SchoolCourse *current_course;
+			int rowspan;
+			string script_open, script_close;
+			
+			// Select number of rows
+			current_course = schoolsched.course(*it);
+			if(current_course->type() == COURSE_TYPE_THEORYLABIND) {
+				rowspan = 3;
+			}
+			else {
+				rowspan = 1;
+			}
+			
+			printf("<tr class=\"openclose_row\">\n<td rowspan=\"%d\" class=\"course_sym\">%s<br>%s</td>", rowspan, current_course->symbol().c_str(), current_course->title().c_str());
+			
+			if(current_course->type() != COURSE_TYPE_LABONLY) {
+				script_open = "function open_all_t_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
+				script_close = "function close_all_t_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
+				
+			
+				printf("<td>Th&eacute;orique%s</td>", (current_course->type()==COURSE_TYPE_THEORYLABSAME)?" / lab":"");
+				printf("<td>");
+				for(it2=current_course->groups_begin(); it2!=current_course->groups_end(); it2++) {
+					if((*it2)->lab())
+						continue;
+						
+					script_open += "\tdocument.form2.t_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=true;\n";
+					script_close += "\tdocument.form2.t_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=false;\n";
+					openclose_vars+="t_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + " ";
+					
+					if((*it2)->closed()) {
+						printf("<div class=\"full_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\">", current_course->symbol().c_str(), (*it2)->name().c_str());
+					}
+					else {
+						printf("<div class=\"notfull_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\" checked>", current_course->symbol().c_str(), (*it2)->name().c_str());
+					}
+					
+					printf("%s</div>", (*it2)->name().c_str());
+				}
+				
+				script_open += "}\n\n";
+				script_close += "}\n\n";
+				
+				script += script_open;
+				script += script_close;
+								
+				printf("</td><td><input type=\"button\" value=\"Ouvrir toutes\" onClick=\"open_all_t_%s()\"><input type=\"button\" value=\"Fermer toutes\" onClick=\"close_all_t_%s()\"></td>", current_course->symbol().c_str(), current_course->symbol().c_str());
+			}
+			if(current_course->type() == COURSE_TYPE_THEORYLABIND) {
+				printf("</tr>\n<tr><td colspan=\"4\" style=\"height:1; background-color: white;\"></td></tr>\n<tr>\n");
+			}
+			if(current_course->type() == COURSE_TYPE_LABONLY || current_course->type() == COURSE_TYPE_THEORYLABIND) {
+				script_open = "function open_all_l_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
+				script_close = "function close_all_l_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
+				
+				printf("<td>Lab</td>");
+				printf("<td>");
+				for(it2=current_course->groups_begin(); it2!=current_course->groups_end(); it2++) {
+					if(!(*it2)->lab())
+						continue;
+
+					script_open += "\tdocument.form2.l_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=true;\n";
+					script_close += "\tdocument.form2.l_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=false;\n";
+					openclose_vars += "l_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + " ";
+					
+					if((*it2)->closed()) {
+						printf("<div class=\"full_cbox\"><input name=\"l_%s_%s\" type=\"checkbox\">", current_course->symbol().c_str(), (*it2)->name().c_str());
+					}
+					else {
+						printf("<div class=\"notfull_cbox\"><input name=\"l_%s_%s\" type=\"checkbox\" checked>", current_course->symbol().c_str(), (*it2)->name().c_str());
+					}
+					
+					printf("%s</div>", (*it2)->name().c_str());
+				}
+				
+				script_open += "}\n\n";
+				script_close += "}\n\n";
+				
+				script += script_open;
+				script += script_close;
+				
+				printf("</td><td><input type=\"button\" value=\"Ouvrir toutes\" onClick=\"open_all_l_%s()\"><input type=\"button\" value=\"Fermer toutes\" onClick=\"close_all_l_%s()\"></td>", current_course->symbol().c_str(), current_course->symbol().c_str());
+			}
+			
+			printf("</tr>");
+		}
+		printf("<tr><td colspan=\"4\" class=\"openclose_whitespace\">&nbsp;</td></tr>\n");
+	}
+	
+	printf("</table>\n\n");
+	
+	printf("<input type=\"hidden\" name=\"openclose_vars\" value=\"%s\">\n\n", openclose_vars.c_str());
+	
+	printf("<script type=\"text/javascript\">\n%s</script>\n", script.c_str());
 }
 
 vector<string> split_string(string s, string sep)
@@ -837,6 +999,7 @@ void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 		// prepare some variables in advance
 		bool islab;
 		int type;
+		SchoolCourse *current_course;
 				
 		if(fields[COURSEFILE_FIELD_COURSELAB] == "L")
 			islab=true;
@@ -862,18 +1025,20 @@ void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 			sopti->course_add(newcourse);
 		}
 		
+		current_course = sopti->course(fields[COURSEFILE_FIELD_SYMBOL]);
+		
 		// Add group if not exists
-		if(!sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group_exists(fields[COURSEFILE_FIELD_GROUP], islab)) {
+		if(!current_course->group_exists(fields[COURSEFILE_FIELD_GROUP], islab)) {
 			Group newgroup(fields[COURSEFILE_FIELD_GROUP]);
 			newgroup.set_lab(islab);
 			
-			sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->add_group(newgroup, islab);
+			current_course->add_group(newgroup, islab);
 		}
 		
 		// Add period. It should not exist.
 		
 		int period_no = poly_make_period_no(fields[COURSEFILE_FIELD_DAY], fields[COURSEFILE_FIELD_TIME]);
-		if(sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group(fields[COURSEFILE_FIELD_GROUP], islab)->has_period(period_no)) {
+		if(current_course->group(fields[COURSEFILE_FIELD_GROUP], islab)->has_period(period_no)) {
 			error("two occurences of the same period in course file");
 		}
 		
@@ -889,7 +1054,7 @@ void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 		else {
 			newperiod.set_week(0);
 		}
-		sopti->course(fields[COURSEFILE_FIELD_SYMBOL])->group(fields[COURSEFILE_FIELD_GROUP], islab)->add_period(newperiod);
+		current_course->group(fields[COURSEFILE_FIELD_GROUP], islab)->add_period(newperiod);
 	}
 	
 	period_list.close();
