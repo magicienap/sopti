@@ -493,21 +493,25 @@ void make(int argc, char **argv)
 	// Print the summary
 	printf("<div class=\"make_summary\">\n");
 	printf("<p>Nombre d'horaires trouv&eacute;s: %d\n", solutions.size());
-	printf("<p>Cours demand&eacute;s:\n");
-	printf("<table class=\"courses_tables\">\n");
-	vector<string>::const_iterator it3;
-	for(it3=requested_courses.begin(); it3!=requested_courses.end(); it3++) {
-		printf("<tr><td>%s</td><td>%s</td></tr>\n", (*it3).c_str(), schoolsched.course(*it3)->title().c_str());
-	}
-	printf("</table>\n");
 	printf("</div>\n");
 	
 	// Print the solutions in order
 	for(it2=scores.begin(), i=1; it2!=scores.end(); it2++, i++) {
 		if(output_fmt == OUTPUT_HTML) {
-			printf("<div class=\"schedule_info\">\n");
+			printf("<div class=\"make_schedule_info\">\n");
 			printf("<p>Horaire #%d\n", i);
-			printf("<p>Score: %f\n", it2->first);
+			printf("<p>Score: %g\n", it2->first);
+			printf("</div>\n");
+			// Print group information
+			printf("<div class=\"schedule_info\">\n");
+			printf("<table class=\"group_summary\">\n");
+			printf("<tr><th>Sigle</th><th>Titre</th><th>Th&eacute;orie</th><th>Lab</th></tr>\n");
+			
+			StudentSchedule::course_list_t::const_iterator it4;
+			for(it4=it2->second->st_courses_begin(); it4!=it2->second->st_courses_end(); it4++) {
+				printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", (*it4)->course->symbol().c_str(), (*it4)->course->title().c_str(), (*it4)->theory_group?(*it4)->theory_group->name().c_str():"-", (*it4)->lab_group?(*it4)->lab_group->name().c_str():"-");
+			}
+			printf("</table>\n");
 			printf("</div>\n");
 		}
 		else {
