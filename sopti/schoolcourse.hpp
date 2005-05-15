@@ -53,7 +53,8 @@ class SchoolCourse
 	void set_type(int t) { p_type = t; }
 	
 	// Add groups
-	void add_group(Group, bool);
+	void add_group(Group, bool); // deprecated
+	void add_group(Group *, bool);
 	
 	private:
 	std::string p_symbol;

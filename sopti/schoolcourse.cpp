@@ -35,6 +35,18 @@ void SchoolCourse::add_group(Group g, bool islab)
 	}
 }
 
+void SchoolCourse::add_group(Group *g, bool islab)
+{
+	p_groups.push_back(g);
+	
+	if(islab) {
+		p_lab_groups[g->name()] = g;
+	}
+	else {
+		p_theory_groups[g->name()] = g;
+	}
+}
+
 bool SchoolCourse::group_exists(string g, int islab)
 {
 	if(islab) {

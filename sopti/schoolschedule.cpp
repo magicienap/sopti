@@ -41,6 +41,14 @@ void SchoolSchedule::course_add(SchoolCourse c)
 	p_courses_order_sym[tmp->symbol()] = tmp;
 }
 
+void SchoolSchedule::add_course(SchoolCourse *c)
+{
+	// Add to the structures
+	p_courses.push_back(c);
+	p_courses_order_sym[c->symbol()] = c;
+}
+
+
 SchoolCourse *SchoolSchedule::course(std::string c)
 {
 	if(!course_exists(c))
