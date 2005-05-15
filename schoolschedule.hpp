@@ -48,7 +48,8 @@ class SchoolSchedule
 	SchoolCourse *course(std::string);
 	
 	bool course_exists(std::string);
-	void course_add(SchoolCourse);
+	void course_add(SchoolCourse); // deprecated
+	void add_course(SchoolCourse *);
 	course_list_t::const_iterator courses_begin() { return p_courses.begin(); }
 	course_list_t::const_iterator courses_end() { return p_courses.end(); }
 	
