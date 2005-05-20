@@ -114,7 +114,7 @@ sub main() {
 		if($courses_done{$current_line{'symbol'}} != 1) {
 			if($current_course_entry == undef) {
 				# course not in DB, add it
-				warning("[Courses table] Course $current_line{'symbol'} not in table; adding it");
+				warning("[INSERT][courses] Course $current_line{'symbol'} not in table; adding it");
 				$dbh->do("INSERT INTO courses (symbol, title) VALUES (\"$current_line{'symbol'}\", \"$current_line{'title'}\")") or die $dbh->errstr;
 				# get the unique of the new entry
 				my $unique = $dbh->selectall_arrayref("SELECT courses.unique FROM courses WHERE courses.symbol=\"$current_line{'symbol'}\"");
@@ -129,7 +129,7 @@ sub main() {
 			else {
 				for my $field (@fields_courses) {
 					if($current_line{$field} ne $current_course_entry->{$field}) {
-						warning("[Courses table] Course $current_line{'symbol'}, field $field needs update; doing it");
+						warning("[UPDATE][courses] Course $current_line{'symbol'}, field $field needs update; doing it");
 						$dbh->do("UPDATE courses SET $field=\"$current_line{$field}\" WHERE courses.unique=\'$current_course_entry->{'unique'}\'") or die $dbh->errstr;
 					}
 				}
@@ -145,7 +145,7 @@ sub main() {
 			if($current_course_semester_entry == undef) {
 				print $current_course_semester_entry,"\n";
 				# course not in DB, add it
-				warning("Course $current_line{'symbol'} was not in courses_semester table; adding it");
+				warning("[INSERT][courses_semester] Course $current_line{'symbol'} was not in courses_semester table; adding it");
 				$dbh->do("INSERT INTO courses_semester (course, semester, course_type) VALUES (\"$current_course_entry->{'unique'}\", \"$current_semester_unique\", \"$current_line{'course_type'}\")") or die $dbh->errstr;
 				# get the unique of the new entry
 				my $unique = $dbh->selectall_arrayref("SELECT courses_semester.unique FROM courses_semester WHERE course=\"$current_course_entry->{'unique'}\" AND semester=\"$current_semester_unique\" AND course_type=\"$current_line{'course_type'}\"");
@@ -160,7 +160,7 @@ sub main() {
 			else {
 				for my $field (@fields_courses_semester) {
 					if($current_line{$field} ne $current_course_semester_entry->{$field}) {
-						warning("[Courses_semester table] Course $current_line{'symbol'}, field $field needs update; doing it (csv: $current_line{$field}, DB: $course_semester_entry->{$field})");
+						warning("[UPDATE][courses_semester] Course $current_line{'symbol'}, field $field needs update; doing it (csv: $current_line{$field}, DB: $course_semester_entry->{$field})");
 						$dbh->do("UPDATE courses_semester SET $field=\"$current_line{$field}\" WHERE courses_semester.course=\'$course_semester_entry->{'unique'}\' AND courses_semester.semester=\'$current_semester_unique\'") or die $dbh->errstr;
 					}
 				}
@@ -176,7 +176,7 @@ sub main() {
 		if($groups_done{$current_line{'symbol'}}->{$current_line{'group'}}->{$current_line{'theory_or_lab'}} != 1) {
 			if($current_group_entry == undef) {
 				# course not in DB, add it
-				warning("Group $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'} was not in groups table; adding it");
+				warning("[INSERT][groups] Group $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'} was not in groups table; adding it");
 				$dbh->do("INSERT INTO groups (course_semester, name, theory_or_lab) VALUES (\"$current_course_semester_unique\", \"$current_line{'group'}\", \"$current_line{'theory_or_lab'}\")") or die $dbh->errstr;
 				
 				# get the unique of the new entry
@@ -192,8 +192,8 @@ sub main() {
 			}
 			else {
 				for my $field (@fields_groups) {
-					if($current_line{$field} ne $groups_table_ref->{$current_line{'symbol'}}->{$field}) {
-						warning("[Groups table] Group $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, field $field needs update; doing it (csv: $current_line{$field}, DB: $courses_semester_table_ref{$current_line{'symbol'}}->{$field})");
+					if($current_line{$field} ne $current_group_entry->{$field}) {
+						warning("[UPDATE][groups] Group $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, field $field needs update; doing it (csv: $current_line{$field}, DB: $courses_semester_table_ref{$current_line{'symbol'}}->{$field})");
 						$dbh->do("UPDATE groups SET $field=\"$current_line{$field}\" WHERE groups.unique=\"$current_group_entry->{'unique'}\"") or die $dbh->errstr;
 					}
 				}
@@ -209,13 +209,13 @@ sub main() {
 		#print("current period entry : $current_period_entry->{'time'}\n");
 		if($current_period_entry == undef) {
 			# course not in DB, add it
-			warning("Period $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, $current_line{'period_code'} was not in periods table; adding it");
+			warning("[INSERT][periods] Period $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, $current_line{'period_code'} was not in periods table; adding it");
 			$dbh->do("INSERT INTO periods (periods.group, periods.period_code, periods.room, periods.time) VALUES (\"$current_group_unique\", \"$current_line{'period_code'}\", \"$current_line{'room'}\", \"$current_line{'time'}\")") or die $dbh->errstr;
 		}
 		else {
 			for my $field (@fields_periods) {
 				if($current_line{$field} ne $current_period_entry->{$field}) {
-					warning("[Periods table] Period (unique=$current_period_entry->{'unique'}) $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, $current_line{'period_code'}, field $field needs update; doing it (csv: $current_line{$field}, DB: $current_period_entry->{$field})");
+					warning("[UPDATE][periods] Period (unique=$current_period_entry->{'unique'}) $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, $current_line{'period_code'}, field $field needs update; doing it (csv: $current_line{$field}, DB: $current_period_entry->{$field})");
 					$dbh->do("UPDATE periods SET $field=\"$current_line{$field}\" WHERE periods.unique=\"$current_period_entry->{'unique'}\"") or die $dbh->errstr;
 				}
 			}
@@ -234,14 +234,16 @@ sub main() {
 	# Check for unused courses
 	while ( my ($symbol, $entry) = each(%{$courses_table_ref}) ) {
 		if($entry->{'used'} != 1) {
-			warning("[Courses table] Course $symbol is unused");
+			warning("[INFO][courses] Course $symbol is historic");
+			# Do not delete
 		}
 	}
 
 	# Check for unused course_semesters
 	while ( my ($symbol, $entry) = each(%{$courses_semester_table_ref}) ) {
 		if($entry->{'used'} != 1) {
-			warning("[Courses_semester table] Course_semester $CURRENT_SEMESTER, $symbol is unused");
+			warning("[DELETE][courses_semester] Course_semester $CURRENT_SEMESTER, $symbol is unused");
+			$dbh->do("DELETE FROM courses_semester WHERE courses_semester.unique=\"$entry->{'unique'}\"") or die $dbh->errstr;
 		}
 	}
 	
@@ -250,7 +252,8 @@ sub main() {
 		while ( my ($group_unique, $entry2) = each(%{$entry1}) ) {
 			while ( my ($group_type, $entry3) = each(%{$entry2}) ) {
 				if($entry3->{'used'} != 1) {
-					warning("[Groups table] Group $CURRENT_SEMESTER, $symbol, $group_name, $group_type (unique $entry3->{'unique'}) is unused");
+					warning("[DELETE][groups] Group $CURRENT_SEMESTER, $symbol, $group_name, $group_type (unique $entry3->{'unique'}) is unused");
+					$dbh->do("DELETE FROM groups WHERE groups.unique=\"$entry3->{'unique'}\"") or die $dbh->errstr;
 				}
 			}
 		}
@@ -260,7 +263,8 @@ sub main() {
 	while ( my ($group_unique, $entry1) = each(%{$periods_table_ref}) ) {
 		while ( my ($period_code, $entry2) = each(%{$entry1}) ) {
 			if($entry2->{'used'} != 1) {
-				warning("[Periods table] Period $entry2->{'unique'} is unused");
+				warning("[DELETE][periods] Period $entry2->{'unique'} is unused");
+				$dbh->do("DELETE FROM periods WHERE periods.unique=\"$entry2->{'unique'}\"") or die $dbh->errstr;
 			}
 		}
 	}
