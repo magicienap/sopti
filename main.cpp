@@ -453,8 +453,16 @@ void usage()
 	"    -c <course> - add this course to the schedule\n"
 	"                  (repeat this option for each course)\n"
 	"    -J <objective> - order results by criteria (minholes)\n"
-	"    -T <constraint> - use constraint (noevening)\n"
-	"    -t <argument> - specify the argument for the next constraint\n"
+	"    -T <constraint> - use schedule constraint (noevening)\n"
+	"    -t <argument> - specify the argument for the next schedule constraint\n"
+	"    -G <constraint> - use group constraint ()\n"
+	"    -g <argument> - specify the argument for the next group constraint\n"
+	"\n"
+	"Group constraints:\n"
+	"  * noclosed\n"
+	"  * noperiod\n"
+	"  * explicitopen\n"
+	"  * notbetween\n"
 	"\n";
 	
 	fprintf(stderr, usage_text);
