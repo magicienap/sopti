@@ -124,7 +124,7 @@ require_once('config.php');
 			}
 		}
 		
-		print $cmd;
+		//print $cmd;
 		passthru($cmd." 2>&1");
 	}
 	else {
