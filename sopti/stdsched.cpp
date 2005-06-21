@@ -47,6 +47,21 @@ struct stdsched_daytemplate stdsched_daytemplates[STDSCHED_NUMDAYTEMPLATES][STDS
 // period_id = stdsched_hour2id[daytemplate_no][hour];
 std::map<int, int> stdsched_hour2id[STDSCHED_NUMDAYTEMPLATES];
 
+
+/* ------------------------------------------------------------------
+
+	Function: stdsched_init
+	Description: Initialise the stl map stdsched_hour2id
+	Parameters: none
+	Return value: none
+	Notes: the array stdsched_hour2id can be used when printing a
+		schedule to convert between a period's starting hour and that
+		period's number in the day or to check that a period's
+		starting hour is among the regular starting hours, some
+		courses start at non standard hours
+
+------------------------------------------------------------------ */
+
 void stdsched_init()
 {
 	int i,j;

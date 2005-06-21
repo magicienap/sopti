@@ -18,6 +18,17 @@
 
 #include "group.hpp"
 
+
+/* ------------------------------------------------------------------
+
+	Function: add_period
+	Description: add a period to the group
+	Parameters: p, the period to add
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
+
 void Group::add_period(Period p)
 {
 	Period *tmp = new Period(p);
@@ -25,10 +36,34 @@ void Group::add_period(Period p)
 	p_periods_by_no[p.period_no()] = tmp;
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: has_period
+	Description: returns wether a period is part of the group or not
+		based on the period's number
+	Parameters: p, the period's number
+	Return value: boolean, true if the group is part of the course
+	Notes: none
+
+------------------------------------------------------------------ */
+
 bool Group::has_period(int p)
 {
 	return p_periods_by_no.find(p) != p_periods_by_no.end();
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: group
+	Description: get a pointer to the Period object of a
+		a certain period
+	Parameters: p, the period's number
+	Return value: the Period object that has the number p
+	Notes: the returned pointer must not be deallocated
+
+------------------------------------------------------------------ */
 
 Period *Group::periods(int p)
 {

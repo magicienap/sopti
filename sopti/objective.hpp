@@ -20,6 +20,23 @@
  
 #include "studentschedule.hpp"
 
+
+/* ------------------------------------------------------------------
+
+	Class: Objective
+	Description: returns the score of a student schedule according to
+		a certain objective, the lower the score, the better the
+		schedule
+	Constructor parameters: none
+	Parameters: StudentSchedule object to evaluate
+	Return value: float, the lower the number, the better the 
+		schedule
+	Notes: this class defines a functor, this is also and abstract 
+		class,	the operator() has to be implemented in derived 
+		objective classes
+
+------------------------------------------------------------------ */
+
 class Objective
 {
 	public:
@@ -27,6 +44,22 @@ class Objective
 	
 	private:
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: MinHoles
+	Description: objective aimed at having the least possible number
+		of free hours between occupied periods in a day, therefore 
+		lessening the time "lost" at school between classes
+	Constructor parameters: none
+	Parameters: s, a pointer to the StudentSchedule object to 
+		evaluate
+	Return value: float, the number of periods that are holes
+	Notes: this class defines a functor, holes are only counted
+		between periods that are during "standard" hours
+
+------------------------------------------------------------------ */
 
 class MinHoles : public Objective
 {
@@ -40,6 +73,7 @@ class MinHoles : public Objective
 		StudentSchedule::course_list_t::const_iterator it;
 		Group::period_list_t::const_iterator it2;
 		
+		// The program first lists all occupied periods
 		for(it=s->st_courses_begin(); it!=s->st_courses_end(); it++) {
 			// If has theorical class
 			if((*it)->theory_group) {
@@ -56,8 +90,9 @@ class MinHoles : public Objective
 				}
 			}
 		}
-	
-		// For each day monday-friday
+		
+		// Then the program searches for holes between the occupied periods on a day by day basis
+		// For each day monday-friday:
 		for(i=0; i<5; i++) {
 			int accum=0; // Temporary counter of free periods
 			bool day_started=false;
@@ -81,6 +116,21 @@ class MinHoles : public Objective
 		return holes;
 	}
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: MaxMorningSleep
+	Description: objective aimed at having the most possible number
+		of free hours in the morning
+	Constructor parameters: none
+	Parameters: s, a pointer to the StudentSchedule object to 
+		evaluate
+	Return value: float, 20 - the total number of class hours in the 
+		morning
+	Notes: this class defines a functor
+
+------------------------------------------------------------------ */
 
 class MaxMorningSleep : public Objective
 {
@@ -132,6 +182,20 @@ class MaxMorningSleep : public Objective
 	}
 };
 
+
+/* ------------------------------------------------------------------
+
+	Class: MaxFreeDays
+	Description: objective aimed at having the most possible number
+		of free days
+	Constructor parameters: none
+	Parameters: s, a pointer to the StudentSchedule object to 
+		evaluate
+	Return value: float, the number of occupied days
+	Notes: this class defines a functor
+
+------------------------------------------------------------------ */
+
 class MaxFreeDays : public Objective
 {
 	public:
@@ -160,6 +224,19 @@ class MaxFreeDays : public Objective
 		return occupied_days.size();
 	}
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: NullObjective
+	Description: bogus objective that always returns 0 and can be
+		used when no other objective is selected
+	Constructor parameters: none
+	Parameters: StudentSchedule object to evaluate (ignored)
+	Return value: float, 0
+	Notes: this class defines a functor
+
+------------------------------------------------------------------ */
 
 class NullObjective : public Objective
 {

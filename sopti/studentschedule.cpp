@@ -18,6 +18,17 @@
 
 #include "studentschedule.hpp"
 
+
+/* ------------------------------------------------------------------
+
+	Function:add_st_course
+	Description: add a course to a student schedule
+	Parameters: g, the course to add as a StudentCourse object
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
+
 void StudentSchedule::add_st_course(StudentCourse g)
 {
 	StudentCourse *tmp;

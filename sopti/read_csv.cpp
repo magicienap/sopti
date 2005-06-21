@@ -10,6 +10,19 @@
 
 using namespace std;
 
+
+/* ------------------------------------------------------------------
+
+	Function: split_string
+	Description: split a string on boundaries formed by a separator
+		into a table of substrings
+	Parameters: - s, the input string
+		- sep, the separator
+	Return value: an stl vector filled with the substrings
+	Notes: none
+
+------------------------------------------------------------------ */
+
 vector<string> split_string(string s, string sep)
 {
 	unsigned int pos=0;
@@ -31,6 +44,22 @@ vector<string> split_string(string s, string sep)
 
 	return retval;
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: poly_make_period_no
+	Description: return a period number to use, for example, in a 
+		Period struct, identifying a certain period in the week by 
+		its	day and time
+	Parameters: - day_of_week, the first three characters of the
+		day's name in french and capitalized
+		- time_str, the period's starting hour in the form hour * 100
+		+ minutes
+	Return value: the integer representing the period number
+	Notes: none
+
+------------------------------------------------------------------ */
 
 int poly_make_period_no(string day_of_week, string time_str)
 {
@@ -76,6 +105,21 @@ int poly_make_period_no(string day_of_week, string time_str)
 	return retval;
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: load_courses_from_csv
+	Description: read the csv file describing all the courses given
+		by the school and store them in a SchoolSchedule object
+	Parameters: - sopti, (out) a pointer to the SchoolSchedule object
+		in which to store the courses
+		- periods_file, the filename of the csv file
+	Return value: none
+	Notes: this function depends on the macros defined in the
+		matching header file for the field orders
+
+------------------------------------------------------------------ */
+
 void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 {
 	ifstream period_list;
@@ -111,7 +155,7 @@ void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 		bool islab;
 		int type;
 		SchoolCourse *current_course;
-				
+		
 		if(fields[COURSEFILE_FIELD_COURSELAB] == "L")
 			islab=true;
 		else if(fields[COURSEFILE_FIELD_COURSELAB] == "C")
@@ -170,6 +214,23 @@ void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 	
 	period_list.close();
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: load_closed_from_csv
+	Description: read the csv file describing the closed groups, that
+		is, the groups in which no more space is available to
+		register and add this information in a pre-filled
+		SchoolSchedule object
+	Parameters: - sopti, (out) a pointer to the SchoolSchedule object
+		in which to update the information about the closed groups
+		- closed_file, the filename of the csv file
+	Return value: none
+	Notes: this function depends on the macros defined in the
+		matching header file for the field orders
+
+------------------------------------------------------------------ */
 
 void load_closed_from_csv(SchoolSchedule *sopti,  string closed_file)
 {
