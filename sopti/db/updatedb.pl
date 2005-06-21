@@ -8,7 +8,7 @@ use sigtrap;
 @fields_courses = ('title');
 @fields_courses_semester = ('course_type');
 @fields_groups = ('places_room', 'places_group');
-@fields_periods = ('room', 'time', 'week');
+@fields_periods = ('room', 'weekday', 'time', 'week');
 
 $CURRENT_SEMESTER='H2005';
 
@@ -22,7 +22,7 @@ sub warning {
 sub main() {
 	print("DATABASE UPDATE\n");
 	print("Connecting to database...\n");
-	$dbh = DBI->connect('dbi:mysql:database=poly_courses;host=192.168.0.1', 'poly', 'pol') or die($DBI->errstr);
+	$dbh = DBI->connect('dbi:mysql:database=poly_courses;host=127.0.0.1', 'poly', 'pol') or die(DBI->errstr);
 	
 # 	print("Creating replacement tables...\n");
 # 	$dbh->do('CREATE TABLE courses_new LIKE courses') or die $dbh->errstr;
@@ -210,7 +210,7 @@ sub main() {
 		if($current_period_entry == undef) {
 			# course not in DB, add it
 			warning("[INSERT][periods] Period $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, $current_line{'period_code'} was not in periods table; adding it");
-			$dbh->do("INSERT INTO periods (periods.group, periods.period_code, periods.room, periods.time) VALUES (\"$current_group_unique\", \"$current_line{'period_code'}\", \"$current_line{'room'}\", \"$current_line{'time'}\")") or die $dbh->errstr;
+			$dbh->do("INSERT INTO periods (periods.group, periods.period_code, periods.room, periods.time, periods.weekday) VALUES (\"$current_group_unique\", \"$current_line{'period_code'}\", \"$current_line{'room'}\", \"$current_line{'time'}\", \"$current_line{'weekday'}\")") or die $dbh->errstr;
 		}
 		else {
 			for my $field (@fields_periods) {
