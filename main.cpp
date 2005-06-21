@@ -76,6 +76,18 @@ class SchoolCoursePtrSymAlphaOrder
 	}
 };
 
+
+/* --------------------------------------------------------------------------
+
+	Function: listcourses
+	Description: Outputs a list of the courses and groups available
+		in the database
+	Parameters: none
+	Return value: none
+	Notes: implements the model of an "action"
+
+-------------------------------------------------------------------------- */
+
 void listcourses(int, char **)
 {
 	vector<SchoolCourse *>::iterator it;
@@ -94,6 +106,17 @@ void listcourses(int, char **)
 		cout << endl;
 	}
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: print_schedule_ascii
+	Description: Outputs a schedule in plain text format
+	Parameters: s, the schedule to output
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
 
 void print_schedule_ascii(StudentSchedule &s)
 {
@@ -214,6 +237,17 @@ struct ScheduledPeriod {
 	Group *group;
 	Period *period;
 };
+
+
+/* ------------------------------------------------------------------
+
+	Function: print_schedule_html
+	Description: Outputs a schedule in html form
+	Parameters: s, the schedule to output
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
 
 void print_schedule_html(StudentSchedule &s)
 {
@@ -425,6 +459,18 @@ void print_schedule_html(StudentSchedule &s)
 	*/
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: print_schedule
+	Description: Outputs a schedule
+	Parameters: s, the schedule to output
+	Return value: none
+	Notes: the format of the output will depend on the global
+		variable "output_fmt"
+
+------------------------------------------------------------------ */
+
 void print_schedule(StudentSchedule &s)
 {
 	if(output_fmt == OUTPUT_HTML)
@@ -432,6 +478,17 @@ void print_schedule(StudentSchedule &s)
 	else
 		print_schedule_ascii(s);
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: usage
+	Description: Outputs terse usage information about the program
+	Parameters: none
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
 
 void usage()
 {
@@ -468,6 +525,24 @@ void usage()
 	fprintf(stderr, usage_text);
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: test_groups
+	Description: finds the groups that respect a list of group
+		constraints among all the groups in the school's schedule
+	Parameters: - requested_courses, the list of courses symbols
+		requested by the student
+		- schoolschedule, the list of all courses offered by the school
+		- goup_constraints, the list of group constraints as objects
+		- accepted_groups (out), the list of groups that match the
+		constraints
+	Return value: the list of groups that match the constraints is
+		returned through the parameter "accepted_groups"
+	Notes: none
+
+------------------------------------------------------------------ */
+
 inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoolschedule, vector<GroupConstraint *> *group_constraints, set<Group *> *accepted_groups)
 {
 	vector<string>::const_iterator it;
@@ -479,6 +554,7 @@ inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoo
 		// For all groups
 		for(it2=schoolschedule->course(*it)->groups_begin(); it2!=schoolschedule->course(*it)->groups_end(); it2++) {
 			int success=1;
+			// For all constraints
 			for(it3=group_constraints->begin(); it3!=group_constraints->end(); it3++) {
 				if((**it3)(*it2, schoolschedule->course(*it)) == false) {
 					success=0;
@@ -494,7 +570,26 @@ inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoo
 
 void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions);
 
-/* Test the student schedule with the constraints before continuing the recursion */
+
+/* ------------------------------------------------------------------
+
+	Function: test_and_recurse
+	Description: When building a schedule with make_recurse, verify 
+		that a student schedule meets the constraints before 
+		continuing with the recursion
+	Parameters: - ss, current schedule to add the remaining_courses
+		to
+		- remaining_courses, the courses that still have to be added
+		to the current schedule
+		- constraints, the list of constraint as objets
+		- accepted_groups, the list of groups available to build the
+		schedule, this is likely obtained from the function
+		test_groups
+		- solutions, (out) the resulting schedules
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
 
 inline void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
 {
@@ -506,8 +601,7 @@ inline void test_and_recurse(StudentSchedule ss, vector<string> remaining_course
 		}
 	}
 	
-	// If we get here, all the constraints were satisfied
-	
+	// If we get here, all the constraints were satisfied, therefore, proceed with the recursion
 	make_recurse(ss, remaining_courses, constraints, accepted_groups, solutions);
 }
 
@@ -526,6 +620,29 @@ inline bool test_group_constraints(Group *group, SchoolCourse *course, vector<Gr
 }
 */
 
+
+/* ------------------------------------------------------------------
+
+	Function: make_recurse
+	Description: Return all schedules that can contain the
+		"remaining_courses" chosen among the "accepted_groups" and
+		added to the schedule "ss" while respecting the requested
+		"constraints"
+	Parameters: - ss, current schedule to add the remaining_courses
+		to
+		- remaining_courses, the courses that still have to be added
+		to the current schedule
+		- constraints, the list of constraint as objets
+		- accepted_groups, the list of groups available to build the
+		schedule, this is likely obtained from the function
+		test_groups
+		- solutions, (out) the resulting schedules
+	Return value: the resulting schedules are returned through the
+		parameter "solutions"
+	Notes: none
+
+------------------------------------------------------------------ */
+
 void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
 {
 	SchoolCourse *course_to_add;
@@ -540,7 +657,7 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 
 	StudentCourse newcourse;
 	newcourse.course = course_to_add;
-		
+	
 	SchoolCourse::group_list_t::const_iterator it,it2;
 	
 	if(course_to_add->type() == COURSE_TYPE_THEORYONLY){
@@ -618,6 +735,19 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 	}
 }
 
+
+/* --------------------------------------------------------------------------
+
+	Function: make
+	Description: find all schedules obeying the given conditions and
+		output them
+	Parameters: pointers to argc & *argv[], the command line argument
+		count and values, refer to the function "usage" to know what
+		the arguments should be
+	Return value: none
+	Notes: implements the model of an "action"
+
+-------------------------------------------------------------------------- */
 
 void make(int argc, char **argv)
 {
@@ -735,10 +865,9 @@ void make(int argc, char **argv)
 	}
 	
 	// Find acceptable groups
-	
 	test_groups(&requested_courses, &schoolsched, &group_constraints, &accepted_groups);
 	
-	// Making an empty schedule, to begin the recursion with
+	// Make an empty schedule to begin the recursion with
 	StudentSchedule sched;
 	vector<StudentSchedule> solutions;
 	
@@ -746,8 +875,9 @@ void make(int argc, char **argv)
 	NoConflicts noc(max_conflicts_str);
 	constraints.push_back(&noc);
 	
+	// Find the schedules that respect the objectives and constraints among all possible schedules
 	make_recurse(sched, requested_courses, &constraints, &accepted_groups, solutions);
-
+	
 	if(solutions.size() == 0) {
 		if(output_fmt == OUTPUT_HTML) {
 			printf("<div class=\"errormsg\"><p>Aucune solution trouv&eacute;e!<p>Causes possibles:<ul><li>Certaines sections sont pleines<li>Les cours s&eacute;lectionn&eacute;s entrent en conflit\n</ul><p>Pour changer les param&egrave;tres, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.</div>");
@@ -766,6 +896,7 @@ void make(int argc, char **argv)
 	for(it=solutions.begin(); it!=solutions.end(); it++) {
 		scores.insert(pair<float, StudentSchedule *>(objective->operator()(&*it), &*it));
 	}
+	
 	// Print the summary
 	printf("<div class=\"make_summary\">\n");
 	printf("<p>Nombre d'horaires trouv&eacute;s: %d\n", solutions.size());
@@ -798,6 +929,20 @@ void make(int argc, char **argv)
 	//debug("got %d solutions!", solutions.size());
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: to_variable_name
+	Description: performs the equivalent of the regular expression
+		s/[^a-zA-Z0-9]/_/, that is, it replaces non alphanumeric
+		characters with underscores
+	Parameters: - s, the initial string with characters to be 
+		replaced
+	Return value: the string with the replaced characters
+	Notes: none
+
+------------------------------------------------------------------ */
+
 string to_variable_name(string s)
 {
 	string retval = s;
@@ -811,6 +956,23 @@ string to_variable_name(string s)
 	
 	return retval;
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: get_open_close_form
+	Description: Outputs and html form in a table to override the 
+		chosen courses' groups' open/closed status
+	Parameters: pointers to argc & *argv[], the command line argument
+		count and values, those should include a number of "-c ####"
+		where "####" is a course symbol
+	Return value: none
+	Note: Overriding a group's open/closed status can be convenient
+		when, for example, a student is already assigned to a closed
+		group or when a student expects that a group is gonna
+		become open again because of other students' changes
+
+------------------------------------------------------------------ */
 
 void get_open_close_form(int argc, char **argv)
 {
@@ -957,15 +1119,54 @@ void get_open_close_form(int argc, char **argv)
 	printf("<script type=\"text/javascript\">\n%s</script>\n", script.c_str());
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: poly_period_to_time
+	Description: Returns the hour in the day of a period number in
+		the week
+	Parameters: - period, an integer representing the period number 
+		in the week
+	Return value: an integer representing the time during the day in
+		the form hour * 100 + minutes
+	Notes: none
+
+------------------------------------------------------------------ */
+
 int poly_period_to_time(int period)
 {
 	return period%10000;
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: set_default_options
+	Description: Set the default options
+	Parameters: none
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
+
 void set_default_options()
 {
 	config_file = "sopti.conf";
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: parse_command_line
+	Description: extract the relevant arguments from the command line
+	Parameters: pointers to argc & *argv[], the command line argument
+		count and values
+	Return value: none
+	Notes: modifies the global variable "action", arguments relating
+		to an action are not parsed by this function but by the
+		action itself
+
+------------------------------------------------------------------ */
 
 void parse_command_line(int *argc, char ***argv)
 {
@@ -1026,6 +1227,19 @@ void parse_command_line(int *argc, char ***argv)
 	*argv--;
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: parse_config_file
+	Description: Read the configuration files and assign option values
+	Parameters: conffile_name, a string representing the
+		configuration file's name
+	Return value: none
+	Notes: this is a work in progress, there's currently no support
+		for configuration files
+
+------------------------------------------------------------------ */
+
 void parse_config_file(string conffile_name)
 {
 	ifstream conffile;
@@ -1054,6 +1268,18 @@ void parse_config_file(string conffile_name)
 	}
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: main
+	Description: entry function of the program
+	Parameters: argc & *argv[], the command line argument
+		count and values
+	Return value: 0 on success, 1 on error
+	Notes: none
+
+------------------------------------------------------------------ */
+
 int main(int argc, char **argv)
 {
 	int i;
@@ -1065,7 +1291,7 @@ int main(int argc, char **argv)
 	
 	load_courses_from_csv(&schoolsched, course_file);
 	load_closed_from_csv(&schoolsched, closedgroups_file);
-		
+	
 	for(i=0; actions[i].name[0] != 0; i++) {
 		if(action == actions[i].name) {
 			if(actions[i].func) {

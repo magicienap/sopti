@@ -21,6 +21,19 @@
 
 using namespace std;
 
+
+/* ------------------------------------------------------------------
+
+	Function: add_group
+	Description: add a group to the course
+	Parameters: - g, the group to add
+		- islab, true if the group is a lab group
+	Return value: none
+	Notes: the function add_group that takes a pointer as the first
+		parameter should be prefered over this one
+
+------------------------------------------------------------------ */
+
 void SchoolCourse::add_group(Group g, bool islab)
 {
 	Group *tmp = new Group(g);
@@ -35,6 +48,18 @@ void SchoolCourse::add_group(Group g, bool islab)
 	}
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: add_group
+	Description: add a group to the course
+	Parameters: - g, a pointer to the group to add
+		- islab, true if the group is a lab group
+	Return value: none
+	Notes: g must not be deallocated afterwards
+
+------------------------------------------------------------------ */
+
 void SchoolCourse::add_group(Group *g, bool islab)
 {
 	p_groups.push_back(g);
@@ -47,6 +72,19 @@ void SchoolCourse::add_group(Group *g, bool islab)
 	}
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: group_exists
+	Description: returns wether a group is part of the course or not
+		based on the group's symbol
+	Parameters: - g, the group's symbol
+		- islab, true if the group is a lab group
+	Return value: boolean, true if the group is part of the course
+	Notes: none
+
+------------------------------------------------------------------ */
+
 bool SchoolCourse::group_exists(string g, int islab)
 {
 	if(islab) {
@@ -56,6 +94,20 @@ bool SchoolCourse::group_exists(string g, int islab)
 		return p_theory_groups.find(g) != p_theory_groups.end();
 	}
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: group
+	Description: get a pointer to the Group object of a
+		a certain group
+	Parameters: - n, the desired group's symbol
+		- islab, true if the group is a lab group
+	Return value: the Group object that has the symbol n and lab
+		state islab
+	Notes: the returned pointer must not be deallocated
+
+------------------------------------------------------------------ */
 
 Group *SchoolCourse::group(std::string n, bool islab)
 {

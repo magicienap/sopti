@@ -23,7 +23,23 @@
 #include "schoolschedule.hpp"
 #include "group.hpp"
 
-/* A constraint returns true if it is passed, false if it is failed */
+
+/* ------------------------------------------------------------------
+
+	Class: GroupConstraint
+	Description: returns true if the constraint on a group is
+		respected, false otherwise
+	Constructor parameters: a string whose meaning depends on the
+		specific GroupConstraint derived class
+	Parameters: - Group object to evaluate
+		- SchoolCourse object that the group belongs to
+	Return value: boolean, true if the constraint on a group is
+		respected
+	Notes: this class defines a functor, this is also and abstract 
+		class,	the operator() has to be implemented in derived 
+		group constraint classes
+
+------------------------------------------------------------------ */
 
 class GroupConstraint
 {
@@ -36,6 +52,21 @@ class GroupConstraint
 	
 	private:
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: NoClosed
+	Description: returns true if the group is not closed (still has
+		space available to register)
+	Constructor parameters: s, ignored
+	Parameters: - group, the Group object to test
+		- SchoolCourse object that the group belongs to (ignored)
+	Return value: boolean, true if the he group is not closed
+	Notes: this class defines a functor, if this	group constraint 
+		is used, ExplicitOpen should not be used
+
+------------------------------------------------------------------ */
 
 class NoClosed : public GroupConstraint
 {
@@ -52,6 +83,22 @@ class NoClosed : public GroupConstraint
 	
 	private:
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: NoPeriod
+	Description: returns true if a Group does not contain a specific
+		period
+	Constructor parameters: s, a string representing the period 
+		number
+	Parameters: - group, the Group object to test
+		- SchoolCourse object that the group belongs to (ignored)
+	Return value: boolean, true if group does not happen during the
+		period s
+	Notes: this class defines a functor
+
+------------------------------------------------------------------ */
 
 class NoPeriod : public GroupConstraint
 {
@@ -78,6 +125,23 @@ class NoPeriod : public GroupConstraint
 	private:
 	long p_period;
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: ExplicitOpen
+	Description: returns true if the group is in the list of groups
+		that are marked as being open
+	Constructor parameters: s, the list of group that are marked as
+		being open
+	Parameters: - group, the Group object to test
+		- course, the course that the group belongs to
+	Return value: boolean, true if the he group is open
+	Notes: this class defines a functor, the list of groups can
+		be generated with the action get_open_close_form, if this
+		group constraint is used, NoClosed should not be used
+
+------------------------------------------------------------------ */
 
 class ExplicitOpen : public GroupConstraint
 {
@@ -126,6 +190,22 @@ class ExplicitOpen : public GroupConstraint
 	private:
 	std::set<std::string> p_open;
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: NotBetween
+	Description: returns true if the group does not contain periods
+		that are between the two specified period numbers
+	Constructor parameters: s, the minimum and maximum period
+		numbers
+	Parameters: - group, the Group object to test
+		- SchoolCourse object that the group belongs to (ignored)
+	Return value: boolean, true if the he group does not contain 
+		periods that are between the two specified period numbers
+	Notes: this class defines a functor
+
+------------------------------------------------------------------ */
 
 class NotBetween : public GroupConstraint
 {

@@ -2,6 +2,18 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+
+/* ------------------------------------------------------------------
+
+	Function: make_message
+	Description: "allocate a sufficiently large string and print into
+		it"
+	Parameters: they work the same way as printf(3)
+	Return value: a pointer to the string that was printed into
+	Notes: comes from the printf(3) man page
+
+------------------------------------------------------------------ */
+
 char *make_message(const char *fmt, ...)
 {
 	/* Guess we need no more than 100 bytes. */

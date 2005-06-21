@@ -25,6 +25,17 @@
 
 using namespace std;
 
+
+/* ------------------------------------------------------------------
+
+	Function: error
+	Description: print a message to stderr and exit with an error
+	Parameters: they work the same way as printf(3)
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
+
 void error(const char *fmt, ...)
 {
         char buf[1000];
@@ -40,6 +51,18 @@ void error(const char *fmt, ...)
 
         exit(1);
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: debug
+	Description: print a debug message to stderr
+	Parameters: they work the same way as printf(3)
+	Return value: none
+	Notes: the compiler macro DEBUG has to be defined for this
+		function to do something
+
+------------------------------------------------------------------ */
 
 void debug(const char *fmt, ...)
 {

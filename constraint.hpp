@@ -22,19 +22,49 @@
 #include "studentschedule.hpp"
 #include "schoolschedule.hpp"
 
-/* A constraint returns true if it is passed, false if it is failed */
+
+/* ------------------------------------------------------------------
+
+	Class: Constraint
+	Description: returns true if the constraint on a schedule is
+		respected, false otherwise
+	Constructor parameters: a string whose meaning depends on the
+		specific Constraint derived class
+	Parameters: StudentSchedule objet to evaluate
+	Return value: boolean, true if the constraint on a schedule is
+		respected
+	Notes: this class defines a functor, this is also and abstract 
+		class,	the operator() has to be implemented in derived 
+		constraint classes
+
+------------------------------------------------------------------ */
 
 class Constraint
 {
 	public:
 	Constraint(std::string) {}
-	
 	virtual bool operator()(StudentSchedule &) = 0;
 	
 	virtual ~Constraint() {}
 	
 	private:
 };
+
+
+/* ------------------------------------------------------------------
+
+	Class: NoConflicts
+	Description: returns true if a StudentSchedule has less than a
+		certain number of overlapping periods
+	Constructor parameters: s, a string containing the maximum number
+		of conflicts
+	Parameters: sched, the StudentSchedule objet to evaluate for 
+		conflicts
+	Return value: boolean, true if the number of overlapping periods
+		in the schedule is smaller than the parameter s
+	Notes: this class defines a functor
+
+------------------------------------------------------------------ */
 
 class NoConflicts : public Constraint
 {
@@ -50,7 +80,7 @@ class NoConflicts : public Constraint
 	bool operator()(StudentSchedule &sched)
 	{
 		std::map<int,int> used_periods;
-	
+		
 		StudentSchedule::course_list_t::const_iterator it;
 		Group::period_list_t::const_iterator it2;
 		std::map<int,int>::iterator it3;

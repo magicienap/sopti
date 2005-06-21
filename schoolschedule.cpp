@@ -23,14 +23,49 @@
 
 using namespace std;
 
+
+/* ------------------------------------------------------------------
+
+	Function: SchoolSchedule
+	Description: empty default constructor
+	Parameters: none
+	Return value: none
+	Notes: none
+
+------------------------------------------------------------------ */
+
 SchoolSchedule::SchoolSchedule()
 {
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: course_exists
+	Description: returns wether a course exists or not based on the
+		course's symbol
+	Parameters: c, the course's symbol
+	Return value: boolean, true if the course exists in the school's
+		schedule
+	Notes: none
+
+------------------------------------------------------------------ */
 
 bool SchoolSchedule::course_exists(string c)
 {
 	return p_courses_order_sym.find(c) != p_courses_order_sym.end();
 }
+
+
+/* ------------------------------------------------------------------
+
+	Function: course_add
+	Description: add a course to the school's schedule
+	Parameters: c, a SchoolCourse object
+	Return value: none
+	Notes: the function add_course should be prefered over this one
+
+------------------------------------------------------------------ */
 
 void SchoolSchedule::course_add(SchoolCourse c)
 {
@@ -41,6 +76,17 @@ void SchoolSchedule::course_add(SchoolCourse c)
 	p_courses_order_sym[tmp->symbol()] = tmp;
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: add_course
+	Description: add a course to the school's schedule
+	Parameters: c, a pointer to a SchoolCourse object
+	Return value: none
+	Notes: c must not be deallocated afterwards
+
+------------------------------------------------------------------ */
+
 void SchoolSchedule::add_course(SchoolCourse *c)
 {
 	// Add to the structures
@@ -48,6 +94,17 @@ void SchoolSchedule::add_course(SchoolCourse *c)
 	p_courses_order_sym[c->symbol()] = c;
 }
 
+
+/* ------------------------------------------------------------------
+
+	Function: course
+	Description: get a pointer to the SchoolCourse object of a 
+		certain course
+	Parameters: c, the desired course's symbol
+	Return value: the SchoolCourse object that has the symbol c
+	Notes: the returned pointer must not be deallocated
+
+------------------------------------------------------------------ */
 
 SchoolCourse *SchoolSchedule::course(std::string c)
 {
