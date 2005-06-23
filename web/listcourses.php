@@ -3,6 +3,7 @@
 <head>
 	<title>Cours offerts</title>
 	<link rel="stylesheet" type="text/css" href="listcourses.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
 <body>
@@ -25,12 +26,12 @@ $cmd = $cmd_initial;
 <h1>Liste des cours offerts</h1>
 
 <pre>
-L&eacute;gende:
+Légende:
 [SIGLE] [TITRE] [SECTIONS...]
 
 Sections:
-Num&eacute;ro(Th&eacute;orique ou Lab)
-Un ast&eacute;risque signifie que la section est pleine.
+Numéro(Théorique ou Lab)
+Un astérisque signifie que la section est pleine.
 
 <?php
 passthru($cmd." 2>&1");

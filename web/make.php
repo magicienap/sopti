@@ -4,6 +4,7 @@
 	<title>Horaires</title>
 	<link rel="stylesheet" type="text/css" href="make.css">
 	<link rel="stylesheet" type="text/css" href="sopti.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
 <body>
@@ -16,11 +17,11 @@ require_once('config.php');
 
 <img src="aep.gif">
 
-<h1>G&eacute;n&eacute;rer des horaires</h1>
+<h1>Générer des horaires</h1>
 
-<p class="step_notcurrent">&Eacute;tape 1 - Sp&eacute;cifier les cours d&eacute;sir&eacute;s
-<p class="step_notcurrent">&Eacute;tape 2 - Choisir les options de g&eacute;n&eacute;ration
-<p class="step_current">&Eacute;tape 3 - Visualiser les horaires
+<p class="step_notcurrent">Étape 1 - Spécifier les cours désirés
+<p class="step_notcurrent">Étape 2 - Choisir les options de génération
+<p class="step_current">Étape 3 - Visualiser les horaires
 
 </center>
 
@@ -28,13 +29,13 @@ require_once('config.php');
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
-<p>Voici les horaires correspondant aux options s&eacute;lectionn&eacute;es. Ils sont affich&eacute;s en ordre d&eacute;croissant de pr&eacute;f&eacute;rence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Le "score" le plus <b>faible</b> indique le <b>meilleur</b> horaire.
+<p>Voici les horaires correspondant aux options sélectionnées. Ils sont affichés en ordre décroissant de préférence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Le "score" le plus <b>faible</b> indique le <b>meilleur</b> horaire.
 
-<p>Pour changer les options, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.
+<p>Pour changer les options, utiliser le bouton Précédent de votre navigateur.
 
-<p>Pour choisir officiellement un horaire, vous devez visiter votre dossier &eacute;tudiant. Vous trouverez un lien sur la page d'accueil du g&eacute;n&eacute;rateur d'horaires.
+<p>Pour choisir officiellement un horaire, vous devez visiter votre dossier étudiant. Vous trouverez un lien sur la page d'accueil du générateur d'horaires.
 
-<p>Merci d'utiliser le g&eacute;n&eacute;rateur d'horaires de l'AEP!
+<p>Merci d'utiliser le générateur d'horaires de l'AEP!
 </div>
 
 <?php
@@ -75,7 +76,7 @@ require_once('config.php');
 	// Parse
 	$courses_raw = strtoupper($_POST['courses']);
 	// Replace bizarre chars with spaces
-	$courses_raw = ereg_replace("[\t\n\v\r,;]", " ", $courses_raw);
+	$courses_raw = ereg_replace("[^A-Z0-9\.\-]", " ", $courses_raw);
 	// Replace multiple spaces with one space
 	$courses_raw = ereg_replace(" +", " ", $courses_raw);
 	// Remove initial and final whitespace
@@ -128,7 +129,7 @@ require_once('config.php');
 		passthru($cmd." 2>&1");
 	}
 	else {
-		error("Aucun cours sp&eacute;cifi&eacute;. Utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur pour changer les options.");
+		error("Aucun cours spécifié. Utiliser le bouton Précédent de votre navigateur pour changer les options.");
 	}
 ?>
 
