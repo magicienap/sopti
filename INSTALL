@@ -1,0 +1,17 @@
+INSTALLING SOPTI
+----------------
+
+* Unpack the archive in a directory of your choice
+	tar xvzf sopti-xx.tar.gz
+	
+* Enter the sopti directory and run the configure script
+	cd sopti-xx
+	./configure
+	
+* Compile the program
+	make
+	
+-> No install feature is implemented at this time
+
+INSTALLING THE WEB INTERFACE
+----------------------------
