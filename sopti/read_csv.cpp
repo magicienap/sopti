@@ -130,7 +130,7 @@ void load_courses_from_csv(SchoolSchedule *sopti, string periods_file)
 	// Open the file
 	period_list.open(periods_file.c_str());
 	if(period_list.fail()) {
-		error("opening file %s", periods_file.c_str());
+		error("error opening file %s", periods_file.c_str());
 	}
 	
 	// Ignore header line
@@ -243,7 +243,7 @@ void load_closed_from_csv(SchoolSchedule *sopti,  string closed_file)
 	
 	closed_list.open(closed_file.c_str());
 	if(closed_list.fail()) {
-		error("opening file %s", closed_file.c_str());
+		error("error opening file %s", closed_file.c_str());
 	}
 	
 	// Ignore header line

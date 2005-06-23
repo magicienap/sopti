@@ -15,10 +15,10 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+#include "main.hpp"
 
-#include <string>
 #include <fstream>
-#include <vector>
 #include <iostream>
 #include <map>
 #include <algorithm>
@@ -26,56 +26,14 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <string.h>
-#include "make_message.h"
 
 #include "globals.hpp"
+#include "make_message.h"
 #include "schoolschedule.hpp"
-#include "schoolcourse.hpp"
-#include "studentschedule.hpp"
-#include "constraint.hpp"
 #include "group_constraint.hpp"
 #include "objective.hpp"
 #include "stdsched.h"
 #include "read_csv.hpp"
-
-using namespace std;
-
-#define OUTPUT_HTML	1
-
-/* Describes an action that can be passed
- * at command line. The arguments are
- * argc and argv, but only containing the
- * arguments that apply to the action (only
- * those including and after the action name.
- */
-
-struct Action {
-	char name[20];
-	void (*func)(int, char **);
-};
-
-struct Action actions[] =
-	{ { "listcourses", listcourses},
-	  { "make", make},
-	  { "get_open_close_form", get_open_close_form},
-	  { 0, 0 } };
-
-string config_file="sopti.conf";
-string course_file="data/courses.csv";
-string closedgroups_file="data/closed.csv";
-string action;
-SchoolSchedule schoolsched;
-int output_fmt=0;
-
-class SchoolCoursePtrSymAlphaOrder
-{
-	public:
-	SchoolCoursePtrSymAlphaOrder() {}
-	bool operator()(const SchoolCourse *a, const SchoolCourse *b) {
-		return a->symbol() < b->symbol();
-	}
-};
-
 
 /* --------------------------------------------------------------------------
 
@@ -231,12 +189,6 @@ void print_schedule_ascii(StudentSchedule &s)
 	
 	printf("\n");
 }
-
-struct ScheduledPeriod {
-	SchoolCourse *course;
-	Group *group;
-	Period *period;
-};
 
 
 /* ------------------------------------------------------------------
@@ -497,15 +449,19 @@ void usage()
 	"sopti [GLOBAL_OPTIONS] ACTION [ACTION_OPTIONS]\n"
 	"\n"
 	"Actions:\n"
+	"  get_open_close_form - print an html form to choose the groups to open\n"
 	"  listcourses - print a list of courses\n"
 	"  make - make schedules\n"
 	"\n"
 	"Global options:\n"
-	"  --course_file <course_file> - specify course file explicitly\n"
-	"  --closed_file <closed_file> - specify closed groups file explicitly\n"
+	"  --coursefile <course_file> - specify course file explicitly\n"
+	"  --closedfile <closed_file> - specify closed groups file explicitly\n"
 	"  --html - enable html output\n"
 	"\n"
 	"Action options:\n"
+	"  * get_open_close_form\n"
+	"    -c <course> - add this course to the schedule\n"
+	"                  (repeat this option for each course)\n"
 	"  * make\n"
 	"    -c <course> - add this course to the schedule\n"
 	"                  (repeat this option for each course)\n"
@@ -567,8 +523,6 @@ inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoo
 		}
 	}
 }
-
-void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions);
 
 
 /* ------------------------------------------------------------------
@@ -790,7 +744,7 @@ void make(int argc, char **argv)
 			case 'c':
 				if(!schoolsched.course_exists(optarg)) {
 					if(output_fmt == OUTPUT_HTML) {
-						error("<div class=\"errormsg\"><p>Ce cours n'existe pas: %s\n<p>Pour changer les param&egrave;tres, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.</div>", optarg);
+						error("<div class=\"errormsg\"><p>Ce cours n'existe pas: %s\n<p>Pour changer les paramètres, utiliser le bouton Précédent de votre navigateur.</div>", optarg);
 					}
 					else {
 						error("course does not exist: %s", optarg);
@@ -880,7 +834,7 @@ void make(int argc, char **argv)
 	
 	if(solutions.size() == 0) {
 		if(output_fmt == OUTPUT_HTML) {
-			printf("<div class=\"errormsg\"><p>Aucune solution trouv&eacute;e!<p>Causes possibles:<ul><li>Certaines sections sont pleines<li>Les cours s&eacute;lectionn&eacute;s entrent en conflit\n</ul><p>Pour changer les param&egrave;tres, utiliser le bouton Pr&eacute;c&eacute;dent de votre navigateur.</div>");
+			printf("<div class=\"errormsg\"><p>Aucune solution trouvée!<p>Causes possibles:<ul><li>Certaines sections sont pleines<li>Les cours sélectionnés entrent en conflit\n</ul><p>Pour changer les paramètres, utiliser le bouton Précédent de votre navigateur.</div>");
 		}
 		else {
 			error("No solution found!");
@@ -898,9 +852,14 @@ void make(int argc, char **argv)
 	}
 	
 	// Print the summary
-	printf("<div class=\"make_summary\">\n");
-	printf("<p>Nombre d'horaires trouv&eacute;s: %d\n", solutions.size());
-	printf("</div>\n");
+	if (output_fmt == OUTPUT_HTML) {
+		printf("<div class=\"make_summary\">\n");
+		printf("<p>Nombre d'horaires trouvés: %d\n", solutions.size());
+		printf("</div>\n");
+	}
+	else {
+		printf("Nombre d'horaires trouvés: %d\n", solutions.size());
+	}
 	
 	// Print the solutions in order
 	for(it2=scores.begin(), i=1; it2!=scores.end(); it2++, i++) {
@@ -912,7 +871,7 @@ void make(int argc, char **argv)
 			// Print group information
 			printf("<div class=\"schedule_info\">\n");
 			printf("<table class=\"group_summary\">\n");
-			printf("<tr><th>Sigle</th><th>Titre</th><th>Th&eacute;orie</th><th>Lab</th></tr>\n");
+			printf("<tr><th>Sigle</th><th>Titre</th><th>Théorie</th><th>Lab</th></tr>\n");
 			
 			StudentSchedule::course_list_t::const_iterator it4;
 			for(it4=it2->second->st_courses_begin(); it4!=it2->second->st_courses_end(); it4++) {
@@ -1043,7 +1002,7 @@ void get_open_close_form(int argc, char **argv)
 				script_close = "function close_all_t_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
 				
 			
-				printf("<td>Th&eacute;orique%s</td>", (current_course->type()==COURSE_TYPE_THEORYLABSAME)?" / lab":"");
+				printf("<td>Théorique%s</td>", (current_course->type()==COURSE_TYPE_THEORYLABSAME)?" / lab":"");
 				printf("<td>");
 				for(it2=current_course->groups_begin(); it2!=current_course->groups_end(); it2++) {
 					if((*it2)->lab())

@@ -45,7 +45,7 @@ class StudentSchedule
 	course_list_t::const_iterator st_courses_end() { return p_courses.end(); }
 	
 	private:
-	std::vector<struct StudentCourse *> p_courses;
+	course_list_t p_courses;
 };
 
 #endif // STUDENTSCHEDULE_HPP

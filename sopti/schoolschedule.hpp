@@ -55,7 +55,7 @@ class SchoolSchedule
 	
 	private:
 	// The courses, no particular order
-	std::vector<SchoolCourse *> p_courses;
+	course_list_t p_courses;
 	// The courses, ordered by symbol
 	std::map<std::string, SchoolCourse *> p_courses_order_sym;
 };

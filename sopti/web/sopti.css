@@ -1,4 +1,8 @@
-body {font-family: Helvetica,Verdana; }
+body {
+	font-family: Helvetica, Verdana, sans-serif;
+	font-size: 12px;
+}
+
 h1 {
 	font-size: 20px;
 }
@@ -35,22 +39,24 @@ p.step_notcurrent {
 }
 
 table.free_period_selector {
-	border-width: 3px;
-	border-style: solid;
-	border-color: #000000;
-	font-size: 12px;
-	border-collapse: collapse;
+	border: 0;
+	margin: 1ex 0;
 }
 
-table.free_period_selector td {
-	font-weight: bold;
+table.free_period_selector tr.even {
+	background-color: #eeeeee;
 }
 
-table.free_period_selector td.hour,td.weekday,td.empty {
+table.free_period_selector th
+{
+	padding: 1ex 2em;
+}
+
+table.free_period_selector th.hour,th.weekday {
 	background-color:#dddddd;
 }
 
-table.free_period_selector td.hour {
+table.free_period_selector th.hour {
 	text-align: right;
 }
 

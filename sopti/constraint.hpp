@@ -21,6 +21,7 @@
 
 #include "studentschedule.hpp"
 #include "schoolschedule.hpp"
+#include "error.hpp"
 
 
 /* ------------------------------------------------------------------

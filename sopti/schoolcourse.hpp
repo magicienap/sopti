@@ -62,7 +62,7 @@ class SchoolCourse
 	int p_type;
 	
 	// All groups in a basic container
-	std::vector<Group *> p_groups;
+	group_list_t p_groups;
 	
 	std::map<std::string, Group *> p_theory_groups;
 	std::map<std::string, Group *> p_lab_groups;
