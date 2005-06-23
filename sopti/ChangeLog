@@ -1,3 +1,7 @@
+sopti-0.13 ()
+* patch de commentaires (Benjamin Poirier)
+* colonnes de periodes libres cliquables dans make_form2 (Benjamin Poirier)
+
 sopti-0.12 (2005/05/23)
 * ajout des contraintes de groupe
 
