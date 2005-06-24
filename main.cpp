@@ -35,6 +35,12 @@
 #include "stdsched.h"
 #include "read_csv.hpp"
 
+#if defined(HAVE_CONFIG_H)
+#include "config.h"
+#else
+#error "Don't have config.h"
+#endif
+
 /* --------------------------------------------------------------------------
 
 	Function: listcourses
@@ -454,6 +460,8 @@ void usage()
 	"  make - make schedules\n"
 	"\n"
 	"Global options:\n"
+	"  -h, --help - print this help screen and exit\n"
+	"  --version - print version\n"
 	"  --coursefile <course_file> - specify course file explicitly\n"
 	"  --closedfile <closed_file> - specify closed groups file explicitly\n"
 	"  --html - enable html output\n"
@@ -465,10 +473,12 @@ void usage()
 	"  * make\n"
 	"    -c <course> - add this course to the schedule\n"
 	"                  (repeat this option for each course)\n"
-	"    -J <objective> - order results by criteria (minholes)\n"
-	"    -T <constraint> - use schedule constraint (noevening)\n"
+	"    -J <objective> - order results by criteria\n"
+	"                     (minholes, maxmorningsleep, maxfreedays)\n"
+	"    -T <constraint> - use schedule constraint ()\n"
 	"    -t <argument> - specify the argument for the next schedule constraint\n"
-	"    -G <constraint> - use group constraint ()\n"
+	"    -G <constraint> - use group constraint\n"
+	"                      (noclosed, noperiod, explicitopen, notbetween)\n"
 	"    -g <argument> - specify the argument for the next group constraint\n"
 	"\n"
 	"Group constraints:\n"
@@ -1137,6 +1147,7 @@ void parse_command_line(int *argc, char ***argv)
 		int option_index = 0;
 		static struct option long_options[] = {
 			{"help", 0, 0, 'h'},
+			{"version", 0, 0, 5},
 			{"coursefile", required_argument, 0, 'c'},
 			{"closedfile", required_argument, 0, 4},
 			{"html", 0, 0, 3},
@@ -1144,7 +1155,7 @@ void parse_command_line(int *argc, char ***argv)
 		};
 	
 		/* + indicates to stop at the first non-argument option */
-		c = getopt_long (*argc, *argv, "+hc:", long_options, &option_index);
+		c = getopt_long (*argc, *argv, "+hvc:", long_options, &option_index);
 		if (c == -1)
 			break;
 	
@@ -1153,7 +1164,10 @@ void parse_command_line(int *argc, char ***argv)
 		case 'c':
 			course_file=optarg;
 			break;
-			
+		
+		case 'h':
+			usage();
+			exit(0);
 		case 3:
 			output_fmt = OUTPUT_HTML;
 			break;
@@ -1161,6 +1175,10 @@ void parse_command_line(int *argc, char ***argv)
 		case 4:
 			closedgroups_file=optarg;
 			break;
+			
+		case 5:
+			printf("%s\n", PACKAGE_STRING);
+			exit(0);
 
 		case '?':
 			usage();
