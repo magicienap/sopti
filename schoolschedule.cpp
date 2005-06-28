@@ -38,6 +38,13 @@ SchoolSchedule::SchoolSchedule()
 {
 }
 
+SchoolSchedule::~SchoolSchedule()
+{
+	course_list_t::const_iterator it;
+	for(it = courses_begin(); it != courses_end(); it++) {
+		delete *it;
+	}
+}
 
 /* ------------------------------------------------------------------
 

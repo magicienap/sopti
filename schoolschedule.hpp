@@ -45,6 +45,7 @@ class SchoolSchedule
 	typedef std::vector<SchoolCourse *> course_list_t;
 
 	SchoolSchedule();
+	~SchoolSchedule();
 	SchoolCourse *course(std::string);
 	
 	bool course_exists(std::string);

@@ -3,6 +3,7 @@ sopti-0.13 ()
 * colonnes de periodes libres cliquables dans make_form2 (Benjamin Poirier)
 * nettoyage (Benjamin Poirier)
 * mises a jour documentation
+* nettoyer les fuites de memoire
 
 sopti-0.12 (2005/05/23)
 * ajout des contraintes de groupe

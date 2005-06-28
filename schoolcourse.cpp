@@ -21,6 +21,13 @@
 
 using namespace std;
 
+SchoolCourse::~SchoolCourse()
+{
+	group_list_t::const_iterator it;
+	for(it = groups_begin(); it != groups_end(); it++) {
+		delete *it;
+	}
+}
 
 /* ------------------------------------------------------------------
 

@@ -18,6 +18,25 @@
 
 #include "studentschedule.hpp"
 
+StudentSchedule::StudentSchedule(const StudentSchedule &s)
+{
+	// Copy everything
+	*this = s;
+	
+	// Make copies of the courses
+	course_list_t::iterator it;
+	for(it = p_courses.begin(); it != p_courses.end(); it++) {
+		*it = new struct StudentCourse(**it);
+	}
+}
+
+StudentSchedule::~StudentSchedule()
+{
+	course_list_t::const_iterator it;
+	for(it = st_courses_begin(); it != st_courses_end(); it++) {
+		delete *it;
+	}
+}
 
 /* ------------------------------------------------------------------
 
