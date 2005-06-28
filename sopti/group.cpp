@@ -36,6 +36,13 @@ void Group::add_period(Period p)
 	p_periods_by_no[p.period_no()] = tmp;
 }
 
+Group::~Group()
+{
+	period_list_t::const_iterator it;
+	for(it = periods_begin(); it != periods_end(); it++) {
+		delete *it;
+	}
+}
 
 /* ------------------------------------------------------------------
 

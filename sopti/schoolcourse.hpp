@@ -37,6 +37,7 @@ class SchoolCourse
 	typedef std::vector<Group *> group_list_t;
 	
 	SchoolCourse(std::string symbol) { p_symbol = symbol; }
+	~SchoolCourse();
 	
 	bool group_exists(std::string, int islab);
 	Group *group(std::string, bool);

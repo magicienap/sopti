@@ -29,6 +29,7 @@ class Group
 	public:
 	typedef std::vector<Period *> period_list_t;
 	Group(std::string n) { p_group_name = n; p_islab=false; p_closed=false; }
+	~Group();
 	
 	bool has_period(int);
 	Period *periods(int);

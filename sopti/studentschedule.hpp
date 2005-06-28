@@ -39,6 +39,9 @@ class StudentSchedule
 {
 	public:
 	typedef std::vector<struct StudentCourse *> course_list_t;
+	StudentSchedule() {}
+	StudentSchedule(const StudentSchedule &);
+	~StudentSchedule();
 	
 	void add_st_course(StudentCourse g);
 	course_list_t::const_iterator st_courses_begin() { return p_courses.begin(); }
