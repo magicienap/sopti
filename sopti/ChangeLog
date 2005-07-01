@@ -1,4 +1,4 @@
-sopti-0.13 ()
+sopti-0.13 (2005/06/30)
 * patch de commentaires (Benjamin Poirier)
 * colonnes de periodes libres cliquables dans make_form2 (Benjamin Poirier)
 * nettoyage (Benjamin Poirier)
