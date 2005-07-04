@@ -15,3 +15,23 @@ INSTALLING SOPTI
 
 INSTALLING THE WEB INTERFACE
 ----------------------------
+* Copy all the contents of the web/ directory to a directory accessible
+  by HTTP.
+
+* Create config.php based on config.php.example and put it in the public
+  directory.
+
+* Create sopti.conf in the same directory as the sopti executable, based
+  on sopti.conf.example.
+
+* Create the database with the db/empty.sql script
+	mysql -h myhost -u myuser -p my_database < db/empty.sql
+
+* (Optional) Import teacher data from XML files on polymtl.ca
+	./update_courses_xml.sh 
+  Then create teachers.csv
+	./make_teachers_csv.sh
+
+* Populate de SQL database
+	cd db
+	./updatedb.pl
