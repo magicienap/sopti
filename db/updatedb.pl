@@ -7,29 +7,122 @@ use sigtrap;
 @fields_csv = ('cycle', 'symbol', 'group', 'credits', 'places_room', 'period_code', 'room', 'theory_or_lab', 'lab_type', 'week', 'course_type', 'title', 'places_group', 'weekday', 'time');
 @fields_courses = ('title');
 @fields_courses_semester = ('course_type');
-@fields_groups = ('places_room', 'places_group');
+@fields_groups = ('places_room', 'places_group', 'closed', 'teacher');
 @fields_periods = ('room', 'weekday', 'time', 'week');
 
+$CONFIG_DIR='..';
 $CURRENT_SEMESTER='H2005';
-
-sub connect_db() {
-}
+%CONFIG=();
 
 sub warning {
 	print(("\033[1;33mwarning: \033[0m", @_, "\n"));
 }
 
+sub retrieve_closed {
+	print("Opening Closed CSV...\n");
+	open(CLOSEDFILE, "<../data/closed.csv") or die("error opening data file");
+	$tmp=<CLOSEDFILE>;
+	my $closed_sections;
+	while(<CLOSEDFILE>) {
+		chomp;
+		$_ =~ s/[\n\r]*$//s;
+		my @fields = split(/;/);
+		
+		if(scalar(@fields) != 6) {
+			die("bad field count");
+		}
+		
+		$closed_sections->{$fields[1]}->{$fields[2]}->{$fields[3]} = 1;
+	}
+	
+	print("Closing Closed CSV...\n");
+	close CLOSEDFILE;
+	
+	return $closed_sections;
+}
+
+sub retrieve_teachers {
+	print("Opening teachers CSV...\n");
+	open(TEACHERFILE, "<../data/teachers.csv") or die("error opening data file");
+	$tmp=<TEACHERFILE>;
+	my $teacher_data;
+	while(<TEACHERFILE>) {
+		chomp;
+		$_ =~ s/[\n\r]*$//s;
+		my @fields = split(/;/);
+		
+		if(scalar(@fields) != 4) {
+			die("bad field count");
+		}
+		
+		$teacher_data->{$fields[0]}->{$fields[1]}->{$fields[2]} = $fields[3];
+	}
+	
+	print("Closing teachers CSV...\n");
+	close TEACHERFILE;
+	
+	return $teacher_data;
+}
+
+sub read_config {
+	print "Opening config file...\n";
+	open(CONFIGFILE, "<" . $CONFIG_DIR . "/sopti.conf") or die("error opening config file");
+	
+	while(<CONFIGFILE>) {
+		chomp;
+		$line = $_;
+		
+		# remove comments
+		$line =~ s/([^#]*)#.*/\1/;
+		
+		if($line =~ /^[ \t]*$/) {
+			next;
+		}
+		
+		my $varname;
+		my $varval;
+		
+		if($line =~ /^[ \t]*[^ \t]+[ \t]+[^ \t"]+[ \t]*$/) {
+			$varname = $line;
+			$varval = $line;
+			$varname =~ s/^[ \t]*([^ \t]+)[ \t]+[^ \t"]+[ \t]*$/\1/;
+			$varval =~ s/^[ \t]*[^ \t]+[ \t]+([^ \t"]+)[ \t]*$/\1/;
+			print "got [$varname][$varval]\n";
+		}
+		elsif($line =~ /^[ \t]*[^ \t]+[ \t]+"[^"]*"[ \t]*$/) {
+			$varname = $line;
+			$varval = $line;
+			$varname =~ s/^[ \t]*([^ \t]+)[ \t]+"[^"]*"[ \t]*$/\1/;
+			$varval =~ s/^[ \t]*[^ \t]+[ \t]+"([^"]*)"[ \t]*$/\1/;
+			print "got [$varname][$varval]\n";
+		}
+		else {
+			die("invalid config file line: $line\n");
+		}
+		
+		print "hep [$varname][$varval]\n";
+		$CONFIG{$varname} = $varval;
+	}
+	
+	print "Closing config file...\n";
+	close CONFIGFILE;
+}
+
 sub main() {
 	print("DATABASE UPDATE\n");
+	
+	read_config;
+	
 	print("Connecting to database...\n");
-	$dbh = DBI->connect('dbi:mysql:database=poly_courses;host=127.0.0.1', 'poly', 'pol') or die(DBI->errstr);
+	print("got username" . $CONFIG{'db.username'} . "\n");
+	$dbh = DBI->connect('dbi:mysql:database=' . $CONFIG{'db.schema'}, $CONFIG{'db.username'}, $CONFIG{'db.password'}) or die(DBI->errstr);
 	
 # 	print("Creating replacement tables...\n");
 # 	$dbh->do('CREATE TABLE courses_new LIKE courses') or die $dbh->errstr;
 # 	$dbh->do('CREATE TABLE courses_semester_new LIKE courses_semester') or die $dbh->errstr;
 
 	# Get the unique for the current semester
-	$semester_result = $dbh->selectall_arrayref('SELECT session.unique FROM session WHERE code="' . $CURRENT_SEMESTER . '"');
+	$semester_result = $dbh->selectall_arrayref('SELECT semesters.unique FROM semesters WHERE code="' . $CURRENT_SEMESTER . '"');
 	if(scalar(@{$semester_result}) > 1) {
 		die("More than 1 semester with code " . $CURRENT_SEMESTER . "\n");
 	}
@@ -47,12 +140,12 @@ sub main() {
 	# Download the courses_semester table
 	# Index the hash by course symbol (ex: ING1040)
 	print("Downloading courses_semester table...\n");
-	$courses_semester_table_ref = $dbh->selectall_hashref('SELECT courses.symbol as symbol, courses_semester.* FROM courses,courses_semester,session WHERE courses_semester.course=courses.unique AND session.code="' . $CURRENT_SEMESTER . '" and courses_semester.semester=session.unique', 'symbol');
+	$courses_semester_table_ref = $dbh->selectall_hashref('SELECT courses.symbol as symbol, courses_semester.* FROM courses,courses_semester,semesters WHERE courses_semester.course=courses.unique AND semesters.code="' . $CURRENT_SEMESTER . '" and courses_semester.semester=semesters.unique', 'symbol');
 
 	# Download the groups table
 	# Index the hash by course_semester unique, then group name
 	print("Downloading groups table...\n");
-	$groups_table_array = $dbh->selectall_arrayref('SELECT groups.* FROM groups, courses_semester, session WHERE groups.course_semester=courses_semester.unique AND courses_semester.semester=session.unique AND session.unique="' . $current_semester_unique . '"', { Slice => {}});
+	$groups_table_array = $dbh->selectall_arrayref('SELECT groups.* FROM groups, courses_semester, semesters WHERE groups.course_semester=courses_semester.unique AND courses_semester.semester=semesters.unique AND semesters.unique="' . $current_semester_unique . '"', { Slice => {}});
 	$groups_table_ref = {};
 	foreach $row (@{$groups_table_array}) {
 		my $course_semester = $row->{'course_semester'};
@@ -65,7 +158,7 @@ sub main() {
 	# Download the periods table
 	# Index the hash by period code
 	print("Downloading periods table...\n");
-	$periods_table_array = $dbh->selectall_arrayref('SELECT periods.* FROM periods, groups, courses_semester, courses, session WHERE periods.group=groups.unique AND groups.course_semester=courses_semester.unique AND courses_semester.semester=session.unique AND courses_semester.course=courses.unique AND session.unique="' . $current_semester_unique . '"', { Slice => {}});
+	$periods_table_array = $dbh->selectall_arrayref('SELECT periods.* FROM periods, groups, courses_semester, courses, semesters WHERE periods.group=groups.unique AND groups.course_semester=courses_semester.unique AND courses_semester.semester=semesters.unique AND courses_semester.course=courses.unique AND semesters.unique="' . $current_semester_unique . '"', { Slice => {}});
 	$periods_table_ref = {};
 	foreach $row (@{$periods_table_array}) {
 		my $group = $row->{'group'};
@@ -73,6 +166,9 @@ sub main() {
 		
 		$periods_table_ref->{$group}->{$period_code} = $row;
 	}
+	
+	my $closed_sections = retrieve_closed();
+	my $teacher_data = retrieve_teachers();
 	
 	print("Opening CSV...\n");
 	open(DATAFILE, "<../data/courses.csv") or die("error opening data file");
@@ -109,6 +205,22 @@ sub main() {
 			die('Invalid week expression in CSV');
 		}
 
+		# Merge the closed data
+		if(exists $closed_sections->{$current_line{'symbol'}}->{$current_line{'group'}}->{$current_line{'theory_or_lab'}}) {
+			$current_line{'closed'} = 1;
+		}
+		else {
+			$current_line{'closed'} = 0;
+		}
+		
+		# Merge the teacher data
+		if(exists $teacher_data->{$current_line{'symbol'}}->{$current_line{'group'}}->{$current_line{'theory_or_lab'}}) {
+			$current_line{'teacher'} = $teacher_data->{$current_line{'symbol'}}->{$current_line{'group'}}->{$current_line{'theory_or_lab'}};
+		}
+		else {
+			$current_line{'teacher'} = "";
+		}
+		
 		# Update the courses table
 		$current_course_entry = $courses_table_ref->{$current_line{'symbol'}};
 		if($courses_done{$current_line{'symbol'}} != 1) {
@@ -177,7 +289,7 @@ sub main() {
 			if($current_group_entry == undef) {
 				# course not in DB, add it
 				warning("[INSERT][groups] Group $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'} was not in groups table; adding it");
-				$dbh->do("INSERT INTO groups (course_semester, name, theory_or_lab) VALUES (\"$current_course_semester_unique\", \"$current_line{'group'}\", \"$current_line{'theory_or_lab'}\")") or die $dbh->errstr;
+				$dbh->do("INSERT INTO groups (course_semester, name, theory_or_lab, places_room, places_group, closed) VALUES (\"$current_course_semester_unique\", \"$current_line{'group'}\", \"$current_line{'theory_or_lab'}\", \"$current_line{'places_room'}\", \"$current_line{'places_group'}\", \"$current_line{'closed'}\")") or die $dbh->errstr;
 				
 				# get the unique of the new entry
 				my $unique = $dbh->selectall_arrayref("SELECT groups.unique FROM groups WHERE course_semester=\"$current_course_semester_unique\" AND name=\"$current_line{'group'}\" AND theory_or_lab=\"$current_line{'theory_or_lab'}\"");
@@ -210,7 +322,7 @@ sub main() {
 		if($current_period_entry == undef) {
 			# course not in DB, add it
 			warning("[INSERT][periods] Period $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'}, $current_line{'period_code'} was not in periods table; adding it");
-			$dbh->do("INSERT INTO periods (periods.group, periods.period_code, periods.room, periods.time, periods.weekday) VALUES (\"$current_group_unique\", \"$current_line{'period_code'}\", \"$current_line{'room'}\", \"$current_line{'time'}\", \"$current_line{'weekday'}\")") or die $dbh->errstr;
+			$dbh->do("INSERT INTO periods (periods.group, periods.period_code, periods.room, periods.time, periods.weekday, periods.week) VALUES (\"$current_group_unique\", \"$current_line{'period_code'}\", \"$current_line{'room'}\", \"$current_line{'time'}\", \"$current_line{'weekday'}\", \"$current_line{'week'}\")") or die $dbh->errstr;
 		}
 		else {
 			for my $field (@fields_periods) {

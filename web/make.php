@@ -1,3 +1,12 @@
+<?php
+require_once('config.php');
+require_once('lib.php');
+
+read_config_file($SOPTI_CONFIG_FILE);
+
+ob_start();
+?>
+
 <html>
 
 <head>
@@ -68,10 +77,11 @@ require_once('config.php');
 	$cmd_initial=$SOPTI_EXEC_DATA . " --html make";
 	$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays" );
 
+	/*
 	function error($msg)
 	{
 		print("<div class=\"errormsg\">\n<p>" . $msg . "\n</div>\n");
-	}
+	}*/
 
 	// Parse
 	$courses_raw = strtoupper($_POST['courses']);

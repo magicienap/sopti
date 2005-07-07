@@ -1,3 +1,189 @@
+<?php
+require_once('config.php');
+require_once('lib.php');
+
+read_config_file($SOPTI_CONFIG_FILE);
+
+ob_start();
+
+/* array_intersect_key2 has the same functionality as the
+   PHP5 array_intersect_key function used with 2 arguments.
+   by Benjamin Poirier
+*/
+
+function array_intersect_key2($array1, $array2) 
+{ 
+	$output= array(); 
+     
+	foreach ($array1 as $key => $value) { 
+		if (array_key_exists($key, $array2)) { 
+			$output= array_merge($output, array($key => $value)); 
+		} 
+	} 
+     
+	return $output; 
+} 
+
+function print_open_close_form($courses) {
+	global $CONFIG_VARS;
+
+	// Query used
+	// SELECT courses.symbol,courses.title,groups.name,groups.theory_or_lab FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN groups ON groups.course_semester=courses_semester.unique WHERE courses.symbol='ING1040' OR courses.symbol='ING1020' OR courses.symbol='INF2600' ORDER BY courses.symbol ASC,groups.name ASC,groups.theory_or_lab ASC
+	
+	#$dblink = mysql_connect('', 'poly', 'pol')
+	$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
+		or die('Could not connect: ' . mysql_error());
+	#mysql_select_db('poly_courses') or die('Could not select database');
+	mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select database');
+	
+	// Make the query
+	$query_begin = "SELECT courses.symbol AS sym,courses.title AS title,courses_semester.course_type AS coursetype,groups.name AS groupname,groups.theory_or_lab AS grouptl,groups.teacher AS teacher,groups.closed AS closed FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN groups ON groups.course_semester=courses_semester.unique WHERE";
+	$query_end   = " ORDER BY courses.symbol ASC,groups.name ASC,groups.theory_or_lab ASC";
+	$query = $query_begin;
+	$first = true;
+	foreach($courses as $course) {
+		if($first == true) {
+			$query = $query . " courses.symbol='" . mysql_escape_string($course) . "'";
+			$first = false;
+		}
+		else {
+			$query = $query . " OR courses.symbol='" . mysql_escape_string($course) . "'";
+		}
+	}
+	$query = $query . $query_end;
+	
+	//echo $query;
+	
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+	mysql_close($dblink);
+	
+	$current_course = ""; // Course being read
+	$current_type_label = ""; // Type being read: T or L
+	$current_type_index = 0;
+	$group_info = array();
+	$first = true; // Are we reading the first entry?
+	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$group_info[$row["sym"]][$row["grouptl"]][$row["groupname"]]["teacher"] = $row['teacher'];
+		$group_info[$row["sym"]][$row["grouptl"]][$row["groupname"]]["closed"] = $row['closed'];
+		$course_info[$row["sym"]]["type"] = $row["coursetype"];
+		$course_info[$row["sym"]]["title"] = $row["title"];
+	}
+	
+	// check that all courses exist
+	foreach($courses as $course) {
+		if(!array_key_exists($course, $course_info)) {
+			error("Ce cours n'existe pas: " . $course);
+		}
+	}
+
+	print("<table class=\"openclose_table\">\n");
+	foreach($group_info as $sym => $entry1) {
+		/*
+		$course_rowspan = 0;
+		foreach($group_info as $tmp => $groups) {
+			$course_rowspan += count($groups);
+		}
+		*/
+
+		// Determine which types will form one block in the course form
+		if($course_info[$sym]["type"] == 'T') {
+			$types_to_consider = array("C" => 1);
+		}
+		elseif($course_info[$sym]["type"] == 'L') {
+			$types_to_consider = array("L" => 1);
+		}
+		elseif($course_info[$sym]["type"] == 'TL') {
+			$types_to_consider = array("C" => 1);
+		}
+		elseif($course_info[$sym]["type"] == 'TLS') {
+			$types_to_consider = array("C" => 1, "L" => 1);
+		}
+		else {
+			die("invalid course type");
+		}
+		
+		echo "<tr><td class=\"course_sym\" width=\"80%\">" . $sym . "<br>" . $course_info[$sym]["title"] . "</td><td style=\"background-color:#FFFFFF;\">&nbsp;</td></tr>\n";
+		echo "<tr><td colspan=\"2\" class=\"openclose_whitespace\"></td></tr>\n";
+		#echo "<tr><td colspan=2>\n";
+		foreach(array_intersect_key2($entry1, $types_to_consider) as $type => $entry2) {
+			// compute the contents of $group_type_string
+			if($course_info[$sym]["type"] == 'T' && $type == 'C') {
+				$group_type_string = "Théorique";
+				$cb_name_prefix = 't';
+			}
+			elseif($course_info[$sym]["type"] == 'L' && $type == 'L') {
+				$group_type_string = "Laboratoire";
+				$cb_name_prefix = 'l';
+			}
+			elseif($course_info[$sym]["type"] == 'TL' && $type == 'C') {
+				$group_type_string = "Théorique et laboratoire";
+				$cb_name_prefix = 't';
+			}
+			elseif($course_info[$sym]["type"] == 'TLS' && $type == 'C') {
+				$group_type_string = "Théorique";
+				$cb_name_prefix = 't';
+			}
+			elseif($course_info[$sym]["type"] == 'TLS' && $type == 'L') {
+				$group_type_string = "Laboratoire";
+				$cb_name_prefix = 't';
+			}
+			else {
+				die("internal error");
+			}
+		
+			echo "<tr><td align=center colspan=2 class=\"ocform_type\">" . $group_type_string . "</td></tr>\n";
+			foreach($entry2 as $groupname => $entry3) {
+				$cb_name = $cb_name_prefix . "_" . $sym . "_" . $groupname;
+				$cb_name = ereg_replace("[^A-Za-z0-9]", "_", $cb_name);
+				$openclosevars = $openclosevars . $cb_name . " ";
+				echo "<tr><td colspan=\"2\" class=\"openclose_whitespace\"></td></tr>\n";
+				echo "<tr><td colspan=2>\n"; // Start the subtable td
+				// Start the inner table
+				echo "<table class=\"oc_sub_table\">\n<tr><td class=\"grpname\">\n";
+				// Print group info
+				if($entry3["closed"] == 1) {
+					echo "<div class=\"full_cbox\">\n";
+				}
+				else {
+					echo "<div class=\"notfull_cbox\">\n";
+				}
+				echo $groupname . "<input name=\"" . $cb_name . "\" type=\"checkbox\"";
+				if($entry3["closed"] != 1) {
+					echo "checked";
+				}
+				echo "></div></td>";
+				echo "<td>"; // Begin teacher td
+				
+				if($course_info[$sym]["type"] == 'TL') {
+					// If theory and lab same, we must specify 2 teachers,
+					// therefore we indicate which one is 'theory' and 'lab'
+					echo "<b>Théorie:</b> ";
+				}
+				
+				echo $entry3["teacher"];
+
+				if($course_info[$sym]["type"] == 'TL') {
+					echo "<br><b>Lab:</b> " . $entry1["L"][$groupname]["teacher"] . "";
+				}
+				
+				// Close the inner table
+				echo "</td>";
+				echo "</tr></table>\n";
+
+				echo "</td></tr>\n";
+			}
+		}
+		#echo "</td></tr>"; // end of group row
+		
+		// print whitespace
+		printf("<tr><td colspan=\"2\" class=\"openclose_whitespace\">&nbsp;</td></tr>\n");
+	}
+	print("</table>\n\n");
+	
+	echo "<input type=\"hidden\" name=\"openclose_vars\" value=\"" . $openclosevars . "\">";
+}
+?>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -32,6 +218,12 @@
 	$courses_raw = ereg_replace(" +", " ", $courses_raw);
 	// Remove initial and final whitespace
 	$courses_raw = trim($courses_raw);
+	
+	// Put the courses in an array
+	$courses = explode(" ", $courses_raw);
+	if(strlen($courses_raw) == 0) {
+		error("Aucun cours spécifié");
+	}
 ?>
 
 <p>&nbsp;
@@ -56,11 +248,9 @@
 </div>
 
 
-<h2>Contraintes particulières</h2>
+<h2>Conflits</h2>
 
 <div class="option_block">
-	<p>Pas de cours le soir - 
-	<em>Cette option a été déplacée dans le tableau des périodes libres ci-dessous.</em>
 	<p>Nombre maximum de périodes avec conflit: <input type="text" name="maxconflicts" value="0" size="2">
 </div>
 
@@ -147,21 +337,7 @@ print "</tr>\n";
 	   
 
 <?php
-require_once('config.php');
-
-$cmd=$SOPTI_EXEC_DATA . " get_open_close_form";
-
-if(strlen($courses_raw) != 0) {
-	$courses = explode(" ", $courses_raw);
-	foreach ($courses as $key => $val) {
-		$cmd .= " -c " . escapeshellarg($val);
-	}
-
-	passthru($cmd." 2>&1");
-}
-else {
-	print("<p>Aucun cours!");
-}
+print_open_close_form($courses);
 ?>
 
 </div>
