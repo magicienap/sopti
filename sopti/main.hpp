@@ -41,14 +41,12 @@ void print_schedule(StudentSchedule &s);
 void usage();
 // inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoolschedule, vector<GroupConstraint *> *group_constraints, set<Group *> *accepted_groups)
 // inline void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
-void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions);
+void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions);
 void make(int argc, char **argv);
 string to_variable_name(string s);
-void get_open_close_form(int argc, char **argv);
 int poly_period_to_time(int period);
 void set_default_options();
 void parse_command_line(int *argc, char ***argv);
-void parse_config_file(string conffile_name);
 int main(int argc, char **argv);
 
 
@@ -65,21 +63,13 @@ struct Action {
 };
 
 
-struct Action actions[] =
-	{
-		{ "listcourses", listcourses},
-		{ "make", make},
-		{ "get_open_close_form", get_open_close_form},
-		{ 0, 0 }
-	};
+extern struct Action actions[];
 
-	
 struct ScheduledPeriod {
 	SchoolCourse *course;
 	Group *group;
 	Period *period;
 };
-
 
 class SchoolCoursePtrSymAlphaOrder
 {
@@ -95,7 +85,7 @@ string config_file="sopti.conf";
 string course_file="data/courses.csv";
 string closedgroups_file="data/closed.csv";
 string action;
-SchoolSchedule schoolsched;
+//SchoolSchedule schoolsched;
 int output_fmt=0;
 
 #endif // MAIN_HPP

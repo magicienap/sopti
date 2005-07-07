@@ -25,6 +25,7 @@ void debug(const char *fmt, ...);
 extern std::string config_file;
 
 int poly_period_to_time(int period);
+int poly_make_period_no(std::string day_of_week, std::string time_str);
 std::string to_variable_name(std::string s);
 
 /* Action prototypes */

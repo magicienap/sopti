@@ -1,3 +1,16 @@
+sopti-0.14 ()
+* remplacement de la base de données CSV par une base de données MySQL
+* utilitaire de mise à jour de base de données
+* nettoyage
+* enlever l'action get_open_close_form
+* l'horaire de l'école n'est plus un objet global, mais il est créé par un
+  DBLoader
+* nouveau formulaire pour ouvrir/fermer les sections en php, qui affiche les
+  noms de chargés de cours/lab
+* ajouter un fichier de config
+* meilleure gestion des erreurs dans make_form2.php, buffered output
+* mise a jour documentation
+
 sopti-0.13 (2005/06/30)
 * patch de commentaires (Benjamin Poirier)
 * colonnes de periodes libres cliquables dans make_form2 (Benjamin Poirier)

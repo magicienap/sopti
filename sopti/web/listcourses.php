@@ -1,3 +1,10 @@
+<?php
+require_once('config.php');
+
+ob_start();
+?>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 <head>
@@ -8,33 +15,24 @@
 
 <body>
 
-<?php
-require_once('config.php');
-
-$cmd_initial=$SOPTI_EXEC_DATA . " listcourses";
-
-function error($msg)
-{
-	print $msg;
-	exit(1);
-}
-
-$cmd = $cmd_initial;
-
-?>
-
 <h1>Liste des cours offerts</h1>
 
 <pre>
-Légende:
-[SIGLE] [TITRE] [SECTIONS...]
-
-Sections:
-Numéro(Théorique ou Lab)
-Un astérisque signifie que la section est pleine.
 
 <?php
-passthru($cmd." 2>&1");
+	$dblink = mysql_connect('', 'poly', 'pol')
+		or die('Could not connect: ' . mysql_error());
+	mysql_select_db('poly_courses') or die('Could not select database');
+	
+	// Make the query
+	$query = "SELECT courses.symbol AS symbol,courses.title AS title FROM courses ORDER BY courses.symbol";
+	
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+	mysql_close($dblink);
+	
+	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		echo $row["symbol"] . " " . $row["title"] . "\n";
+	}
 ?>
 </pre>
 </body>

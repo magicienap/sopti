@@ -34,12 +34,21 @@
 #include "objective.hpp"
 #include "stdsched.h"
 #include "read_csv.hpp"
+#include "dbloader.hpp"
+#include "configfile.hpp"
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
 #else
 #error "Don't have config.h"
 #endif
+
+struct Action actions[] = {
+		{ "listcourses", listcourses},
+		{ "make", make},
+		{ 0, 0 }
+	};
+
 
 /* --------------------------------------------------------------------------
 
@@ -54,20 +63,18 @@
 
 void listcourses(int, char **)
 {
-	vector<SchoolCourse *>::iterator it;
+	vector<string>::const_iterator it;
 	vector<SchoolCourse *> l_courses;
 	SchoolCourse::group_list_t::const_iterator it2;
 	
+	DBLoader dbl;
+	vector<string> courses;
+	courses = dbl.get_course_list();
+	
 	// Sort the courses before printing them
-	l_courses.insert(l_courses.end(), schoolsched.courses_begin(), schoolsched.courses_end());
-	sort<vector<SchoolCourse *>::iterator, SchoolCoursePtrSymAlphaOrder>(l_courses.begin(), l_courses.end(), SchoolCoursePtrSymAlphaOrder());
-
-	for(it=l_courses.begin(); it!=l_courses.end(); it++) {
-		cout << (*it)->symbol() << " " << (*it)->title();
-		for(it2=(*it)->groups_begin(); it2!=(*it)->groups_end(); it2++) {
-			cout << " " << (*it2)->name() << "(" << ((*it2)->lab()?"L":"T") << ")" << ((*it2)->closed()?"*":"");
-		}
-		cout << endl;
+	
+	for(it=courses.begin(); it!=courses.end(); it++) {
+		cout << *it << endl;
 	}
 }
 
@@ -455,21 +462,18 @@ void usage()
 	"sopti [GLOBAL_OPTIONS] ACTION [ACTION_OPTIONS]\n"
 	"\n"
 	"Actions:\n"
-	"  get_open_close_form - print an html form to choose the groups to open\n"
 	"  listcourses - print a list of courses\n"
 	"  make - make schedules\n"
 	"\n"
 	"Global options:\n"
 	"  -h, --help - print this help screen and exit\n"
 	"  --version - print version\n"
+	"  --configfile <config_file> - specify configuration file explicitly\n"
 	"  --coursefile <course_file> - specify course file explicitly\n"
 	"  --closedfile <closed_file> - specify closed groups file explicitly\n"
 	"  --html - enable html output\n"
 	"\n"
 	"Action options:\n"
-	"  * get_open_close_form\n"
-	"    -c <course> - add this course to the schedule\n"
-	"                  (repeat this option for each course)\n"
 	"  * make\n"
 	"    -c <course> - add this course to the schedule\n"
 	"                  (repeat this option for each course)\n"
@@ -534,7 +538,6 @@ inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoo
 	}
 }
 
-
 /* ------------------------------------------------------------------
 
 	Function: test_and_recurse
@@ -555,7 +558,7 @@ inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoo
 
 ------------------------------------------------------------------ */
 
-inline void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
+inline void test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
 {
 	vector<Constraint *>::iterator it;
 	for(it=constraints->begin(); it!=constraints->end(); it++) {
@@ -566,7 +569,7 @@ inline void test_and_recurse(StudentSchedule ss, vector<string> remaining_course
 	}
 	
 	// If we get here, all the constraints were satisfied, therefore, proceed with the recursion
-	make_recurse(ss, remaining_courses, constraints, accepted_groups, solutions);
+	make_recurse(schoolsched, ss, remaining_courses, constraints, accepted_groups, solutions);
 }
 
 /*
@@ -583,7 +586,6 @@ inline bool test_group_constraints(Group *group, SchoolCourse *course, vector<Gr
 	return true;
 }
 */
-
 
 /* ------------------------------------------------------------------
 
@@ -607,7 +609,7 @@ inline bool test_group_constraints(Group *group, SchoolCourse *course, vector<Gr
 
 ------------------------------------------------------------------ */
 
-void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
+void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
 {
 	SchoolCourse *course_to_add;
 
@@ -628,36 +630,39 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 		// This course has only theorical sessions
 		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if(!(*it)->lab()) {
-				if(accepted_groups->find(*it) == accepted_groups->end())
+				if(accepted_groups->find(*it) == accepted_groups->end()) {
 					continue;
+				}
 					
 				StudentSchedule tmps(ss);
 				newcourse.theory_group = (*it);
 				newcourse.lab_group = 0;
 				tmps.add_st_course(newcourse);
-				test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+				test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
 			}
 		}
 	}
 	else if(course_to_add->type() == COURSE_TYPE_LABONLY){
 		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if((*it)->lab()) {
-				if(accepted_groups->find(*it) == accepted_groups->end())
+				if(accepted_groups->find(*it) == accepted_groups->end()) {
 					continue;
+				}
 				
 				StudentSchedule tmps(ss);
 				newcourse.theory_group = 0;
 				newcourse.lab_group = (*it);
 				tmps.add_st_course(newcourse);
-				test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+				test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
 			}
 		}
 	}
 	else if(course_to_add->type() == COURSE_TYPE_THEORYLABIND){
 		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if(!(*it)->lab()) {
-				if(accepted_groups->find(*it) == accepted_groups->end())
+				if(accepted_groups->find(*it) == accepted_groups->end()) {
 					continue;
+				}
 				
 				newcourse.theory_group = (*it);
 				
@@ -665,13 +670,14 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 				
 				for(it2=course_to_add->groups_begin(); it2!=course_to_add->groups_end(); it2++) {
 					if((*it2)->lab()) {
-						if(accepted_groups->find(*it) == accepted_groups->end())
+						if(accepted_groups->find(*it) == accepted_groups->end()) {
 							continue;
+						}
 						
 						StudentSchedule tmps(ss);
 						newcourse.lab_group = (*it2);
 						tmps.add_st_course(newcourse);
-						test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+						test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
 					}
 				}
 			}
@@ -680,10 +686,12 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 	else if(course_to_add->type() == COURSE_TYPE_THEORYLABSAME){
 		for(it=course_to_add->groups_begin(); it!=course_to_add->groups_end(); it++) {
 			if(!(*it)->lab()) {
-				if(accepted_groups->find(*it) == accepted_groups->end())
+				if(accepted_groups->find(*it) == accepted_groups->end()) {
 					continue;
-				if(accepted_groups->find(course_to_add->group((*it)->name(), true)) == accepted_groups->end())
+				}
+				if(accepted_groups->find(course_to_add->group((*it)->name(), true)) == accepted_groups->end()) {
 					continue;
+				}
 				
 				StudentSchedule tmps(ss);
 				newcourse.theory_group = (*it);
@@ -693,7 +701,7 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 				
 				newcourse.lab_group = course_to_add->group((*it)->name(), true);
 				tmps.add_st_course(newcourse);
-				test_and_recurse(tmps, remaining_courses, constraints, accepted_groups, solutions);
+				test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
 			}
 		}
 	}
@@ -752,6 +760,7 @@ void make(int argc, char **argv)
 	
 		switch (c) {
 			case 'c':
+				/*
 				if(!schoolsched.course_exists(optarg)) {
 					if(output_fmt == OUTPUT_HTML) {
 						error("<div class=\"errormsg\"><p>Ce cours n'existe pas: %s\n<p>Pour changer les paramètres, utiliser le bouton Précédent de votre navigateur.</div>", optarg);
@@ -760,6 +769,7 @@ void make(int argc, char **argv)
 						error("course does not exist: %s", optarg);
 					}
 				}
+				*/
 				requested_courses.push_back(optarg);
 				break;
 				
@@ -828,8 +838,13 @@ void make(int argc, char **argv)
 		}
 	}
 	
+	// Get a school schedule with the courses we want
+	DBLoader dbl;
+	SchoolSchedule *schoolsched;
+	schoolsched = dbl.get_ss_with_courses(&requested_courses);
+	
 	// Find acceptable groups
-	test_groups(&requested_courses, &schoolsched, &group_constraints, &accepted_groups);
+	test_groups(&requested_courses, schoolsched, &group_constraints, &accepted_groups);
 	
 	// Make an empty schedule to begin the recursion with
 	StudentSchedule sched;
@@ -840,7 +855,7 @@ void make(int argc, char **argv)
 	constraints.push_back(&noc);
 	
 	// Find the schedules that respect the objectives and constraints among all possible schedules
-	make_recurse(sched, requested_courses, &constraints, &accepted_groups, solutions);
+	make_recurse(*schoolsched, sched, requested_courses, &constraints, &accepted_groups, solutions);
 	
 	if(solutions.size() == 0) {
 		if(output_fmt == OUTPUT_HTML) {
@@ -929,168 +944,6 @@ string to_variable_name(string s)
 
 /* ------------------------------------------------------------------
 
-	Function: get_open_close_form
-	Description: Outputs and html form in a table to override the 
-		chosen courses' groups' open/closed status
-	Parameters: pointers to argc & *argv[], the command line argument
-		count and values, those should include a number of "-c ####"
-		where "####" is a course symbol
-	Return value: none
-	Note: Overriding a group's open/closed status can be convenient
-		when, for example, a student is already assigned to a closed
-		group or when a student expects that a group is gonna
-		become open again because of other students' changes
-
------------------------------------------------------------------- */
-
-void get_open_close_form(int argc, char **argv)
-{
-	vector<string> requested_courses;
-	int c;
-	
-	// reset getopt
-	opterr = 0;
-	optind=1;
-	
-	while (1) {
-		int option_index = 0;
-		static struct option long_options[] = {
-			{"course", 1, 0, 'c'},
-			{0, 0, 0, 0}
-		};
-	
-		c = getopt_long (argc, argv, "c:",
-				long_options, &option_index);
-		if (c == -1)
-			break;
-	
-		switch (c) {
-			case 'c':
-				/* Verify later if courses exist */
-				requested_courses.push_back(optarg);
-				break;
-	
-			case '?':
-				error("invalid command line");
-				break;
-		
-			default:
-				error("getopt returned unknown code %d\n", c);
-		}
-	}
-	
-	vector<string>::const_iterator it;
-	SchoolCourse::group_list_t::const_iterator it2;
-	string script;
-	string openclose_vars;
-	
-	printf("<table class=\"openclose_table\">\n");
-	
-	for(it=requested_courses.begin(); it!=requested_courses.end(); it++) {
-	
-		if(!schoolsched.course_exists(*it)) {
-			printf("<tr class=\"openclose_row\">\n<td class=\"course_sym\">%s</td><td colspan=\"3\">Ce cours n'existe pas!</td></tr>", it->c_str());
-		}
-		else {
-			SchoolCourse *current_course;
-			int rowspan;
-			string script_open, script_close;
-			
-			// Select number of rows
-			current_course = schoolsched.course(*it);
-			if(current_course->type() == COURSE_TYPE_THEORYLABIND) {
-				rowspan = 3;
-			}
-			else {
-				rowspan = 1;
-			}
-			
-			printf("<tr class=\"openclose_row\">\n<td rowspan=\"%d\" class=\"course_sym\">%s<br>%s</td>", rowspan, current_course->symbol().c_str(), current_course->title().c_str());
-			
-			if(current_course->type() != COURSE_TYPE_LABONLY) {
-				script_open = "function open_all_t_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
-				script_close = "function close_all_t_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
-				
-			
-				printf("<td>Théorique%s</td>", (current_course->type()==COURSE_TYPE_THEORYLABSAME)?" / lab":"");
-				printf("<td>");
-				for(it2=current_course->groups_begin(); it2!=current_course->groups_end(); it2++) {
-					if((*it2)->lab())
-						continue;
-						
-					script_open += "\tdocument.form2.t_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=true;\n";
-					script_close += "\tdocument.form2.t_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=false;\n";
-					openclose_vars+="t_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + " ";
-					
-					if((*it2)->closed()) {
-						printf("<div class=\"full_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\">", to_variable_name(current_course->symbol()).c_str(), to_variable_name((*it2)->name()).c_str());
-					}
-					else {
-						printf("<div class=\"notfull_cbox\"><input name=\"t_%s_%s\" type=\"checkbox\" checked>", to_variable_name(current_course->symbol()).c_str(), to_variable_name((*it2)->name()).c_str());
-					}
-					
-					printf("%s</div>", (*it2)->name().c_str());
-				}
-				
-				script_open += "}\n\n";
-				script_close += "}\n\n";
-				
-				script += script_open;
-				script += script_close;
-								
-				printf("</td><td><input type=\"button\" value=\"Ouvrir toutes\" onClick=\"open_all_t_%s()\"><input type=\"button\" value=\"Fermer toutes\" onClick=\"close_all_t_%s()\"></td>", to_variable_name(current_course->symbol()).c_str(), to_variable_name(current_course->symbol()).c_str());
-			}
-			if(current_course->type() == COURSE_TYPE_THEORYLABIND) {
-				printf("</tr>\n<tr><td colspan=\"4\" style=\"height:1; background-color: white;\"></td></tr>\n<tr>\n");
-			}
-			if(current_course->type() == COURSE_TYPE_LABONLY || current_course->type() == COURSE_TYPE_THEORYLABIND) {
-				script_open = "function open_all_l_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
-				script_close = "function close_all_l_" + to_variable_name(current_course->symbol().c_str()) + "() {\n";
-				
-				printf("<td>Lab</td>");
-				printf("<td>");
-				for(it2=current_course->groups_begin(); it2!=current_course->groups_end(); it2++) {
-					if(!(*it2)->lab())
-						continue;
-
-					script_open += "\tdocument.form2.l_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=true;\n";
-					script_close += "\tdocument.form2.l_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + ".checked=false;\n";
-					openclose_vars += "l_" + to_variable_name(current_course->symbol().c_str()) + "_" + to_variable_name((*it2)->name()) + " ";
-					
-					if((*it2)->closed()) {
-						printf("<div class=\"full_cbox\"><input name=\"l_%s_%s\" type=\"checkbox\">", current_course->symbol().c_str(), (*it2)->name().c_str());
-					}
-					else {
-						printf("<div class=\"notfull_cbox\"><input name=\"l_%s_%s\" type=\"checkbox\" checked>", current_course->symbol().c_str(), (*it2)->name().c_str());
-					}
-					
-					printf("%s</div>", (*it2)->name().c_str());
-				}
-				
-				script_open += "}\n\n";
-				script_close += "}\n\n";
-				
-				script += script_open;
-				script += script_close;
-				
-				printf("</td><td><input type=\"button\" value=\"Ouvrir toutes\" onClick=\"open_all_l_%s()\"><input type=\"button\" value=\"Fermer toutes\" onClick=\"close_all_l_%s()\"></td>", current_course->symbol().c_str(), current_course->symbol().c_str());
-			}
-			
-			printf("</tr>");
-		}
-		printf("<tr><td colspan=\"4\" class=\"openclose_whitespace\">&nbsp;</td></tr>\n");
-	}
-	
-	printf("</table>\n\n");
-	
-	printf("<input type=\"hidden\" name=\"openclose_vars\" value=\"%s\">\n\n", openclose_vars.c_str());
-	
-	printf("<script type=\"text/javascript\">\n%s</script>\n", script.c_str());
-}
-
-
-/* ------------------------------------------------------------------
-
 	Function: poly_period_to_time
 	Description: Returns the hour in the day of a period number in
 		the week
@@ -1150,6 +1003,7 @@ void parse_command_line(int *argc, char ***argv)
 			{"version", 0, 0, 5},
 			{"coursefile", required_argument, 0, 'c'},
 			{"closedfile", required_argument, 0, 4},
+			{"configfile", required_argument, 0, 6},
 			{"html", 0, 0, 3},
 			{0, 0, 0, 0}
 		};
@@ -1179,6 +1033,10 @@ void parse_command_line(int *argc, char ***argv)
 		case 5:
 			printf("%s\n", PACKAGE_STRING);
 			exit(0);
+			
+		case 6:
+			config_file=optarg;
+			break;
 
 		case '?':
 			usage();
@@ -1217,34 +1075,17 @@ void parse_command_line(int *argc, char ***argv)
 
 ------------------------------------------------------------------ */
 
+/*
 void parse_config_file(string conffile_name)
 {
-	ifstream conffile;
-	string tmps;
-	char tmpa[500];
-	vector<string> fields;
-	
-	conffile.open(conffile_name.c_str());
-	
-	while(1) {
-		conffile.getline(tmpa, 500);
-		if(!conffile.good()) {
-			break;
-		}
-		
-		tmps = tmpa;
-		if(tmps[tmps.size()-1] == '\r')
-			tmps.erase(tmps.size()-1, 1);
-	
-		fields = split_string(tmps, " ");
-		if(fields.size() != 2) {
-			abort();
-		}
-		
-		//options[fields[0]] = fields[1];
+	try {
+		config_vars = parse_config_file(conffile_name);
+	}
+	catch {
+		error();
 	}
 }
-
+*/
 
 /* ------------------------------------------------------------------
 
@@ -1263,12 +1104,13 @@ int main(int argc, char **argv)
 	
 	set_default_options();
 	parse_command_line(&argc, &argv);
-	//parse_config_file(config_file);
+	parse_config_file(config_file);
+
 	stdsched_init();
 	
-	load_courses_from_csv(&schoolsched, course_file);
-	load_closed_from_csv(&schoolsched, closedgroups_file);
-	
+	//load_courses_from_csv(&schoolsched, course_file);
+	//load_closed_from_csv(&schoolsched, closedgroups_file);
+		
 	for(i=0; actions[i].name[0] != 0; i++) {
 		if(action == actions[i].name) {
 			if(actions[i].func) {
