@@ -24,7 +24,7 @@ CREATE TABLE `courses` (
   `title` varchar(100) default NULL,
   PRIMARY KEY  (`unique`),
   KEY `symbol` (`symbol`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `courses`
@@ -47,7 +47,7 @@ CREATE TABLE `courses_semester` (
   `semester` int(11) NOT NULL default '0',
   `course_type` varchar(6) NOT NULL default '',
   PRIMARY KEY  (`unique`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `courses_semester`
@@ -75,7 +75,7 @@ CREATE TABLE `groups` (
   `places_taken` int(11) NOT NULL default '0',
   `closed` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`unique`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `groups`
@@ -102,7 +102,7 @@ CREATE TABLE `periods` (
   `weekday` varchar(10) NOT NULL default '',
   PRIMARY KEY  (`unique`),
   KEY `group` (`group`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `periods`
@@ -124,7 +124,7 @@ CREATE TABLE `semesters` (
   `code` varchar(10) NOT NULL default '',
   `pretty_name` varchar(15) NOT NULL default '',
   PRIMARY KEY  (`unique`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `semesters`
