@@ -4,6 +4,7 @@
 use DBI;
 use sigtrap;
 use String::Escape qw( printable unprintable );
+use Unicode::String qw(utf8 latin1 utf16);
 
 @fields_csv = ('cycle', 'symbol', 'group', 'credits', 'places_room', 'period_code', 'room', 'theory_or_lab', 'lab_type', 'week', 'course_type', 'title', 'places_group', 'weekday', 'time');
 @fields_courses = ('title');
@@ -54,11 +55,12 @@ sub retrieve_teachers {
 		print("teachers.csv not found\n");
 		return;
 	}
-#die("error opening data file");
+
 	$tmp=<TEACHERFILE>;
 	my $teacher_data;
 	while(<TEACHERFILE>) {
 		chomp;
+		$_ = utf8($_)->latin1;
 		$_ =~ s/[\n\r]*$//s;
 		my @fields = split(/;/);
 		
@@ -105,13 +107,11 @@ sub read_config {
 			$varval = $line;
 			$varname =~ s/^[ \t]*([^ \t]+)[ \t]+"[^"]*"[ \t]*$/\1/;
 			$varval =~ s/^[ \t]*[^ \t]+[ \t]+"([^"]*)"[ \t]*$/\1/;
-			print "got [$varname][$varval]\n";
 		}
 		else {
 			die("invalid config file line: $line\n");
 		}
 		
-		print "hep [$varname][$varval]\n";
 		$CONFIG{$varname} = $varval;
 	}
 	
@@ -125,7 +125,6 @@ sub main() {
 	read_config;
 	
 	print("Connecting to database...\n");
-	print("got username" . $CONFIG{'db.username'} . "\n");
 	$dbh = DBI->connect('dbi:mysql:database=' . $CONFIG{'db.schema'}, $CONFIG{'db.username'}, $CONFIG{'db.password'}) or die(DBI->errstr);
 	
 # 	print("Creating replacement tables...\n");
@@ -305,7 +304,7 @@ sub main() {
 			if($current_group_entry == undef) {
 				# course not in DB, add it
 				warning("[INSERT][groups] Group $current_line{'symbol'}, $current_line{'group'}, $current_line{'theory_or_lab'} was not in groups table; adding it");
-				$dbh->do("INSERT INTO groups (course_semester, name, theory_or_lab, places_room, places_group, closed) VALUES (\"$current_course_semester_unique\", \"$current_line{'group'}\", \"$current_line{'theory_or_lab'}\", \"$current_line{'places_room'}\", \"$current_line{'places_group'}\", \"$current_line{'closed'}\")") or die $dbh->errstr;
+				$dbh->do("INSERT INTO groups (course_semester, name, theory_or_lab, places_room, places_group, closed, teacher) VALUES (\"$current_course_semester_unique\", \"$current_line{'group'}\", \"$current_line{'theory_or_lab'}\", \"$current_line{'places_room'}\", \"$current_line{'places_group'}\", \"$current_line{'closed'}\", \"$current_line{'teacher'}\")") or die $dbh->errstr;
 				
 				# get the unique of the new entry
 				my $unique = $dbh->selectall_arrayref("SELECT groups.unique FROM groups WHERE course_semester=\"$current_course_semester_unique\" AND name=\"$current_line{'group'}\" AND theory_or_lab=\"$current_line{'theory_or_lab'}\"");
