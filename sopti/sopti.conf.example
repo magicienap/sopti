@@ -1,0 +1,10 @@
+# sopti configuration file
+#
+
+db.host ""
+db.username ""
+db.password ""
+db.schema ""
+
+default_semester "H2005"
+
