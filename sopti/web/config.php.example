@@ -1,13 +1,17 @@
 <?php
 
+# You should only have to edit this parameter. This should point to
+# the root directory of the sopti package
+$SOPTI_BASE="/home/pmf/sopti";
+
 # The file where the access data will be written. It must exist and be
 # writable by the HTTP server process.
-$SOPTI_COUNTERFILE="/home/pmf/sopti/data/count.txt";
+$SOPTI_COUNTERFILE="$SOPTI_BASE/data/count.txt";
 
 # The configuration file
-$SOPTI_CONFIG_FILE="/home/pmf/sopti/sopti.conf";
+$SOPTI_CONFIG_FILE="$SOPTI_BASE/sopti.conf";
 
 # The command to execute the sopti executable, with options
-$SOPTI_EXEC="/home/pmf/sopti/sopti --configfile '$SOPTI_CONFIG_FILE'";
+$SOPTI_EXEC="$SOPTI_BASE/sopti --configfile '$SOPTI_CONFIG_FILE'";
 
 ?>
