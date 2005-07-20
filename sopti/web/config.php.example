@@ -1,7 +1,13 @@
 <?php
 
+# The file where the access data will be written. It must exist and be
+# writable by the HTTP server process.
 $SOPTI_COUNTERFILE="/home/pmf/sopti/data/count.txt";
+
+# The configuration file
 $SOPTI_CONFIG_FILE="/home/pmf/sopti/sopti.conf";
+
+# The command to execute the sopti executable, with options
 $SOPTI_EXEC="/home/pmf/sopti/sopti --configfile '$SOPTI_CONFIG_FILE'";
 
 ?>
