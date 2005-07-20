@@ -1,5 +1,44 @@
 <?php
 
+function admin_error($msg)
+{
+        ob_end_clean();
+?>
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.or
+g/TR/html4/loose.dtd">
+<html>
+
+<head>
+  <title>Générateur d'horaires - Erreur interne</title>
+  <link rel="stylesheet" type="text/css" href="sopti.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body>
+
+<center>
+
+<img src="aep.gif">
+<p><font size="+2">Générateur d'horaires</font>
+</center>
+
+<div style="background-color: #ffbbbb;">
+<p align="center"><b><font size="+1">ERREUR INTERNE</font></b></p>
+<p align="center"><?php echo $msg; ?></p>
+</div>
+
+<p align="center">L'administrateur a été informé de cette erreur.
+</body>
+</html>
+
+<?php
+
+        exit();
+
+}
+
 function error($msg)
 {
 	ob_end_clean();
@@ -43,10 +82,10 @@ $CONFIG_VARS=array();
 function read_config_file($file)
 {
 	global $CONFIG_VARS;
-
+	
 	$handle = fopen($file, "r");
 	if($handle == FALSE) {
-		error("Impossible d'ouvrir le fichier de configuration" . $file);
+		error("Impossible d'ouvrir le fichier de configuration " . $file);
 	}
 	while (!feof($handle)) {
 		$line = fgets($handle, 4096);

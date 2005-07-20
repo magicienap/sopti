@@ -1,5 +1,7 @@
 <?php
 require_once('config.php');
+require_once('lib.php');
+read_config_file($SOPTI_CONFIG_FILE);
 
 ob_start();
 ?>
@@ -20,9 +22,10 @@ ob_start();
 <pre>
 
 <?php
-	$dblink = mysql_connect('', 'poly', 'pol')
-		or die('Could not connect: ' . mysql_error());
-	mysql_select_db('poly_courses') or die('Could not select database');
+        $dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
+                or admin_error('Could not connect to SQL: ' . mysql_error());
+        mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select data
+base');
 	
 	// Make the query
 	$query = "SELECT courses.symbol AS symbol,courses.title AS title FROM courses ORDER BY courses.symbol";
