@@ -3,6 +3,7 @@
 #BEGIN { $ENV{DBI_PUREPERL} = 2 }
 use DBI;
 use sigtrap;
+use String::Escape qw( printable unprintable );
 
 @fields_csv = ('cycle', 'symbol', 'group', 'credits', 'places_room', 'period_code', 'room', 'theory_or_lab', 'lab_type', 'week', 'course_type', 'title', 'places_group', 'weekday', 'time');
 @fields_courses = ('title');
@@ -25,6 +26,12 @@ sub retrieve_closed {
 	my $closed_sections;
 	while(<CLOSEDFILE>) {
 		chomp;
+
+                if(length($_) < 5) {
+                        print("WARNING: skipping line [" . printable($_) . "] which seems to contain garbage\n");
+			next;
+                }
+
 		$_ =~ s/[\n\r]*$//s;
 		my @fields = split(/;/);
 		
@@ -43,7 +50,11 @@ sub retrieve_closed {
 
 sub retrieve_teachers {
 	print("Opening teachers CSV...\n");
-	open(TEACHERFILE, "<../data/teachers.csv") or die("error opening data file");
+	if(open(TEACHERFILE, "<../data/teachers.csv") == undef) {
+		print("teachers.csv not found\n");
+		return;
+	}
+#die("error opening data file");
 	$tmp=<TEACHERFILE>;
 	my $teacher_data;
 	while(<TEACHERFILE>) {
@@ -178,9 +189,14 @@ sub main() {
 	print("Checking for differences with database...\n");
 	while(<DATAFILE>) {
 		chomp;
+
+		if(length($_) < scalar(@fields_csv)-1) {
+			print("WARNING: skipping line [$_] which seems to contain garbage\n");
+		}
+
 		$_ =~ s/[\n\r]*$//s;
 		@fields = split(/;/);
-		
+	
 		if(scalar(@fields) != scalar(@fields_csv)) {
 			print(scalar(@fields), " != ", scalar(@fields_csv), "\n");
 			die("bad field count");
