@@ -1,0 +1,1 @@
+php: add error handler for mysql execution errors and warnings
