@@ -1,6 +1,12 @@
 INSTALLING SOPTI
 ----------------
 
+Requirements:
+	- libxml2
+	- perl
+	- php
+	- String::Escape perl module
+
 * Unpack the archive in a directory of your choice
 	tar xvzf sopti-xx.tar.gz
 	
