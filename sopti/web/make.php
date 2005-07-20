@@ -74,7 +74,7 @@ require_once('config.php');
 
 <?php
 
-	$cmd_initial=$SOPTI_EXEC_DATA . " --html make";
+	$cmd_initial=$SOPTI_EXEC . " --html make";
 	$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays" );
 
 	/*

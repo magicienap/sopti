@@ -1,8 +1,7 @@
 <?php
 
-$SOPTI_EXEC_DATA="/home/pmf/devel/sopti/sopti --coursefile /home/pmf/devel/sopti/data/courses.csv --closedfile /home/pmf/devel/sopti/data/closed.csv";
-$SOPTI_EXEC="/home/pmf/devel/sopti/sopti";
-$SOPTI_COURSEFILE="/home/pmf/devel/sopti/data/courses.csv";
-$SOPTI_COUNTERFILE="/home/pmf/devel/sopti/data/count.txt";
-$SOPTI_CONFIG_FILE="/home/pmf/devel/sopti/sopti.conf";
+$SOPTI_COUNTERFILE="/home/pmf/sopti/data/count.txt";
+$SOPTI_CONFIG_FILE="/home/pmf/sopti/sopti.conf";
+$SOPTI_EXEC="/home/pmf/sopti/sopti --configfile '$SOPTI_CONFIG_FILE'";
+
 ?>

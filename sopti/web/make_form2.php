@@ -30,10 +30,8 @@ function print_open_close_form($courses) {
 	// Query used
 	// SELECT courses.symbol,courses.title,groups.name,groups.theory_or_lab FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN groups ON groups.course_semester=courses_semester.unique WHERE courses.symbol='ING1040' OR courses.symbol='ING1020' OR courses.symbol='INF2600' ORDER BY courses.symbol ASC,groups.name ASC,groups.theory_or_lab ASC
 	
-	#$dblink = mysql_connect('', 'poly', 'pol')
 	$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
-		or die('Could not connect: ' . mysql_error());
-	#mysql_select_db('poly_courses') or die('Could not select database');
+		or admin_error('Could not connect to SQL: ' . mysql_error());
 	mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select database');
 	
 	// Make the query
