@@ -7,4 +7,4 @@ db.password ""
 db.schema ""
 
 default_semester "H2005"
-
+admin_email ""

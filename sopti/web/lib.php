@@ -1,5 +1,9 @@
 <?php
 
+$CONFIG_VARS=array();
+
+read_config_file($SOPTI_CONFIG_FILE);
+
 function admin_error($msg)
 {
         ob_end_clean();
@@ -77,8 +81,6 @@ g/TR/html4/loose.dtd">
 	exit();
 }
 
-$CONFIG_VARS=array();
-
 function read_config_file($file)
 {
 	global $CONFIG_VARS;
@@ -119,6 +121,15 @@ function read_config_file($file)
 	}
 	fclose($handle);
 }
+
+function mail_admin_error($msg)
+{
+	global $CONFIG_VARS;
+
+        mail($CONFIG_VARS['admin_email'], "Sopti error", "Hello,\n\nSopti discovered the following error:\n\n" . $msg . "\n\nThanks");
+}
+
+
 
 ?>
 

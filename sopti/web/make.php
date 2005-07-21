@@ -2,8 +2,6 @@
 require_once('config.php');
 require_once('lib.php');
 
-read_config_file($SOPTI_CONFIG_FILE);
-
 ob_start();
 ?>
 
@@ -49,9 +47,15 @@ require_once('config.php');
 
 <?php
 	// Counter
-	$counter = fopen($SOPTI_COUNTERFILE, "a");
-	fwrite($counter, date("Y/m/d-H:i:s") . " " . $_SERVER['REMOTE_ADDR'] . "\n");
-	fclose($counter);
+	
+	if(!is_writable($SOPTI_COUNTERFILE)) {
+		mail_admin_error("Unable to open counter file ($SOPTI_COUNTERFILE)");
+	}
+	else {
+		$counter = fopen($SOPTI_COUNTERFILE, "a");
+		fwrite($counter, date("Y/m/d-H:i:s") . " " . $_SERVER['REMOTE_ADDR'] . "\n");
+		fclose($counter);
+	}
 ?>
 
 <?php
