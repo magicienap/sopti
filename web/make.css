@@ -1,3 +1,5 @@
+/*
+
 body {font-family: Helvetica,Verdana; }
 
 table.schedule,table.schedule_weekend {
@@ -126,3 +128,131 @@ h2 {
 p {
 	font-size: 12px;
 }
+
+*/
+
+	body {
+		font-family: Helvetica,Verdana;
+
+	}
+
+	table.schedule,table.schedule_weekend {
+		/*border: 2px solid;*/
+		border-collapse: collapse;
+		font-size: 12px;
+		margin: 2px;
+	}
+	
+	table.single_period {
+		font-size: inherit;
+		border-style: none;
+	}
+	
+	table.schedule td.hour {
+		font-size: inherit;
+	}
+	
+	div.period_noconflict {
+		border-style: none;
+		border-width: 0px;
+		font-size: 12px;
+		margin:auto;
+		padding: 5px;
+	}
+	
+	div.period_conflict {
+		border-color: #ff0000;
+		border-style: inset;
+		border-width: 4px;
+		font-size: 12px;
+		padding: 5px;
+	}
+
+	table.schedule td,table.schedule_weekend td {
+		border-width: 1px;
+		border-style: dotted;
+		border-color: #000000;
+		width: 110px;
+		
+		margin:0px;
+		padding: 0px;
+	}
+	
+	table.schedule {
+		float: left;
+		clear: left;
+		margin-bottom: 20px;
+	}
+	
+	table.schedule_weekend {
+		float: left;
+	}
+	
+	table.group_summary {
+		font-size: 12px;
+		border-spacing: 2px;
+		background-color: white;
+		clear:left;
+	}
+	
+	table.group_summary th {
+		border-width: 0px;
+		border-style: solid;
+		background-color: #ffffff;
+		text-align: center;
+		width: 75px;
+		vertical-align:top;
+	}
+	
+	table.group_summary td {
+		text-align: center;
+	}
+	
+	table.group_summary th.subheader {
+		font-size: 10px;
+	}
+	
+	div.schedule_info {
+		background-color: #EEEEEE;
+		width: 685px;
+		clear: both;
+	}
+	
+	table.schedule td.weekday,table.schedule td.hour {
+		background-color: #cccccc;
+		text-align: center;
+		border-style: solid;
+		border-width: 1px;
+		border-color: #000000;
+	}
+
+	td.hour {
+		height:40px;
+	}
+	
+	/*
+	h1 {
+		font-size: 20px;
+	}
+	*/
+	
+	/*
+	h2 {
+		font-size: 16px;
+	}
+	*/
+	
+	/*
+	p {
+		font-size: 12px;
+	}
+	*/
+	
+	/* ---- */
+	
+	div.course1 {
+		background-color: #8888ff;
+		padding: 5px;
+		margin: 0px;
+		border: 0px;
+	}
