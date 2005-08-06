@@ -129,7 +129,287 @@ function mail_admin_error($msg)
         mail($CONFIG_VARS['admin_email'], "Sopti error", "Hello,\n\nSopti discovered the following error:\n\n" . $msg . "\n\nThanks");
 }
 
+function print_schedule($sch)
+{
+	// TODO: ensure at least one group
+	// TODO: check valid combination of lab/theory groups
+	
+	global $CONFIG_VARS;
+	global $dblink;
 
+	$php_db_time=0;
+	$prof_string="";
+	$php_function_time=microtime(TRUE);
+	
+	// Define the constants
+	$week_hour_codes = array('0830', '0930', '1030', '1130', '1245', '1345', '1445', '1545', '1645');
+	$week_hour_labels = array('8:30', '9:30', '10:30', '11:30', '12:45', '13:45', '14:45', '15:45', '16:45');
+	$week_nighthours_codes = array('1800', '1900', '2000', '2100');
+	$week_nighthours_labels = array('18:00', '19:00', '20:00', '21:00');
+	$week_day_codes = array('LUN', 'MAR', 'MER', 'JEU', 'VEN');
+	$week_day_labels = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
+	$weekend_hour_codes = array('0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700');
+	$weekend_hour_labels = array('8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00');
+	$weekend_day_codes = array('SAM', 'DIM');
+	$weekend_day_labels = array('Samedi', 'Dimanche');
+	
+	// Parse the input
+	$requested_groups=array();
+	foreach($sch->course as $course) {
+		
+		$entry['symbol'] = (string)$course['symbol'];
+		$entry['th_grp'] = (string)$course['theory_grp'];
+		$entry['lab_grp'] = (string)$course['lab_group'];
+		array_push($requested_groups, $entry);
+	}
+
+	if(!$dblink) {
+		$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
+			or admin_error('Could not connect to SQL: ' . mysql_error());
+		mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select database');
+	}
+
+	// Make the groups query
+	$query_begin = "SELECT courses.symbol AS symbol,courses.title AS title,courses_semester.course_type AS course_type,groups.name AS grp,groups.theory_or_lab AS tol,groups.teacher,groups.places_room,groups.places_group,groups.places_taken,groups.closed AS closed FROM groups LEFT OUTER JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT OUTER JOIN courses ON courses.unique=courses_semester.course LEFT OUTER JOIN semesters ON semesters.unique=courses_semester.semester WHERE";
+	$query_end   = ")";
+	$query = $query_begin;
+	$query .= " semesters.code='" . $CONFIG_VARS['default_semester'] . "' AND (0";
+	foreach($requested_groups as $req) {
+		$query .= " OR (courses.symbol='".$req['symbol']."' AND (groups.name='".$req['th_grp']."' OR groups.name='".$req['lab_grp']."'))";
+	}
+	$query .= $query_end;
+
+	echo $query;
+//	die();
+	
+	$tmp=microtime(TRUE);
+	$result = mysql_query($query) or admin_error('Query failed: ' . mysql_error());
+	$prof_string .= "group sql query: ".(microtime(TRUE)-$tmp)."<br>\n";
+	//$php_function_time=microtime(TRUE);
+	// Organize the results
+	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$group_data[$row['symbol']]['course_type'] = $row['course_type'];
+		$group_data[$row['symbol']]['title'] = $row['title'];
+		if($row['tol'] == 'C') {
+			$group_data[$row['symbol']]['theory'][$row['grp']]['teacher'] = $row['teacher'];
+		}
+		else {
+			$group_data[$row['symbol']]['lab'][$row['grp']]['teacher'] = $row['teacher'];
+		}
+	}
+	
+	// print the group summary
+	$tmp=microtime(TRUE);
+?>
+	<table class="group_summary" style="width: 675px;">
+	<tr><td colspan="7">
+		<table width="100%" border="0" style="background-color:#FFA703;">
+			<tr>
+				<td style="background-color: #FFA703; text-align: left;"><font size="-3">Horaire</font> <b>#1</b></td><td style="text-align: right; background-color: #FFA703;"><font size="-3">Score:</font> <b>0%</b></td>
+			</tr>
+		</table>
+	</td></tr>
+	<tr><th rowspan="2">Sigle</th><th rowspan="2">Titre</th><th colspan="2">Théorie</th><th colspan="2">Lab</th></tr>
+	<tr><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader">Crédits</th></tr>
+	<tr><td colspan="7" style="background-color: black; height: 1px;"></td></tr>
+	
+<?php
+
+	$query_periods_cond="";
+	foreach($requested_groups as $req) {
+		if(count($group_data[(string)$req['symbol']]) == 0) {
+			error("Cours introuvable: " . $req['symbol'] . " ".(count($group_data[$req['symbol']]))." ".count($group_data["ING1025"]));
+			// abort
+		}
+		if($group_data[(string)$req['symbol']]['course_type'] == 'T') {
+			if(!isset($group_data[$req['symbol']]['theory'][$req['th_grp']])) {
+				error("Groupe introuvable: ");
+			}
+			echo '	<tr><td>'.$req['symbol'].'</td><td>'.$group_data[$req['symbol']]['title'].'</td><td>'.$req['th_grp'].'</td><td>'.$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>-</td><td>-</td></tr>\n";
+			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['th_grp']."' AND groups.theory_or_lab='C') ";
+		}
+		elseif($group_data[$req['symbol']]['course_type'] == 'L') {
+			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
+				error("Groupe introuvable: ");
+			}
+			echo '	<tr><td>'.$req['symbol'].'</td><td>'.$group_data[$req['symbol']]['title'].'</td><td>-</td><td>-</td><td>'.$req['lab_grp'].'</td><td>'.$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
+			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['lab_grp']."' AND groups.theory_or_lab='L') ";
+		}
+		elseif($group_data[$req['symbol']]['course_type'] == 'TL') {
+		        if($req['th_grp'] != $req['lab_grp']) {
+				error("Horaire illégal; th_grp != lab_grp pour un cours TL");
+			}
+
+			if(!isset($group_data[$req['symbol']]['theory'][$req['th_grp']])) {
+				error("Groupe théorique introuvable: " . $req['symbol'] . "/" . $req['th_grp']);
+			}
+			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
+				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);
+			}
+			
+			echo "	<tr><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
+			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['th_grp']."') ";
+		}
+		elseif($group_data[$req['symbol']]['course_type'] == 'TLS') {
+			if(!isset($group_data[$req['symbol']]['theory'][$req['th_grp']])) {
+				error("Groupe théorique introuvable: " . $req['symbol'] . "/" . $req['th_grp']);
+			}
+			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
+				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);
+			}
+			
+			echo "	<tr><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
+			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['th_grp']."' AND groups.theory_or_lab='C') ";
+			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['lab_grp']."' AND groups.theory_or_lab='L') ";
+		}
+		else {
+			error_admin("Invalid group type");
+		}
+	}
+
+	echo '</table>';
+ 	$prof_string .= "print group summary: ".(microtime(TRUE)-$tmp)."<br>\n";
+	//$php_function_time=microtime(TRUE);
+	//$php_function_time=microtime(TRUE)-$php_function_time;
+
+	//$php_function_time=microtime(TRUE)-$php_function_time;	
+	// Make the periods query
+
+	$query_begin = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol,periods.time AS time,periods.room AS room,periods.week AS week,periods.weekday AS weekday FROM periods LEFT JOIN groups ON groups.unique=periods.group LEFT JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='H2005' AND (0 ";
+	$query_end = ")";
+	$query = $query_begin.$query_periods_cond.$query_end;
+	
+ 	echo $query;
+// 	die();
+	
+	$tmp=microtime(TRUE);
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+	$prof_string .= "period sql query: ".(microtime(TRUE)-$tmp)."<br>\n";
+	//mysql_close($dblink);
+	$tmp=microtime(TRUE);
+	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		//echo $row['symbol'] . "<br>\n";
+		
+		// ASSERT : valid days, valid hours
+		
+		// If is week
+		if(array_search($row['weekday'], $week_day_codes) != FALSE || $week_day_codes[0]==$row['weekday']) {
+			// If is during day
+			if(array_search($row['time'], $week_hour_codes) != FALSE || $week_hour_codes[0]==$row['time']) {
+				if(!isset($week[$row['weekday']][$row['time']])) {
+					$week[$row['weekday']][$row['time']] = array();
+				}
+				//echo $row['time'] . "week and day<br>\n";
+				array_push($week[$row['weekday']][$row['time']], $row);
+			}
+			// If is during evening
+			elseif(array_search($row['time'], $week_nighthours_codes) != FALSE) {
+				$week_have_evening=1;
+				if(array_search($row['time'], $weekend_hour_codes) != FALSE) {
+					if(!isset($week[$row['weekday']][$row['time']])) {
+						$week[$row['weekday']][$row['time']] = array();
+					}
+			
+					array_push($week[$row['weekday']][$row['time']], $row);
+				}
+			}
+			// If is nonstandard time
+			else {
+				$week_have_nonstandard=1;
+				if(!isset($week[$row['weekday']][$row['time']])) {
+					$week_nonstd[$row['weekday']][$row['time']] = array();
+				}
+		
+				array_push($week_nonstd[$row['weekday']][$row['time']], $row);
+			}
+		}
+		// If is weekend
+		elseif(array_search($row['weekday'], $weekend_day_codes) != FALSE) {
+			$weekend_have=1;
+			// If standard time
+			if(array_search($row['time'], $weekend_hour_codes) != FALSE) {
+				if(!isset($weekend[$row['weekday']][$row['time']])) {
+					$weekend[$row['weekday']][$row['time']] = array();
+				}
+				array_push($weekend[$row['weekday']][$row['time']], $row);
+			}
+			// If nonstandard time
+			else {
+				$weekend_have_nonstandard=1;
+				if(array_search($row['time'], $weekend_hour_codes) != FALSE) {
+					if(!isset($weekend_nonstd[$row['weekday']][$row['time']])) {
+						$weekend_nonstd[$row['weekday']][$row['time']] = array();
+					}
+					array_push($weekend_nonstd[$row['weekday']][$row['time']], $row);
+				}
+			}
+		}
+		else {
+			admin_error("got invalid weekday (".$row['weekday'].")");
+		}
+	}
+	$prof_string .= "process period query results: ".(microtime(TRUE)-$tmp)."<br>\n";
+	
+	// Draw the week schedule
+	$tmp=microtime(TRUE);
+?>
+<table class="schedule">
+	<tr>
+		<td style="border-top:none; border-left:none;"></td>
+		<td class="weekday">Lundi</td>
+		<td class="weekday">Mardi</td>
+		<td class="weekday">Mercredi</td>
+		<td class="weekday">Jeudi</td>
+		<td class="weekday">Vendredi</td>
+	</tr>
+<?php
+	for($hourindex=0; $hourindex < count($week_hour_codes); $hourindex++) {
+		echo "	<tr>\n";
+		echo "		<td class=\"hour\"><b>".$week_hour_labels[$hourindex]."</b></td>\n";
+		for($dayindex=0; $dayindex < count($week_day_codes); $dayindex++) {
+			echo "		<td>";
+			if(! $week[$week_day_codes[$dayindex]][$week_hour_codes[$hourindex]]) {
+				continue;
+			}
+			foreach($week[$week_day_codes[$dayindex]][$week_hour_codes[$hourindex]] as $period) {
+				if($period['tol'] == 'C') {
+					$tol = 'TH';
+				}
+				else {
+					$tol = 'LAB';
+				}
+				
+				if($period['week'] == "A") {
+					$b1b2="";
+				}
+				elseif($period['week'] == "B1") {
+					$b1b2=" <b>&lt;B1&gt;</b>";
+				}
+				elseif($period['week'] == "B2") {
+					$b1b2=" <b>&lt;B2&gt;</b>";
+				}
+				else {
+					admin_error("Invalid week");
+				}
+				
+				if(count($week[$week_day_codes[$dayindex]][$week_hour_codes[$hourindex]]) > 1) {
+					echo "<div class=\"period_conflict\">\n";
+				}
+				else {
+					echo "<div class=\"period_noconflict\">\n";
+				}
+				echo "<b>".$period['symbol']."</b> (".$period['grp'].")<br>[".$tol."] ".$period['room'].$b1b2;
+				echo "</div>\n";
+			}
+			echo "		</td>\n";
+		}
+		echo "	</tr>\n";
+	}
+	echo "</table>\n";
+	$php_function_time=microtime(TRUE)-$php_function_time;
+	$prof_string .= "draw schedule: ".(microtime(TRUE)-$tmp)."<br>\n";
+	echo "php function time: " . $php_function_time . "<br>".$prof_string."<br>\n";
+}
 
 ?>
 
