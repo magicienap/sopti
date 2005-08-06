@@ -3,6 +3,8 @@ require_once('config.php');
 require_once('lib.php');
 
 ob_start();
+
+$user_time=microtime(TRUE);
 ?>
 
 <html>
@@ -139,8 +141,25 @@ require_once('config.php');
 			}
 		}
 		
-		//print $cmd;
-		passthru($cmd." 2>&1");
+		print $cmd;
+		//passthru($cmd." 2>&1");
+		$handle = popen($cmd.' 2>&1', 'r');
+		$xml_groups = '';
+		while (!feof($handle)) {
+			$xml_groups .= fread($handle, 8192);
+			
+		}
+		pclose($handle);
+		$xml = simplexml_load_string($xml_groups);
+		
+		echo "<h5>Engine: Version ".$xml['engine_version']." - Compute:".$xml['compute_time']." - DB Time: ".$xml['db_time']."</h5>";
+		
+		foreach($xml->schedule as $sch) {
+			print_schedule($sch);
+		}
+
+		$user_time=microtime(TRUE)-$user_time;
+		echo "<h5>Temps: ".$user_time."</h5>\n";
 	}
 	else {
 		error("Aucun cours spécifié. Utiliser le bouton Précédent de votre navigateur pour changer les options.");
