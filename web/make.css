@@ -1,136 +1,3 @@
-/*
-
-body {font-family: Helvetica,Verdana; }
-
-table.schedule,table.schedule_weekend {
-	border: 2px solid;
-	cell-spacing: 0;
-	border-collapse: collapse;
-	font-size: 12px;
-	margin: 2px;
-}
-
-table.single_period {
-	font-size: inherit;
-	border-style: none;
-}
-
-table.schedule td.hour {
-	font-size: inherit;
-}
-
-div.period_noconflict {
-	border-style: none;
-	font-size: 12px;
-}
-
-div.period_conflict {
-	border-color: #ff0000;
-	border-style: solid;
-	border-width: 2px;
-	font-size: 12px;
-}
-
-div.period_noconflict,div.period_conflict {
-	margin: 1px;
-	padding: 1px;
-}
-
-table.schedule td,table.schedule_weekend td {
-	border-width: 1px;
-	border-style: solid;
-	width: 110px;
-}
-
-table.schedule {
-	float: left;
-	clear: left;
-	margin-bottom: 20px;
-	border-style: solid;
-	border-color: #000000;
-	border-width: 2px;
-}
-
-table.schedule_weekend {
-	float: left;
-}
-
-table.group_summary {
-	font-size: 12px;
-	border-spacing: 5px;
-}
-
-table.group_summary th {
-	text-align: left;
-}
-
-table.conflict_table {
-	font-size: 12px;
-	border-collapse:collapse;
-	background-color: #ff8888;
-}
-
-div.make_summary {
-	border: 2px solid;
-	padding: 2px;
-	width: 50%;
-	clear: both;
-	margin-bottom: 20px;
-}
-
-div.make_schedule_info {
-	//margin-top: 10px;
-	width: 685px;
-	border-style: none;
-	background-color: #777777;
-	color: #FFFFFF;
-	clear: both;
-}
-
-div.make_schedule_info p {
-	margin: 0px;
-}
-
-div.schedule_info {
-	background-color: #EEEEEE;
-	width: 685px;
-	clear: both;
-}
-
-div.errormsg {
-	font-size:12px;
-	border-width: 4px;
-	border-color: #ff0000;
-	border-style: solid;
-}
-
-div.errormsg p {
-	margin-left: 10px;
-}
-
-td.weekday,td.hour {
-	background-color: #cccccc;
-	text-align: center;
-}
-
-td.hour {
-	height:40px;
-}
-
-h1 {
-	font-size: 20px;
-}
-
-h2 {
-	font-size: 16px;
-}
-
-p {
-	font-size: 12px;
-}
-
-*/
-
 	body {
 		font-family: Helvetica,Verdana;
 
@@ -193,6 +60,11 @@ p {
 		border-spacing: 2px;
 		background-color: white;
 		clear:left;
+		border-collapse: collapse;
+	}
+
+	table.group_summary tr.course_row {
+		border-bottom: 1px dotted black;
 	}
 	
 	table.group_summary th {
@@ -230,24 +102,20 @@ p {
 		height:40px;
 	}
 	
-	/*
-	h1 {
+	div.page_browser {
 		font-size: 20px;
+		clear: left;
+		margin: 0px auto;
+		width: 300px;
+		border-style: ridge;
+		text-align: center;
+		font-weight: bold;
 	}
-	*/
-	
-	/*
-	h2 {
-		font-size: 16px;
+
+	div.page_browser a:visited, div.page_browser a:link {
+		color: #0000ff;
 	}
-	*/
-	
-	/*
-	p {
-		font-size: 12px;
-	}
-	*/
-	
+
 	/* ---- */
 	
 	div.course1 {
