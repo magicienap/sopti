@@ -183,13 +183,11 @@ function print_schedule($sch, $schedno)
 		}
 		$query .= $query_end;
 
-		echo $query;
-	//	die();
+		//echo $query;
 	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or admin_error('Query failed: ' . mysql_error());
 		$prof_string .= "group sql query: ".(microtime(TRUE)-$tmp)."<br>\n";
-		//$php_function_time=microtime(TRUE);
 		// Organize the results
 		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$group_data[$row['symbol']]['course_type'] = $row['course_type'];
@@ -210,7 +208,7 @@ function print_schedule($sch, $schedno)
 	<tr><td colspan="7">
 		<table width="100%" border="0" style="background-color:#FFA703;">
 			<tr>
-				<td style="background-color: #FFA703; text-align: left;"><font size="-3">Horaire</font> <b>#<?php echo $schedno; ?></b></td><td style="text-align: right; background-color: #FFA703;"><font size="-3">Score:</font> <b>0%</b></td>
+				<td style="background-color: #FFA703; text-align: left;"><font size="-3">Horaire</font> <b><?php echo $schedno; ?></b></td><td style="text-align: right; background-color: #FFA703;"><font size="-3">Score:</font> <b><?php printf("%.3f %%", 100.0/($sch['score']+1.0)); ?></b></td>
 			</tr>
 		</table>
 	</td></tr>
@@ -220,7 +218,6 @@ function print_schedule($sch, $schedno)
 	
 <?php
 
-	$query_periods_cond="";
 	foreach($requested_groups as $req) {
 		if(count($group_data[(string)$req['symbol']]) == 0) {
 			error("Cours introuvable: " . $req['symbol'] . " ".(count($group_data[$req['symbol']]))." ".count($group_data["ING1025"]));
@@ -230,15 +227,13 @@ function print_schedule($sch, $schedno)
 			if(!isset($group_data[$req['symbol']]['theory'][$req['th_grp']])) {
 				error("Groupe introuvable: ");
 			}
-			echo '	<tr><td>'.$req['symbol'].'</td><td>'.$group_data[$req['symbol']]['title'].'</td><td>'.$req['th_grp'].'</td><td>'.$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>-</td><td>-</td></tr>\n";
-			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['th_grp']."' AND groups.theory_or_lab='C') ";
+			echo "	<tr class=\"course_row\"><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>-</td><td>-</td></tr>\n";
 		}
 		elseif($group_data[$req['symbol']]['course_type'] == 'L') {
 			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
 				error("Groupe introuvable: ");
 			}
-			echo '	<tr><td>'.$req['symbol'].'</td><td>'.$group_data[$req['symbol']]['title'].'</td><td>-</td><td>-</td><td>'.$req['lab_grp'].'</td><td>'.$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
-			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['lab_grp']."' AND groups.theory_or_lab='L') ";
+			echo "	<tr class=\"course_row\"><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>-</td><td>-</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
 		}
 		elseif($group_data[$req['symbol']]['course_type'] == 'TL') {
 		        if($req['th_grp'] != $req['lab_grp']) {
@@ -252,8 +247,7 @@ function print_schedule($sch, $schedno)
 				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);
 			}
 			
-			echo "	<tr><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
-			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['th_grp']."') ";
+			echo "	<tr class=\"course_row\"><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
 		}
 		elseif($group_data[$req['symbol']]['course_type'] == 'TLS') {
 			if(!isset($group_data[$req['symbol']]['theory'][$req['th_grp']])) {
@@ -263,9 +257,7 @@ function print_schedule($sch, $schedno)
 				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);
 			}
 			
-			echo "	<tr><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
-			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['th_grp']."' AND groups.theory_or_lab='C') ";
-			$query_periods_cond .= "OR (courses.symbol='".$req['symbol']."' AND groups.name='".$req['lab_grp']."' AND groups.theory_or_lab='L') ";
+			echo "	<tr class=\"course_row\"><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
 		}
 		else {
 			error_admin("Invalid group type");
@@ -289,8 +281,7 @@ function print_schedule($sch, $schedno)
 		$query_end = ")";
 		$query = $query_begin.$query_periods_cond2.$query_end;
 	
- 		echo $query;
-	// 	die();
+ 		//echo $query;
 	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
@@ -318,7 +309,6 @@ function print_schedule($sch, $schedno)
 	}
 	
 	foreach($schedule_periods as $row) {
-		//echo $row['symbol'] . "<br>\n";
 		
 		// ASSERT : valid days, valid hours
 		
@@ -329,19 +319,16 @@ function print_schedule($sch, $schedno)
 				if(!isset($week[$row['weekday']][$row['time']])) {
 					$week[$row['weekday']][$row['time']] = array();
 				}
-				//echo $row['time'] . "week and day<br>\n";
 				array_push($week[$row['weekday']][$row['time']], $row);
 			}
 			// If is during evening
 			elseif(array_search($row['time'], $week_nighthours_codes) !== FALSE) {
 				$week_have_evening=1;
-				//if(array_search($row['time'], $weekend_hour_codes) != FALSE) {
-					if(!isset($week[$row['weekday']][$row['time']])) {
-						$week[$row['weekday']][$row['time']] = array();
-					}
+				if(!isset($week[$row['weekday']][$row['time']])) {
+					$week[$row['weekday']][$row['time']] = array();
+				}
 			
-					array_push($week[$row['weekday']][$row['time']], $row);
-				//}
+				array_push($week[$row['weekday']][$row['time']], $row);
 			}
 			// If is nonstandard time
 			else {
@@ -483,9 +470,9 @@ function print_schedule($sch, $schedno)
 
 	}
 	echo "</table>\n";
-	$php_function_time=microtime(TRUE)-$php_function_time;
-	$prof_string .= "draw schedule: ".(microtime(TRUE)-$tmp)."<br>\n";
-	echo "php function time: " . $php_function_time . "<br>".$prof_string."<br>\n";
+	//$php_function_time=microtime(TRUE)-$php_function_time;
+	//$prof_string .= "draw schedule: ".(microtime(TRUE)-$tmp)."<br>\n";
+	//echo "php function time: " . $php_function_time . "<br>".$prof_string."<br>\n";
 }
 
 ?>
