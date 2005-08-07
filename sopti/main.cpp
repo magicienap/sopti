@@ -36,6 +36,7 @@
 #include "read_csv.hpp"
 #include "dbloader.hpp"
 #include "configfile.hpp"
+#include "uepoch.h"
 
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
@@ -424,6 +425,32 @@ void print_schedule_html(StudentSchedule &s)
 	*/
 }
 
+void print_schedule_xml_groupdefs(StudentSchedule &s, float score)
+{
+	StudentSchedule::course_list_t::const_iterator it;
+	string th_grp;
+	string lab_grp;
+	
+	printf("	<schedule score=\"%f\">\n", score);
+	for(it=s.st_courses_begin(); it!=s.st_courses_end(); it++) {
+		// If has theorical class
+		if((*it)->theory_group) {
+			th_grp = (*it)->theory_group->name();
+		}
+		else {
+			th_grp="";
+		}
+		// If has lab class
+		if((*it)->lab_group) {
+			lab_grp = (*it)->lab_group->name();
+		}
+		else {
+			lab_grp = "";
+		}
+		printf("		<course symbol=\"%s\" theory_grp=\"%s\" lab_group=\"%s\" />\n", (*it)->course->symbol().c_str(), th_grp.c_str(), lab_grp.c_str());
+	}
+	printf("	</schedule>\n");
+}
 
 /* ------------------------------------------------------------------
 
@@ -733,6 +760,10 @@ void make(int argc, char **argv)
 	string next_constraint_arg;
 	string next_group_constraint_arg;
 	string max_conflicts_str="0";
+	long long db_begin;
+	long long db_end;
+	long long compute_begin;
+	long long compute_end;
 	
 	int c,i;
 	
@@ -841,9 +872,12 @@ void make(int argc, char **argv)
 	// Get a school schedule with the courses we want
 	DBLoader dbl;
 	SchoolSchedule *schoolsched;
+	db_begin=uepoch();
 	schoolsched = dbl.get_ss_with_courses(&requested_courses);
+	db_end=uepoch();
 	
 	// Find acceptable groups
+	compute_begin=uepoch();
 	test_groups(&requested_courses, schoolsched, &group_constraints, &accepted_groups);
 	
 	// Make an empty schedule to begin the recursion with
@@ -857,16 +891,6 @@ void make(int argc, char **argv)
 	// Find the schedules that respect the objectives and constraints among all possible schedules
 	make_recurse(*schoolsched, sched, requested_courses, &constraints, &accepted_groups, solutions);
 	
-	if(solutions.size() == 0) {
-		if(output_fmt == OUTPUT_HTML) {
-			printf("<div class=\"errormsg\"><p>Aucune solution trouvée!<p>Causes possibles:<ul><li>Certaines sections sont pleines<li>Les cours sélectionnés entrent en conflit\n</ul><p>Pour changer les paramètres, utiliser le bouton Précédent de votre navigateur.</div>");
-		}
-		else {
-			error("No solution found!");
-		}
-		return;
-	}
-	
 	multimap<float, StudentSchedule *> scores;
 	vector<StudentSchedule>::iterator it;
 	multimap<float, StudentSchedule *>::const_iterator it2;
@@ -875,42 +899,14 @@ void make(int argc, char **argv)
 	for(it=solutions.begin(); it!=solutions.end(); it++) {
 		scores.insert(pair<float, StudentSchedule *>(objective->operator()(&*it), &*it));
 	}
-	
-	// Print the summary
-	if (output_fmt == OUTPUT_HTML) {
-		printf("<div class=\"make_summary\">\n");
-		printf("<p>Nombre d'horaires trouvés: %d\n", solutions.size());
-		printf("</div>\n");
-	}
-	else {
-		printf("Nombre d'horaires trouvés: %d\n", solutions.size());
-	}
+	compute_end=uepoch();
 	
 	// Print the solutions in order
+	printf("<sched_group engine_version=\"" VERSION "\" compute_time=\"%f\" db_time=\"%f\">\n", static_cast<float>(compute_end-compute_begin)/1000000.0, static_cast<float>(db_end-db_begin)/1000000.0);
 	for(it2=scores.begin(), i=1; it2!=scores.end(); it2++, i++) {
-		if(output_fmt == OUTPUT_HTML) {
-			printf("<div class=\"make_schedule_info\">\n");
-			printf("<p>Horaire #%d\n", i);
-			printf("<p>Score: %g\n", it2->first);
-			printf("</div>\n");
-			// Print group information
-			printf("<div class=\"schedule_info\">\n");
-			printf("<table class=\"group_summary\">\n");
-			printf("<tr><th>Sigle</th><th>Titre</th><th>Théorie</th><th>Lab</th></tr>\n");
-			
-			StudentSchedule::course_list_t::const_iterator it4;
-			for(it4=it2->second->st_courses_begin(); it4!=it2->second->st_courses_end(); it4++) {
-				printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", (*it4)->course->symbol().c_str(), (*it4)->course->title().c_str(), (*it4)->theory_group?(*it4)->theory_group->name().c_str():"-", (*it4)->lab_group?(*it4)->lab_group->name().c_str():"-");
-			}
-			printf("</table>\n");
-			printf("</div>\n");
-		}
-		else {
-			printf("Score: %f\n",it2->first);
-		}
-		print_schedule(*(it2->second));
+		print_schedule_xml_groupdefs(*(it2->second), it2->first);
 	}
-	//debug("got %d solutions!", solutions.size());
+	printf("</sched_group>\n");
 }
 
 
