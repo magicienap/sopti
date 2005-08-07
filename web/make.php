@@ -154,8 +154,10 @@ require_once('config.php');
 		
 		echo "<h5>Engine: Version ".$xml['engine_version']." - Compute:".$xml['compute_time']." - DB Time: ".$xml['db_time']."</h5>";
 		
+		$schedno=1;
 		foreach($xml->schedule as $sch) {
-			print_schedule($sch);
+			print_schedule($sch, $schedno);
+			$schedno++;
 		}
 
 		$user_time=microtime(TRUE)-$user_time;
