@@ -1,1 +1,8 @@
 php: add error handler for mysql execution errors and warnings
+add weekend support
+colorize results
+merge ben's stuff
+alterner les teintes de gris pour les heures
+unsubscribe notification: invalid email: mail quand meme?
+pourquoi etape 0 dans unsubscribe
+avoir ouvrir toutes et fermer toutes pour toutes dans le open_close_form
