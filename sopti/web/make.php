@@ -27,7 +27,7 @@ $user_time=microtime(TRUE);
 require_once('config.php');
 ?>
 
-<center>
+<div id="header">
 
 <img src="aep.gif">
 
@@ -37,9 +37,9 @@ require_once('config.php');
 <p class="step_notcurrent">Étape 2 - Choisir les options de génération
 <p class="step_current">Étape 3 - Visualiser les horaires
 
-</center>
+</div>
 
-<p>&nbsp;
+<p>
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
@@ -207,3 +207,22 @@ require_once('config.php');
 
 </body>
 </html>
+
+<?php
+# $html = ob_get_clean();
+
+# // Specify configuration
+# $config = array(
+	# 'indent' => true, 
+	# 'output-xhtml' => true, 
+	# 'wrap' => 75, 
+	# 'vertical-space' => true);
+
+# // Tidy
+# $tidy = new tidy;
+# $tidy->parseString($html, $config, 'latin1');
+# $tidy->cleanRepair();
+
+# // Output
+# echo $tidy;
+?>

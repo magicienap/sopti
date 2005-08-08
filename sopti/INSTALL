@@ -6,6 +6,8 @@ Requirements:
 	- perl
 	- php
 	- String::Escape perl module
+	- python (>=2.3?)
+	- python mysqldb module
 
 * Unpack the archive in a directory of your choice
 	tar xvzf sopti-xx.tar.gz
@@ -38,6 +40,16 @@ INSTALLING THE WEB INTERFACE
   Then create teachers.csv
 	./make_teachers_csv.sh
 
-* Populate de SQL database
+* Populate the SQL database
 	cd db
 	./updatedb.pl
+
+INSTALLING & USING THE EMAILER
+----------------------------
+* Make sure you have installed the database in the previous section
+
+* In the folder "emailer/", create emailer.conf based on emailer.conf.example 
+	or edit configuration.py
+
+* Run emailer.py regularly for example when the database is updated 
+	or in a cron job

@@ -39,8 +39,15 @@ p.step_notcurrent {
 }
 
 table.free_period_selector {
+	position: relative;
+	left: -2px;
 	border: 0;
-	margin: 1ex 0;
+	border-collapse: collapse;
+	width: 550px;
+	margin: 1em 0 0 0;
+	/* font repeated here for IE */
+	font-family: Helvetica, Verdana, sans-serif;
+	font-size: 12px;
 }
 
 table.free_period_selector tr.even {
@@ -50,6 +57,7 @@ table.free_period_selector tr.even {
 table.free_period_selector th
 {
 	padding: 1ex 2em;
+	border: 2px solid #ffffff;
 }
 
 table.free_period_selector th.hour,th.weekday {
@@ -60,6 +68,21 @@ table.free_period_selector th.hour {
 	text-align: right;
 }
 
+table.free_period_selector td {
+	text-align: center;
+	border: 2px solid #ffffff;
+}
+
+table.free_period_selector input {
+	display: block;
+	margin: 0 auto;
+}
+
+div#header {
+	margin-bottom: 3em;
+	text-align: center;
+}
+
 div.option_block {
 	margin-left: 30px;
 	margin-bottom: 30px;
@@ -67,55 +90,97 @@ div.option_block {
 
 /* Group open/close form */
 
-div.full_cbox {
-/*	border-width: 3px;
-	border-style: solid;
-	border-color: #ff0000;
-*/
-	float:left;
-	margin: 1px;
-	padding: 1px;
-	background-color: #ffaaaa;
+table.openclose {
+	position: relative;
+	left: -2px;
+	width: 550px;
+	border: 0;
+	border-collapse: collapse;
+	margin: 2em 0 0 0;
 }
 
-div.notfull_cbox {
-	float:left;
-	margin: 1px;
-}
-
-table.openclose_table {
-	border-spacing: 0px;
-	width: 500px;
-}
-
-table.openclose_table td {
+table.openclose td {
 	font-size: 12px;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding: 0.25ex 2em;
 	background-color: #eeeeee;
-	margin: 0px;
-	border-width: 0px;
+	border: 2px solid #ffffff;
 }
 
-table.openclose_table td.course_sym {
-	background-color: #cccccc;
-	font-weight: bold;
-}
-
-
-table.openclose_table td.openclose_whitespace {
+table.openclose td.title {
+	padding: 0.25ex 0;
 	background-color: #ffffff;
 }
 
-table.openclose_table table.oc_sub_table td.grpname {
+table.openclose div.title {
+	background-color: #cccccc;
+	width: 80%;
+	padding: 0.5ex 1.5em;
 	font-weight: bold;
+	border: 0;
+	margin: 0;
 }
 
-table.openclose_table tr.openclose_row {
-	border: 2px solid black;
+div.title a {
+	color: #444444;
 }
 
-table.openclose_table td.ocform_type {
+table.openclose td.type {
 	font-weight: bold;
-	background-color: #e5e5e5;
+	background-color: #dddddd;
+	text-align: center;
+	padding: 0.5ex 2px;
+}
+
+a.oclink {
+	color: #444444;
+	float: left;
+}
+
+table.openclose td.nested {
+	padding:0;
+}
+
+table.openclose table.nested {
+	width: 100%;
+	border: 0;
+	border-collapse: collapse;
+}
+
+table.nested td.openned {
+	font-weight: bold;
+	text-align: center;
+	width: 100px;
+	padding: 0.5ex 0;
+	border-width: 0 2px 0 0;
+}
+
+table.nested td.closed {
+	font-weight: bold;
+	text-align: center;
+	background-color: #ffaaaa;
+	width: 100px;
+	padding: 0.5ex 0;
+	border-width: 0 2px 0 0;
+}
+
+table.nested td.teacher {
+	border-width: 0;
+	width:100%
+	padding: 0.25ex 5px 0.25ex 2em;
+}
+
+table.nested td.email {
+	width: 25px;
+	padding: 0 5px 0 0;
+	border: 0;
+	vertical-align: middle;
+}
+
+td.email a.email {
+	display: block;
+	float: right;
+}
+
+a.email img {
+	border: 0;
 }

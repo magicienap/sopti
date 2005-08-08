@@ -98,6 +98,7 @@ p, dl {
 <p><font size="-1">Session en cours:</font><br><strong>hiver 2005</strong>
 <p><a href="make_form1.php" target="_blank"><font size="+3">Démarrer</font></a><br><font size="-1">(générer des horaires)</font></p>
 <p><a href="listcourses.php" target="_blank">Liste des cours offerts</a>
+<p><a href="email_unsubscribe.php" target="_blank">Se désincrire de la notification par email</a>
 <p><font size="-2">Derni&egrave;re mise &agrave; jour des donn&eacute;es:<br>
 <?php
 require_once('config.php');

@@ -1,4 +1,4 @@
-SOPTI=../sopti
+SOPTI=./sopti
 COURSEFILE=data/courses.csv
 CLOSEDFILE=data/closed.csv
 OUTPUTDIR=data/courses_xml
