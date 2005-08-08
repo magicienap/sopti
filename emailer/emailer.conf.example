@@ -1,0 +1,75 @@
+# Emailer.py version 0.1
+# Copyright (C) 2005 Benjamin Poirier <ben_tha_man@users.sf.net>
+# Configuration file example
+#
+# The format of the configuration file is similar to an inf file in Windows
+# however there is no support for multiline strings.
+# You can omit values here, in which case the built-in defaults will be used.
+#
+# Do not forget to call emailer.py with '-c emailer.conf' if you want the 
+# configuration to take effect.
+#
+# If you'd prefer to use emailer.py without a config file, you can go modify
+# the built-in defaults for the script, in the file 'configuration.py'
+
+[general]
+# these values should math the ones in sopti.conf
+# this is used for the hash used in the unsubscription, it should be secret
+pepper= changeme
+# this is the base address of the web pages, without the trailing slash
+baseurl= http://localhost
+
+
+[DB]
+# defautl: "root"
+user= sopti
+# default: none
+passwd= =l@FRo0Koudi
+# default: "localhost"
+host= ben-x30e
+# default: "sopti"
+db= sopti
+
+
+[SMTP]
+# default: "localhost"
+host= lg2
+# default: 25
+port= 25
+
+
+[sender]
+# default: "sopti@localhost"
+address= horaires@step.polymtl.ca
+# default: "School Schedule Optimizer"
+name= Générateur d'horaires de l'AEP
+
+
+[emailSubject]
+# default: Le groupe que vous avez demandé est disponible
+singular= Le groupe que vous avez demandé est disponible
+# default: Les groupes que vous avez demandés sont disponibles
+plural= Les groupes que vous avez demandés sont disponibles
+
+
+[emailIntro]
+# default: "Bonjour,\n\nLe groupe que vous avez demandé est maintenant disponible. Voici \nl'information à propos de ce groupe:\n\n"
+singular= Bonjour,\n\nLe groupe que vous avez demandé est maintenant disponible. Voici \nl'information à propos de ce groupe:\n\n
+# default: "Bonjour,\n\nLes groupes que vous avez demandés sont maintenant disponibles. \nVoici les informations à propos de ces groupes:\n\n"
+plural= Bonjour,\n\nLes groupes que vous avez demandés sont maintenant disponibles. \nVoici les informations à propos de ces groupes:\n\n
+
+
+# this should be a format string, the keys "symbol", "title", "name", "theory_or_lab" and "teacher" will be replaced
+# you have to escape the format string entities with double %% since the configuration file format also allows for "replacements"
+[emailCourse]
+# default: "%%(symbol)s - %%(title)s\nSection %%(name)s pour la partie %%(theory_or_lab)s du cours\nEnseignant(e): %%(teacher)s\n\n"
+text= %%(symbol)s - %%(title)s\nSection %%(name)s pour la partie %%(theory_or_lab)s du cours\nEnseignant(e): %%(teacher)s\n\n
+
+
+# this should also be a format string, the keys "baseurl", "email" and "hash" will be replaced
+# you have to escape the format string entities with double %% since the configuration file format also allows for "replacements"
+[emailOutro]
+# default: "Si vous souhaitez toujours vous inscrire à ce groupe veuillez aller \nfaire le changement dans votre dossier étudiant le plus rapidement\npossible puisque d'autres personnes peuvent aussi s'inscrire.\n\nVous pouvez accéder au dossier étudiant à cette adresse:\nhttps://www4.polymtl.ca/poly/poly.html\n\nVous pouvez aussi aller vérifier vos possibilités d'horaire à nouveau\nsur le site du générateur d'horaires:\n%%(baseurl)s\n\nSi vous avez d'autre demandes en attente que vous désirer annuler\nvous pouvez le faire en allant à l'adresse suivante:\n%%(baseurl)s/email_unsubscribe.php?email=%%(email)s&hash=%%(hash)s\n\nMerci d'avoir utilisé le générateur d'horaires.\nVous pouvez nous faire part de vos commentaires à l'adresse \nhoraires@step.polymtl.ca\n\n-L'équipe du générateur d'horaires\n"
+singular= Si vous souhaitez toujours vous inscrire à ce groupe veuillez aller \nfaire le changement dans votre dossier étudiant le plus rapidement\npossible puisque d'autres personnes peuvent aussi s'inscrire.\n\nVous pouvez accéder au dossier étudiant à cette adresse:\nhttps://www4.polymtl.ca/poly/poly.html\n\nVous pouvez aussi aller vérifier vos possibilités d'horaire à nouveau\nsur le site du générateur d'horaires:\n%%(baseurl)s\n\nSi vous avez d'autre demandes en attente que vous désirer annuler\nvous pouvez le faire en allant à l'adresse suivante:\n%%(baseurl)s/email_unsubscribe.php?email=%%(email)s&hash=%%(hash)s\n\nMerci d'avoir utilisé le générateur d'horaires.\nVous pouvez nous faire part de vos commentaires à l'adresse \nhoraires@step.polymtl.ca\n\n-L'équipe du générateur d'horaires\n
+# default: "Si vous souhaitez toujours vous inscrire à ces groupes veuillez aller \nfaire les changements dans votre dossier étudiant le plus rapidement\npossible puisque d'autres personnes peuvent aussi s'inscrire.\n\nVous pouvez accéder au dossier étudiant à cette adresse:\nhttps://www4.polymtl.ca/poly/poly.html\n\nVous pouvez aussi aller vérifier vos possibilités d'horaire à nouveau\nsur le site du générateur d'horaires:\n%%(baseurl)s\n\nSi vous avez d'autre demandes en attente que vous désirer annuler\nvous pouvez le faire en allant à l'adresse suivante:\n%%(baseurl)s/email_unsubscribe.php?email=%%(email)s&hash=%%(hash)s\n\nMerci d'avoir utilisé le générateur d'horaires.\nVous pouvez nous faire part de vos commentaires à l'adresse \nhoraires@step.polymtl.ca\n\n-L'équipe du générateur d'horaires\n"
+plural= Si vous souhaitez toujours vous inscrire à ces groupes veuillez aller \nfaire les changements dans votre dossier étudiant le plus rapidement\npossible puisque d'autres personnes peuvent aussi s'inscrire.\n\nVous pouvez accéder au dossier étudiant à cette adresse:\nhttps://www4.polymtl.ca/poly/poly.html\n\nVous pouvez aussi aller vérifier vos possibilités d'horaire à nouveau\nsur le site du générateur d'horaires:\n%%(baseurl)s\n\nSi vous avez d'autre demandes en attente que vous désirer annuler\nvous pouvez le faire en allant à l'adresse suivante:\n%%(baseurl)s/email_unsubscribe.php?email=%%(email)s&hash=%%(hash)s\n\nMerci d'avoir utilisé le générateur d'horaires.\nVous pouvez nous faire part de vos commentaires à l'adresse \nhoraires@step.polymtl.ca\n\n-L'équipe du générateur d'horaires\n

@@ -1,15 +1,18 @@
+<?php
+# ob_start();
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 <head>
-  <title>Générer des horaires - Étape 1</title>
-  <link rel="stylesheet" type="text/css" href="sopti.css">
+	<title>Générer des horaires - Étape 1</title>
+	<link rel="stylesheet" type="text/css" href="sopti.css">
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
 <body>
 
-<center>
+<div id="header">
 
 <img src="aep.gif">
 
@@ -19,9 +22,9 @@
 <p class="step_notcurrent">Étape 2 - Choisir les options de génération
 <p class="step_notcurrent">Étape 3 - Visualiser les horaires
 
-</center>
+</div>
 
-<p>&nbsp;
+<p>
 
 <form method="GET" action="make_form2.php">
 
@@ -53,3 +56,22 @@ print "Dernière mise a jour du fichier de cours: ".$string_modif
 
 </body>
 </html>
+
+<?php
+# $html = ob_get_clean();
+
+# // Specify configuration
+# $config = array(
+	# 'indent' => true, 
+	# 'output-xhtml' => true, 
+	# 'wrap' => 75, 
+	# 'vertical-space' => true);
+
+# // Tidy
+# $tidy = new tidy;
+# $tidy->parseString($html, $config, 'latin1');
+# $tidy->cleanRepair();
+
+# // Output
+# echo $tidy;
+?>

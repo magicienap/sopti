@@ -1,5 +1,7 @@
 <?php
 
+require_once('config.php');
+
 $CONFIG_VARS=array();
 
 read_config_file($SOPTI_CONFIG_FILE);
@@ -10,8 +12,7 @@ function admin_error($msg)
 ?>
 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.or
-g/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 <head>
@@ -49,8 +50,7 @@ function error($msg)
 ?>
 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.or
-g/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 <head>
@@ -72,7 +72,7 @@ g/TR/html4/loose.dtd">
 <p align="center"><?php echo $msg; ?></p>
 </div>
 
-<p align="center">Utiliser le bouton précédent de votre navigateur pour revenir en arrière et corriger l'erreur.
+<p align="center">Si possible, utiliser le bouton précédent de votre navigateur pour revenir en arrière et corriger l'erreur.
 </body>
 </html>
 
@@ -475,5 +475,87 @@ function print_schedule($sch, $schedno)
 	//echo "php function time: " . $php_function_time . "<br>".$prof_string."<br>\n";
 }
 
-?>
 
+/* array_intersect_key2 has the same functionality as the
+   PHP5 array_intersect_key function used with 2 arguments.
+   by Benjamin Poirier
+*/
+
+function array_intersect_key2($array1, $array2) 
+{ 
+	$output= array(); 
+     
+	foreach ($array1 as $key => $value) { 
+		if (array_key_exists($key, $array2)) { 
+			$output[$key]= $value;
+		} 
+	} 
+     
+	return $output; 
+} 
+
+
+// note: this is not a real xor, if two characters are the same they will be or'ed to avoid string terminators
+function xorString($string1, $string2)
+{
+	//we make sure string2 is the longest one
+	if (strlen($string1) > strlen($string2))
+	{
+		$temp= $string2;
+		$string2= $string1;
+		$string1= $temp;
+	}
+	
+	$len1= strlen($string1);
+	
+	$i= 0;
+	while($i < strlen($string2))
+	{
+		// if the characters are the same this will generate a string terminator '0' which will eventually cause the crypt function to end before the end of the string, this is not desired
+		if ($string1[$i % $len1] == $string2[$i])
+		{
+			$result[$i]= $string2[$i];
+		}
+		else
+		{
+			$result[$i]= $string1[$i % $len1] ^ $string2[$i];
+		}
+		$i++;
+	}
+	
+	return implode("", $result);
+}
+
+
+read_config_file($SOPTI_CONFIG_FILE);
+
+function getHash($email, $salt=0)
+{
+	global $CONFIG_VARS;
+	
+	if ($salt)
+	{
+		return crypt(xorString($email, $CONFIG_VARS["emailer.pepper"]), $salt);
+	}
+	else
+	{
+		return crypt(xorString($email, $CONFIG_VARS["emailer.pepper"]));
+	}
+}
+
+/* by cam at wecreate dot com - http://php.net/manual/en/function.ip2long.php#54953 */
+function ipcompare ($ip1, $ip2, $mask)
+{
+	$masked1 = ip2long($ip1) & ip2long($mask); // bitwise AND of $ip1 with the mask
+	$masked2 = ip2long($ip2) & ip2long($mask); // bitwise AND of $ip2 with the mask
+	
+	if ($masked1 == $masked2)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+?>

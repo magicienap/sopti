@@ -8,3 +8,13 @@ db.schema ""
 
 default_semester "H2005"
 admin_email ""
+
+# this value should math the one in emailer/emailer.conf
+# this is the base address of the web pages, without the trailing slash
+baseURL "http://localhost/sopti"
+
+# this value should math the one in emailer/emailer.conf
+# this is used for the hash used in the unsubscription, it should be secret
+emailer.pepper "changeme"
+emailer.maxReq "20"
+emailer.maxIP "60"
