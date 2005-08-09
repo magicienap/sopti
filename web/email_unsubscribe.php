@@ -23,8 +23,8 @@ if (isset($_GET["email"]) || isset($_GET["hash"]))
 	
 	if ($_GET["hash"] != getHash($_GET["email"], $_GET["hash"]))
 	{
-		#error("Hash invalide, vérifier le lien utilisé ou refaire la demande par email");
-		error("This will help debugging: " . htmlentities(urlencode(getHash($_GET["email"])), ENT_QUOTES));
+		error("Hash invalide, vérifier le lien utilisé ou refaire la demande par email");
+		#error("This will help debugging: " . htmlentities(urlencode(getHash($_GET["email"])), ENT_QUOTES));
 	}
 	
 	echo <<<BENRULES
