@@ -67,7 +67,7 @@ vector<string> DBLoader::get_course_list(void)
 	vector<string>::const_iterator it;
 	
 	// TODO: do something for cases where several semesters exist
-	query = make_message("SELECT courses.symbol FROM courses ORDER BY courses.symbol");
+	query = make_message("SELECT courses.symbol FROM courses_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='%s' ORDER BY courses.symbol", config_vars["default_semester"].c_str());
 	// Do query
 	result = mysql_query(pmysql, query);
 	if(result) {
