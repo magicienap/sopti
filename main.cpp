@@ -697,7 +697,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 				
 				for(it2=course_to_add->groups_begin(); it2!=course_to_add->groups_end(); it2++) {
 					if((*it2)->lab()) {
-						if(accepted_groups->find(*it) == accepted_groups->end()) {
+						if(accepted_groups->find(*it2) == accepted_groups->end()) {
 							continue;
 						}
 						
