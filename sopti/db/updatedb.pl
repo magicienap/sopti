@@ -288,7 +288,8 @@ sub main() {
 				for my $field (@fields_courses_semester) {
 					if($current_line{$field} ne $current_course_semester_entry->{$field}) {
 						warning("[UPDATE][courses_semester] Course $current_line{'symbol'}, field $field needs update; doing it (csv: $current_line{$field}, DB: $course_semester_entry->{$field})");
-						$dbh->do("UPDATE courses_semester SET $field=\"$current_line{$field}\" WHERE courses_semester.course=\'$course_semester_entry->{'unique'}\' AND courses_semester.semester=\'$current_semester_unique\'") or die $dbh->errstr;
+						print "UPDATE courses_semester SET $field=\"$current_line{$field}\" WHERE courses_semester.course=\'$current_course_entry->{'unique'}\' AND courses_semester.semester=\'$current_semester_unique\'";
+						$dbh->do("UPDATE courses_semester SET $field=\"$current_line{$field}\" WHERE courses_semester.course=\'$current_course_entry->{'unique'}\' AND courses_semester.semester=\'$current_semester_unique\'") or die $dbh->errstr;
 					}
 				}
 			}
