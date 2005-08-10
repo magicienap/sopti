@@ -102,15 +102,11 @@ function print_open_close_form($courses) {
 			}
 			
 			$nbOCChecks= count($entry2);
-			$displayOpenOC= False;
-			foreach ($entry2 as $entry3) {
-				if ($entry3["closed"] == 1) {
-					$displayOpenOC= True;
-					break;
-				}
-			}
 			
-			echo '<tr><td class="type">' . $group_type_string . ($displayOpenOC ? '<br><a href="javascript:openOCChecks(' . $offsetOCChecks . ',' . $nbOCChecks . ')" class="oclink">(Ouvrir toutes les sections)</a>' : '') . '</td></tr>';
+			echo '<tr><td class="type">' . $group_type_string . 
+			'<br><a href="javascript:changeOCChecks(' . $offsetOCChecks . ',' . $nbOCChecks . ')" class="oclink">(Ouvrir toutes les sections)</a>' . 
+			'<br><a href="javascript:changeOCChecks(' . $offsetOCChecks . ',' . $nbOCChecks . ',0)" class="oclink">(Fermer toutes les sections)</a>' . 
+			'</td></tr>';
 			$offsetOCChecks+= $nbOCChecks;
 			
 			foreach($entry2 as $groupname => $entry3) {
@@ -157,14 +153,19 @@ function print_open_close_form($courses) {
 	echo '
 		<script type="text/javascript">
 		
-		function openOCChecks(start, num)
+		function changeOCChecks(start, num, checked)
 		{
+			if (arguments.length == 2)
+			{
+				checked= 1;
+			}
+			
 			// this is the index of the first checkbox for the open close form, the first form element has index 0
 			ocCheckboxOffset= 55;
 			
 			for (i= 0; i < num; i++)
 			{
-				document.form2[ocCheckboxOffset + start + i].checked= 1;
+				document.form2[ocCheckboxOffset + start + i].checked= checked;
 			}
 		}
 		
@@ -193,6 +194,7 @@ if(strlen($courses_raw) == 0) {
 }
 
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 <head>
@@ -216,8 +218,6 @@ if(strlen($courses_raw) == 0) {
 </div>
 
 <form method="POST" action="make.php" name="form2">
-
-<p>
 
 <h2>Cours demandés</h2>
 <div class="option_block">
