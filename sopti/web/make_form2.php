@@ -95,7 +95,7 @@ function print_open_close_form($courses) {
 			}
 			elseif($course_info[$sym]["type"] == 'TLS' && $type == 'L') {
 				$group_type_string = "Laboratoire";
-				$cb_name_prefix = 't';
+				$cb_name_prefix = 'l';
 			}
 			else {
 				die("internal error");
