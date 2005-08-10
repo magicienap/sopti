@@ -103,17 +103,22 @@
 	}
 	
 	div.page_browser {
-		font-size: 20px;
+		font-size: 17px;
 		clear: left;
 		margin: 0px auto;
-		width: 300px;
-		border-style: ridge;
+		width: 600px;
+		border: 2px solid black;
 		text-align: center;
 		font-weight: bold;
+		background-color: #bdcee6;
+	}
+
+	div.page_browser p {
+		margin: 0px;
 	}
 
 	div.page_browser a:visited, div.page_browser a:link {
-		color: #0000ff;
+		color: #000000;
 	}
 
 	/* ---- */
