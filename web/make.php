@@ -43,9 +43,7 @@ require_once('config.php');
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
-<p>Voici les horaires correspondant aux options sélectionnées. Ils sont affichés en ordre décroissant de préférence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Le "score" le plus <b>faible</b> indique le <b>meilleur</b> horaire.
-
-<p>Pour changer les options, utiliser le bouton Précédent de votre navigateur.
+<p>Voici les horaires correspondant aux options sélectionnées. Ils sont affichés en ordre décroissant de préférence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Pour changer les options, utiliser le bouton Précédent de votre navigateur.
 
 <p>Pour choisir officiellement un horaire, vous devez visiter votre dossier étudiant. Vous trouverez un lien sur la page d'accueil du générateur d'horaires.
 
@@ -154,7 +152,6 @@ require_once('config.php');
 	}
 		$show = 10;
 		$xml = simplexml_load_string($_SESSION['xml_groups']);
-		echo "<h5>Engine: Version ".$xml['engine_version']." - Compute:".$xml['compute_time']." - DB Time: ".$xml['db_time']."</h5>";
 		
 		$schedule_array=array();
 		foreach($xml->schedule as $sch) {
@@ -162,6 +159,9 @@ require_once('config.php');
 		}
 		echo "We have ".count($schedule_array)." schedules<br>\n";
 		$full_result_count = count($schedule_array);
+		if(!$full_result_count) {
+			error("Aucun horaire trouvé.<br><br>Solutions possibles:<br>- Changer ou enlever certains cours pour éviter les conflits<br>- Ouvrir davantage de sections");
+		}
 		$current_page = $_GET['page'];
 		//$first = $_GET['first'];
 		//$first = $first-(($first-1)%$show);
@@ -181,8 +181,9 @@ require_once('config.php');
 
 		if($page_count > 1) {
 			echo "<div class=\"page_browser\">";
+			echo "<p>Aller à la page:</p>\n";
 			if($current_page-1 >= 0) {
-				echo "<a href=\"make.php?page=".($current_page-1)."\">&lt;&lt;</a> ";
+				echo "<a href=\"make.php?page=".($current_page-1)."\">&lt;&lt; Précédente</a> ";
 			}
 			for($i=0; $i < $page_count; $i++) {
 				if($i == $current_page) {
@@ -193,13 +194,15 @@ require_once('config.php');
 				}
 			}
 			if($current_page+1 < $page_count) {
-				echo "<a href=\"make.php?page=".($current_page+1)."\">&gt;&gt;</a>";
+				echo "<a href=\"make.php?page=".($current_page+1)."\">Suivante &gt;&gt;</a>";
 			}
 			echo "</div>";
 		}
 
 		$user_time=microtime(TRUE)-$user_time;
-		echo "<h5 style=\"clear: left;\">Temps: ".$user_time."</h5>\n";
+		echo "<h5 style=\"clear: left;\">Temps php: ".$user_time." sec<br>\n";
+		echo "Engin: version ".$xml['engine_version']." - calculs: ".$xml['compute_time']."sec - temps DB: ".$xml['db_time']."sec</h5>";
+
 	//else {
 		//error("Aucun cours spécifié. Utiliser le bouton Précédent de votre navigateur pour changer les options.");
 	//}

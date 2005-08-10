@@ -213,7 +213,7 @@ function print_schedule($sch, $schedno)
 		</table>
 	</td></tr>
 	<tr><th rowspan="2">Sigle</th><th rowspan="2">Titre</th><th colspan="2">Théorie</th><th colspan="2">Lab</th></tr>
-	<tr><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader">Crédits</th></tr>
+	<tr><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader"></th></tr>
 	<tr><td colspan="7" style="background-color: black; height: 1px;"></td></tr>
 	
 <?php
