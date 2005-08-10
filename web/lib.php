@@ -397,6 +397,28 @@ function print_schedule($sch, $schedno)
 			if(! $week[$daycodes[$dayindex]][$hourcodes[$hourindex]]) {
 				continue;
 			}
+			// See what kind of conflict we have
+			$conflict=0;
+			$cumul_mask=0;
+			foreach($week[$daycodes[$dayindex]][$hourcodes[$hourindex]] as $period) {
+				if($period['week'] == "A") {
+					$mask=3;	
+				}
+				elseif($period['week'] == "B1") {
+					$mask=1;
+				}
+				elseif($period['week'] == "B2") {
+					$mask=2;
+				}
+				else {
+					admin_error("Invalid week");
+				}
+				if($cumul_mask & $mask) {
+					$conflict |= ($cumul_mask & $mask);
+				}
+				$cumul_mask |= $mask;
+			}
+			// Now print the courses at this hour
 			foreach($week[$daycodes[$dayindex]][$hourcodes[$hourindex]] as $period) {
 				if($period['tol'] == 'C') {
 					$tol = 'TH';
@@ -407,18 +429,21 @@ function print_schedule($sch, $schedno)
 				
 				if($period['week'] == "A") {
 					$b1b2="";
+					$mask=3;
 				}
 				elseif($period['week'] == "B1") {
 					$b1b2=" <b>&lt;B1&gt;</b>";
+					$mask=1;
 				}
 				elseif($period['week'] == "B2") {
 					$b1b2=" <b>&lt;B2&gt;</b>";
+					$mask=2;
 				}
 				else {
 					admin_error("Invalid week");
 				}
 				
-				if(count($week[$daycodes[$dayindex]][$hourcodes[$hourindex]]) > 1) {
+				if($mask & $conflict) {
 					echo "<div class=\"period_conflict\">\n";
 				}
 				else {
