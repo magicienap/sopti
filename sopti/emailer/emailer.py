@@ -111,7 +111,7 @@ def main():
 				`courses_semester`.`course` = `courses`.`unique` 
 			where `groups`.`closed` = '0'
 			order by `notifications`.`email`
-	""")
+		""")
 	except MySQLdb.MySQLError, message:
 		logging.critical("MySQL error %d: %s" % (message[0], message[1]))
 		return 1
@@ -167,7 +167,7 @@ def main():
 						configuration["emailOutro"]["plural"] % {
 							"email" : urllib.quote(notificationGroup[0]["notifications.email"]), 
 							# a period (.) at the end of the line is also replaced otherwise it is left out of the link by some mail readers
-							"hash" : re.sub("\.$", "%2F", urllib.quote(md5crypt(xorString(notificationGroup[0]["notifications.email"], configuration["general"]["pepper"]), "".join(random.sample(string.ascii_letters + string.digits, 8))))), 
+							"hash" : re.sub("\.$", "%2E", urllib.quote(md5crypt(xorString(notificationGroup[0]["notifications.email"], configuration["general"]["pepper"]), "".join(random.sample(string.ascii_letters + string.digits, 8))))), 
 							"baseurl" : configuration["general"]["baseurl"],})
 					
 					msg["Subject"]= configuration["emailSubject"]["plural"]

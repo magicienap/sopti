@@ -52,8 +52,6 @@ if (isset($_GET["email"]) || isset($_GET["hash"]))
 	
 	<form method="POST" action="email_unsubscribe.php" name="form">
 	
-	<p>
-	
 	<h2>Demandes en attente</h2>
 	<div class="option_block">
 		<p>
@@ -320,8 +318,6 @@ else if (isset($_POST["action"]))
 	
 	</div>
 	
-	<p>
-	
 	<h2>Confirmation</h2>
 	<div class="option_block">
 		<p>
@@ -445,7 +441,7 @@ else if (isset($_POST["email_request"]))
 
 Vous avez fait une demande pour vous désinscire de la notification par email sur le site du générateur d'horaires.
 Pour ce faire vous n'avez qu'à suivre ce lien:
-" . $CONFIG_VARS["baseURL"] . "/email_unsubscribe.php?email=" . urlencode($_POST["email"]) . "&hash=" . urlencode(getHash($_POST["email"])) . "
+" . $CONFIG_VARS["baseURL"] . "/email_unsubscribe.php?email=" . urlencode($_POST["email"]) . "&hash=" . preg_replace("/\.$/", "%2E", urlencode(getHash($_POST["email"]))) . "
 à partir de cette page vous pourrez choisir les notifications desquelles vous souhaitez vous désincrire.
 
 Vous pouvez aussi aller vérifier vos possibilités d'horaire à nouveau sur le site du générateur d'horaires:
@@ -492,8 +488,6 @@ echo <<<BENRULES
 	
 	</div>
 	
-	<p>
-	
 	<h2>Confirmation</h2>
 	<div class="option_block">
 		<p>
@@ -535,18 +529,16 @@ else
 	
 	</div>
 	
-	<p>
-	
 	<h2>Code d'accès</h2>
 	<div class="option_block" style="width: 600px;">
 	<p>
 		Pour annuler les demandes que vous avez déjà faites il vous faut utiliser un lien comportant un code
 		d'accès spécifique à votre email.
-		<el>
+		<ul>
 		<li>	Si vous avez déjà reçu une notification, le lien vous à été fourni dans le email
 		et vous pouvez l'utiliser.
 		<li>Si vous n'avez pas encore reçu de notification ou si vous n'avez plus accès à un email de notification précédent
-		le système peut vous envoyer un email avec le lien à utilser. Une fois que vous aurez reçu ce email vous n'avez qu'à
+		le système peut vous envoyer un email avec le lien à utiliser. Une fois que vous aurez reçu ce email vous n'avez qu'à
 		suivre le lien pour vous désinscrire des notifications qui ne vous sont plus utiles.<br><br>
 		<form action="email_unsubscribe.php" method="POST">
 BENRULES;
@@ -563,7 +555,7 @@ BENRULES;
 	echo <<<BENRULES
 			<input type="submit" value="Soumettre" name="email_request">
 		</form>
-		</el>
+		</ul>
 	</div>
 	
 	</body>

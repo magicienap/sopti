@@ -24,8 +24,6 @@
 
 </div>
 
-<p>
-
 <form method="GET" action="make_form2.php">
 
 <?php
