@@ -16,5 +16,27 @@ baseURL "http://localhost/sopti"
 # this value should math the one in emailer/emailer.conf
 # this is used for the hash used in the unsubscription, it should be secret
 emailer.pepper "changeme"
+
+# this is the maximum number of pending notification requests for a 
+# single email address
 emailer.maxReq "20"
+# this is the maximum number of pending notification requests from a 
+# single ip
 emailer.maxIP "60"
+
+# this is the maximum number of unsubscription email requests for a 
+# single email address
+emailer.maxHashReq "2"
+# the above limit is checked for against other requests that were 
+# made no more than this long ago
+# for example, with this configuration: 2 emails per hour
+# leave out this value (do not set it) if you want to check for always
+emailer.maxHashReqTime "1:00:00"
+# this is the maximum number of unsubscription email requests for a 
+# single ip address
+emailer.maxHashIP "4"
+# the above limit is checked for against other requests that were 
+# made no more than this long ago
+# for example, with this configuration: 4 request per ip per hour
+# leave out this value (do not set it) if you want to check for always
+emailer.maxHashIPTime "1:00:00"

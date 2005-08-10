@@ -21,7 +21,7 @@ baseurl= http://localhost
 
 
 [DB]
-# defautl: "root"
+# default: "root"
 user= sopti
 # default: none
 passwd= =l@FRo0Koudi
