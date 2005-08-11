@@ -46,24 +46,24 @@ $user_time=microtime(TRUE);
 </div>
 
 <?php
-	// Counter
-	
-	if(!is_writable($SOPTI_COUNTERFILE)) {
-		mail_admin_error("Unable to open counter file ($SOPTI_COUNTERFILE)");
-	}
-	else {
-		$counter = fopen($SOPTI_COUNTERFILE, "a");
-		fwrite($counter, date("Y/m/d-H:i:s") . " " . $_SERVER['REMOTE_ADDR'] . "\n");
-		fclose($counter);
-	}
-
 	// Check if session expired
 	if($_SERVER['REQUEST_METHOD'] == 'GET' && !session_is_registered('xml_groups')) {
 		//session_destroy();
 		error("Session expirée. Veuillez recommencer.");
 	}
 
+	// If this is the initial request
 	if(isset($_POST['courses'])) {
+		// Counter
+	
+		if(!is_writable($SOPTI_COUNTERFILE)) {
+			mail_admin_error("Unable to open counter file ($SOPTI_COUNTERFILE)");
+		}
+		else {
+			$counter = fopen($SOPTI_COUNTERFILE, "a");
+			fwrite($counter, date("Y/m/d-H:i:s") . " " . $_SERVER['REMOTE_ADDR'] . "\n");
+			fclose($counter);
+		}
 	
 		// Prepare explicitopen arg
 		$openclose_vars_str = $_POST['openclose_vars'];
