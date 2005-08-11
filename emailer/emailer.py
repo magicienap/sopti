@@ -121,7 +121,7 @@ def main():
 	
 	# The emails are sent
 	try:
-		logging.debug("Connecting to SMTP server \"%s:%i\"..." % (configuration["SMTP"]["host"], configuration["SMTP"]["port"],))
+		logging.debug("Connecting to SMTP server \"%s:%d\"..." % (configuration["SMTP"]["host"], int(configuration["SMTP"]["port"]),))
 		smtp= smtplib.SMTP(**configuration["SMTP"])
 		#smtp.set_debuglevel(1)
 	except (smtplib.SMTPException, socket.error), message:
@@ -283,32 +283,47 @@ def main():
 		configuration["stats"]["remainingNotifications"]= int(connection.store_result().fetch_row()[0][0])
 	
 	try:
-		connection.query("""
-			select 
-				count(*) 
-				from (
-					select 
-						count(*) 
-					from `notifications`
-					group by `group`)
-				as `subTable`
-			""")
+		# subquerry version
+		# if your database server supports subqueries you might want to use this block instead of the next
+		#~ connection.query("""
+			#~ select 
+				#~ count(*) 
+				#~ from (
+					#~ select 
+						#~ count(*) 
+					#~ from `notifications`
+					#~ group by `group`)
+				#~ as `subTable`
+			#~ """)
+		# safe version
+		#~ connection.query("""create temporary table if not exists `_groups` (`group` int(11) not null)""")
+		#~ connection.query("""truncate table `_groups`""")
+		#~ connection.query("""insert into `_groups` (`group`) select count(*) from `notifications` group by `group`""")
+		#~ connection.query("""select count(*) from `_groups`""")
+		# temporary table version
+		connection.query("""create temporary table `_groups` (`group` int(11) not null) select count(*) from `notifications` group by `group`""")
+		connection.query("""select count(*) from `_groups`""")
 	except MySQLdb.MySQLError, message:
 		logging.error("MySQL error %d: %s" % (message[0], message[1]))
 	else:
 		configuration["stats"]["remainingGroups"]= int(connection.store_result().fetch_row()[0][0])
 	
 	try:
-		connection.query("""
-			select 
-				count(*) 
-				from (
-					select 
-						count(*) 
-					from `notifications`
-					group by `email`)
-				as `subTable`
-			""")
+		# subquerry version
+		# if your database server supports subqueries you might want to use this block instead of the next
+		#~ connection.query("""
+			#~ select 
+				#~ count(*) 
+				#~ from (
+					#~ select 
+						#~ count(*) 
+					#~ from `notifications`
+					#~ group by `email`)
+				#~ as `subTable`
+			#~ """)
+		# temporary table version
+		connection.query("""create temporary table `_emails` (`email` varchar(60) not null) select count(*) from `notifications` group by `email`""")
+		connection.query("""select count(*) from `_emails`""")
 	except MySQLdb.MySQLError, message:
 		logging.error("MySQL error %d: %s" % (message[0], message[1]))
 	else:
