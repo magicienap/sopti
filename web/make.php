@@ -1,4 +1,5 @@
 <?php
+//session_set_cookie_params(60);
 session_start();
 if(!isset($_GET['page'])) {
 	$_SESSION = array();
@@ -23,10 +24,6 @@ $user_time=microtime(TRUE);
 
 <body>
 
-<?php
-require_once('config.php');
-?>
-
 <div id="header">
 
 <img src="aep.gif">
@@ -38,8 +35,6 @@ require_once('config.php');
 <p class="step_current">Étape 3 - Visualiser les horaires
 
 </div>
-
-<p>
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
@@ -60,6 +55,12 @@ require_once('config.php');
 		$counter = fopen($SOPTI_COUNTERFILE, "a");
 		fwrite($counter, date("Y/m/d-H:i:s") . " " . $_SERVER['REMOTE_ADDR'] . "\n");
 		fclose($counter);
+	}
+
+	// Check if session expired
+	if($_SERVER['REQUEST_METHOD'] == 'GET' && !session_is_registered('xml_groups')) {
+		//session_destroy();
+		error("Session expirée. Veuillez recommencer.");
 	}
 
 	if(isset($_POST['courses'])) {
@@ -157,14 +158,15 @@ require_once('config.php');
 		foreach($xml->schedule as $sch) {
 			array_push($schedule_array, $sch);
 		}
-		echo "We have ".count($schedule_array)." schedules<br>\n";
+		echo "<p style=\"width: 150px; background-color: black; color: white; padding: 2px; text-align: center;\">".count($schedule_array)." horaires trouvés</p>\n";
 		$full_result_count = count($schedule_array);
 		if(!$full_result_count) {
 			error("Aucun horaire trouvé.<br><br>Solutions possibles:<br>- Changer ou enlever certains cours pour éviter les conflits<br>- Ouvrir davantage de sections");
 		}
-		$current_page = $_GET['page'];
-		//$first = $_GET['first'];
-		//$first = $first-(($first-1)%$show);
+		$current_page = (int)$_GET['page'];
+		if($current_page < 0) {
+			$current_page = 0;
+		}
 		$first = $current_page*$show+1;
 		$page_count = (int)($full_result_count/$show);
 		if($full_result_count % $show) {
@@ -203,9 +205,6 @@ require_once('config.php');
 		echo "<h5 style=\"clear: left;\">Temps php: ".$user_time." sec<br>\n";
 		echo "Engin: version ".$xml['engine_version']." - calculs: ".$xml['compute_time']."sec - temps DB: ".$xml['db_time']."sec</h5>";
 
-	//else {
-		//error("Aucun cours spécifié. Utiliser le bouton Précédent de votre navigateur pour changer les options.");
-	//}
 ?>
 
 </body>
