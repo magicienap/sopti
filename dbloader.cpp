@@ -103,7 +103,7 @@ void DBLoader::read_courses_into(vector<string> *c, SchoolSchedule *sched)
 		param1 = new char[it->size()*2+1];
 		mysql_real_escape_string(pmysql, param1, it->c_str(), it->size());
 		// TODO: do something for cases where several semesters exist
-		query = make_message("SELECT courses.symbol,courses.title,courses_semester.course_type,courses_semester.unique FROM courses INNER JOIN courses_semester ON courses.unique=courses_semester.course WHERE courses.symbol='%s'", param1);
+		query = make_message("SELECT courses.symbol,courses.title,courses_semester.course_type,courses_semester.unique FROM courses INNER JOIN courses_semester ON courses.unique=courses_semester.course WHERE courses.symbol='%s' AND semesters.code='%s'", param1, config_vars["default_semester"].c_str());
 		delete [] param1;
 		// Do query
 		result = mysql_query(pmysql, query);
