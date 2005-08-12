@@ -7,9 +7,6 @@ ob_start();
 function print_open_close_form($courses) {
 	global $CONFIG_VARS;
 
-	// Query used
-	// SELECT courses.symbol AS sym,courses.title AS title,courses_semester.course_type AS coursetype,groups.name AS groupname,groups.theory_or_lab AS grouptl,groups.teacher AS teacher,groups.closed AS closed FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN groups ON groups.course_semester=courses_semester.unique WHERE courses.symbol='ING1040' OR courses.symbol='ING1020' OR courses.symbol='INF2600' ORDER BY courses.symbol ASC,groups.name ASC,groups.theory_or_lab ASC
-	
 	$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
 		or admin_error('Could not connect to SQL: ' . mysql_error());
 	mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select database');
