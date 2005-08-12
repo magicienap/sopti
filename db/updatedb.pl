@@ -123,6 +123,7 @@ sub main() {
 	print("DATABASE UPDATE\n");
 	
 	read_config;
+	$CURRENT_SEMESTER=$CONFIG{'default_semester'};
 	
 	print("Connecting to database...\n");
 	$dbh = DBI->connect('dbi:mysql:database=' . $CONFIG{'db.schema'}, $CONFIG{'db.username'}, $CONFIG{'db.password'}) or die(DBI->errstr);
