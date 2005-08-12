@@ -220,7 +220,7 @@ function print_schedule($sch, $schedno)
 
 	foreach($requested_groups as $req) {
 		if(count($group_data[(string)$req['symbol']]) == 0) {
-			error("Cours introuvable: " . $req['symbol'] . " ".(count($group_data[$req['symbol']]))." ".count($group_data["ING1025"]));
+			error("Cours introuvable: " . $req['symbol']);
 			// abort
 		}
 		if($group_data[(string)$req['symbol']]['course_type'] == 'T') {
