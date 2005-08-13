@@ -126,7 +126,7 @@ function mail_admin_error($msg)
 {
 	global $CONFIG_VARS;
 
-        mail($CONFIG_VARS['admin_email'], "Sopti error", "Hello,\n\nSopti discovered the following error:\n\n" . $msg . "\n\nThanks");
+        mail($CONFIG_VARS['admin_email'], "Sopti error", "Hello,\n\nSopti at ".php_uname("n")." encountered the following error at ".date("r").":\n\n" . $msg . "\n\nThanks", "From: sopti@".php_uname("n"));
 }
 
 function print_schedule($sch, $schedno)
