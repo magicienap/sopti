@@ -353,31 +353,45 @@ else if (isset($_POST["email_request"]))
 	}
 	
 	// Note: décommenter ici pour avertir tout de suite la personne si elle n'a aucune requête en attente, ça pourrait être exploité par une personne qui voudrait savoir si une autre à des requêtes en attente
-	# $resultat= mysql_query("
-		# select 
-			# count(*) 
-		# from `notifications` 
-		# where `notifications`.`email` = '" . mysql_escape_string($_POST["email"]) . "'
-	# ") or die('Query failed: ' . mysql_error());
+	/*
+	$resultat= mysql_query("
+		select 
+			count(*) 
+		from `notifications` 
+		where `notifications`.`email` = '" . mysql_escape_string($_POST["email"]) . "'
+	") or die('Query failed: ' . mysql_error());
 	
-	# if (!$resultat || mysql_num_rows($resultat) < 1)
-	# {
-		# error("Erreur de requête sur la base de données: " . mysql_error());
-	# }
-	# else if (mysql_result($resultat, 0) < 1)
-	# {
-		# error("Vous n'avez aucune requête en attente.");
-	# }
+	if (!$resultat || mysql_num_rows($resultat) < 1)
+	{
+		error("Erreur de requête sur la base de données: " . mysql_error());
+	}
+	else if (mysql_result($resultat, 0) < 1)
+	{
+		error("Vous n'avez aucune requête en attente.");
+	}
+	*/
+	
+	// clear the old entries
+	if (isset($CONFIG_VARS["emailer.maxHashReqTime"]) && isset($CONFIG_VARS["emailer.maxHashIPTime"]))
+	{
+		$resultat= mysql_query("
+			delete
+				from `demandes`
+				where 
+					`date` < subtime(now(), '" . $CONFIG_VARS["emailer.maxHashReqTime"] . "') and 
+					`date` < subtime(now(), '" . $CONFIG_VARS["emailer.maxHashIPTime"] . "') 
+		") or die('[ ' . __LINE__ . '] Query failed: ' . mysql_error());
+	}
 	
 	// check the request limit
 	$resultat= mysql_query("
 		select 
-			count(*) > " . ($CONFIG_VARS["emailer.maxHashReq"] - 1) . "
+			count(*) > '" . (int) ($CONFIG_VARS["emailer.maxHashReq"] - 1) . "'
 		from `demandes` 
 		where 
-			`email` = '" . mysql_escape_string($_POST["email"]) . (isset($CONFIG_VARS["emailer.maxHashReqTime"]) ? "' and 
-			`date` > subtime(now(), '" . $CONFIG_VARS["emailer.maxHashReqTime"] . "')" : "") . " 
-	") or die('[ ' . __LINE__ . ' ] Query failed: ' . mysql_error());
+			`email` = '" . mysql_escape_string($_POST["email"]) . "'" . (isset($CONFIG_VARS["emailer.maxHashReqTime"]) ? " and 
+			`date` > subtime(now(), '" . $CONFIG_VARS["emailer.maxHashReqTime"] . "')" : "")
+	) or die('[ ' . __LINE__ . ' ] Query failed: ' . mysql_error());
 	
 	if (!$resultat || mysql_num_rows($resultat) < 1)
 	{
@@ -394,10 +408,10 @@ else if (isset($_POST["email_request"]))
 	{
 		$resultat= mysql_query("
 			select 
-				count(*) > " . ($CONFIG_VARS["emailer.maxHashIP"] - 1) . "
+				count(*) > '" . (int) ($CONFIG_VARS["emailer.maxHashIP"] - 1) . "'
 			from `demandes` 
 			where 
-				`ip` = '" . mysql_escape_string($_SERVER["REMOTE_ADDR"]) . (isset($CONFIG_VARS["emailer.maxHashIPTime"]) ? "' and 
+				`ip` = '" . mysql_escape_string($_SERVER["REMOTE_ADDR"]) . "'" . (isset($CONFIG_VARS["emailer.maxHashIPTime"]) ? " and 
 				`date` > subtime(now(), '" . $CONFIG_VARS["emailer.maxHashIPTime"] . "')" : "") . " 
 		") or die('[ ' . __LINE__ . ' ] Query failed: ' . mysql_error());
 		
@@ -410,18 +424,6 @@ else if (isset($_POST["email_request"]))
 			error('Vous avez atteint votre maximum de requête de désinscription pour ce poste, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la désinscription ne fonctionne pas.');
 		}
 	}
-	
-	// clear the old entries
-	$resultat= mysql_query("
-		delete
-			from `demandes`
-			where 
-				1 = 1 " . 
-				(isset($CONFIG_VARS["emailer.maxHashReqTime"]) ? " and 
-				`date` < subtime(now(), '" . $CONFIG_VARS["emailer.maxHashReqTime"] . "')" : "") . 
-				(isset($CONFIG_VARS["emailer.maxHashIPTime"]) ? " and 
-				`date` < subtime(now(), '" . $CONFIG_VARS["emailer.maxHashIPTime"] . "')" : "") . " 
-	") or die('[ ' . __LINE__ . '] Query failed: ' . mysql_error());
 	
 	// add a new entry
 	$resultat= mysql_query("

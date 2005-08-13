@@ -193,6 +193,7 @@ else if (isset($_POST["action"]))
 	$resultat= mysql_query("
 		select 
 			count(*) > " . ($CONFIG_VARS["emailer.maxReq"] - 1) . "
+			count(*) > '" . (int) ($CONFIG_VARS["emailer.maxReq"] - 1) . "'
 		from `notifications` 
 		where `notifications`.`email` = '" . mysql_escape_string($_POST["email"]) . "'
 	") or die('Query failed: ' . mysql_error());
@@ -213,6 +214,7 @@ else if (isset($_POST["action"]))
 		$resultat= mysql_query("
 			select 
 				count(*) > " . ($CONFIG_VARS["emailer.maxIP"] - 1) . "
+				count(*) > '" . (int) ($CONFIG_VARS["emailer.maxIP"] - 1) . "'
 			from `notifications` 
 			where `notifications`.`ip` = '" . mysql_escape_string($_SERVER["REMOTE_ADDR"]) . "'
 		") or die('Query failed: ' . mysql_error());
