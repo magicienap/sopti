@@ -26,7 +26,7 @@ function admin_error($msg)
 <center>
 
 <img src="aep.gif">
-<p><font size="+2">Générateur d'horaires</font>
+<p style="font-size: 15px;">Générateur d'horaires</p>
 </center>
 
 <div style="background-color: #ffbbbb;">
@@ -187,7 +187,7 @@ function print_schedule($sch, $schedno)
 	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or admin_error('Query failed: ' . mysql_error());
-		$prof_string .= "group sql query: ".(microtime(TRUE)-$tmp)."<br>\n";
+		$prof_string .= "group sql query: ".(microtime(TRUE)-$tmp)."<br />\n";
 		// Organize the results
 		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$group_data[$row['symbol']]['course_type'] = $row['course_type'];
@@ -206,9 +206,9 @@ function print_schedule($sch, $schedno)
 ?>
 	<table class="group_summary" style="width: 675px;">
 	<tr><td colspan="7">
-		<table width="100%" border="0" style="background-color:#FFA703;">
+		<table width="100%" border="0" style="background-color:#777777; font-size: 14px;">
 			<tr>
-				<td style="background-color: #FFA703; text-align: left;"><font size="-3">Horaire</font> <b><?php echo $schedno; ?></b></td><td style="text-align: right; background-color: #FFA703;"><font size="-3">Score:</font> <b><?php printf("%.3f %%", 100.0/($sch['score']+1.0)); ?></b></td>
+				<td style="background-color: #777777; text-align: left; color: white;"><span style="font-size: 9px;">Horaire</span> <b><?php echo $schedno; ?></b></td><td style="text-align: right; background-color: #777777; color: white;"><span style="font-size: 9px;">Score:</span> <b><?php printf("%.3f %%", 100.0/($sch['score']+1.0)); ?></b></td>
 			</tr>
 		</table>
 	</td></tr>
@@ -265,7 +265,7 @@ function print_schedule($sch, $schedno)
 	}
 
 	echo '</table>';
- 	$prof_string .= "print group summary: ".(microtime(TRUE)-$tmp)."<br>\n";
+ 	$prof_string .= "print group summary: ".(microtime(TRUE)-$tmp)."<br />\n";
 
 	$query_periods_cond2="";
 	foreach($requested_groups as $req) {
@@ -285,7 +285,7 @@ function print_schedule($sch, $schedno)
 	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
-		$prof_string .= "period sql query: ".(microtime(TRUE)-$tmp)."<br>\n";
+		$prof_string .= "period sql query: ".(microtime(TRUE)-$tmp)."<br />\n";
 		//mysql_close($dblink);
 		$tmp=microtime(TRUE);
 
@@ -365,14 +365,14 @@ function print_schedule($sch, $schedno)
 			admin_error("got invalid weekday (".$row['weekday'].")");
 		}
 	}
-	$prof_string .= "process period query results: ".(microtime(TRUE)-$tmp)."<br>\n";
+	$prof_string .= "process period query results: ".(microtime(TRUE)-$tmp)."<br />\n";
 	
 	// Draw the week schedule
 	$tmp=microtime(TRUE);
 ?>
 <table class="schedule">
 	<tr>
-		<td style="border-top:none; border-left:none;"></td>
+		<td class="whitecorner"></td>
 		<td class="weekday">Lundi</td>
 		<td class="weekday">Mardi</td>
 		<td class="weekday">Mercredi</td>
@@ -395,6 +395,7 @@ function print_schedule($sch, $schedno)
 		for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
 			echo "		<td>";
 			if(! $week[$daycodes[$dayindex]][$hourcodes[$hourindex]]) {
+				echo "</td>";
 				continue;
 			}
 			// See what kind of conflict we have
@@ -444,13 +445,13 @@ function print_schedule($sch, $schedno)
 				}
 				
 				if($mask & $conflict) {
-					echo "<div class=\"period_conflict\">\n";
+					echo "<div class=\"period_conflict\">";
 				}
 				else {
-					echo "<div class=\"period_noconflict\">\n";
+					echo "<div class=\"period_noconflict\">";
 				}
-				echo "<b>".$period['symbol']."</b> (".$period['grp'].")<br>[".$tol."] ".$period['room'].$b1b2;
-				echo "</div>\n";
+				echo "<b>".$period['symbol']."</b> (".$period['grp'].")<br />[".$tol."] ".$period['room'].$b1b2;
+				echo "</div>";
 			}
 			echo "		</td>\n";
 		}
@@ -461,6 +462,7 @@ function print_schedule($sch, $schedno)
                 for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
 			echo "          <td>";
 			if(!count($week_nonstd[$daycodes[$dayindex]])) {
+				echo "</td>";
 				continue;
 			}
 			foreach($week_nonstd[$daycodes[$dayindex]] as $time => $periods) {
@@ -485,8 +487,8 @@ function print_schedule($sch, $schedno)
 						admin_error("Invalid week");
 					}
 				
-					echo "<div class=\"period_noconflict\">\n";
-					echo "<b><u>".preg_replace("/(.*)(..)/", "$1:$2", $time)."</u><br>".$period['symbol']."</b> (".$period['grp'].")<br>[".$tol."] ".$period['room'].$b1b2;
+					echo "<div class=\"period_noconflict\">";
+					echo "<b><u>".preg_replace("/(.*)(..)/", "$1:$2", $time)."</u><br />".$period['symbol']."</b> (".$period['grp'].")<br />[".$tol."] ".$period['room'].$b1b2;
 					echo "</div>\n";
 				}
 			}
@@ -496,8 +498,8 @@ function print_schedule($sch, $schedno)
 	}
 	echo "</table>\n";
 	//$php_function_time=microtime(TRUE)-$php_function_time;
-	//$prof_string .= "draw schedule: ".(microtime(TRUE)-$tmp)."<br>\n";
-	//echo "php function time: " . $php_function_time . "<br>".$prof_string."<br>\n";
+	//$prof_string .= "draw schedule: ".(microtime(TRUE)-$tmp)."<br />\n";
+	//echo "php function time: " . $php_function_time . "<br />".$prof_string."<br />\n";
 }
 
 
