@@ -1,5 +1,4 @@
 <?php
-//session_set_cookie_params(60);
 session_start();
 if(!isset($_GET['page'])) {
 	$_SESSION = array();
@@ -13,36 +12,37 @@ ob_start();
 $user_time=microtime(TRUE);
 ?>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 
 <head>
 	<title>Horaires</title>
-	<link rel="stylesheet" type="text/css" href="make.css">
-	<link rel="stylesheet" type="text/css" href="sopti.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link rel="stylesheet" type="text/css" href="make.css" />
+	<link rel="stylesheet" type="text/css" href="sopti.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 </head>
 
 <body>
 
 <div id="header">
 
-<img src="aep.gif">
+<img src="aep.gif" alt="AEP" />
 
 <h1>Générer des horaires</h1>
 
-<p class="step_notcurrent">Étape 1 - Spécifier les cours désirés
-<p class="step_notcurrent">Étape 2 - Choisir les options de génération
-<p class="step_current">Étape 3 - Visualiser les horaires
+<p class="step_notcurrent">&Eacute;tape 1 - Spécifier les cours désirés</p>
+<p class="step_notcurrent">&Eacute;tape 2 - Choisir les options de génération</p>
+<p class="step_current">&Eacute;tape 3 - Visualiser les horaires</p>
 
 </div>
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
-<p>Voici les horaires correspondant aux options sélectionnées. Ils sont affichés en ordre décroissant de préférence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Pour changer les options, utiliser le bouton Précédent de votre navigateur.
+<p>Voici les horaires correspondant aux options sélectionnées. Ils sont affichés en ordre décroissant de préférence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Pour changer les options, utiliser le bouton Précédent de votre navigateur.</p>
 
-<p>Pour choisir officiellement un horaire, vous devez visiter votre dossier étudiant. Vous trouverez un lien sur la page d'accueil du générateur d'horaires.
+<p>Pour choisir officiellement un horaire, vous devez visiter votre dossier étudiant. Vous trouverez un lien sur la page d'accueil du générateur d'horaires.</p>
 
-<p>Merci d'utiliser le générateur d'horaires de l'AEP!
+<p>Merci d'utiliser le générateur d'horaires de l'AEP!</p>
 </div>
 
 <?php
@@ -79,7 +79,7 @@ $user_time=microtime(TRUE);
 		}
 	
 		trim($explicitopen_arg);
-		//print($explicitopen_arg . "<br>\n");
+		//print($explicitopen_arg . "<br />\n");
 
 
 		$cmd_initial=$SOPTI_EXEC . " --html make";
@@ -149,7 +149,7 @@ $user_time=microtime(TRUE);
 		}
 	}
 	else {
-		//echo "We are in GET (first=".$_GET['first'].") (".session_name().")<br>";
+		//echo "We are in GET (first=".$_GET['first'].") (".session_name().")<br />";
 	}
 		$show = 10;
 		$xml = simplexml_load_string($_SESSION['xml_groups']);
@@ -161,7 +161,7 @@ $user_time=microtime(TRUE);
 		echo "<p style=\"width: 150px; background-color: black; color: white; padding: 2px; text-align: center;\">".count($schedule_array)." horaires trouvés</p>\n";
 		$full_result_count = count($schedule_array);
 		if(!$full_result_count) {
-			error("Aucun horaire trouvé.<br><br>Solutions possibles:<br>- Changer ou enlever certains cours pour éviter les conflits<br>- Ouvrir davantage de sections");
+			error("Aucun horaire trouvé.<br /><br />Solutions possibles:<br />- Changer ou enlever certains cours pour éviter les conflits<br />- Ouvrir davantage de sections");
 		}
 		$current_page = (int)$_GET['page'];
 		if($current_page < 0) {
@@ -202,7 +202,7 @@ $user_time=microtime(TRUE);
 		}
 
 		$user_time=microtime(TRUE)-$user_time;
-		echo "<h5 style=\"clear: left;\">Temps php: ".$user_time." sec<br>\n";
+		echo "<h5 style=\"clear: left;\">Temps php: ".$user_time." sec<br />\n";
 		echo "Engin: version ".$xml['engine_version']." - calculs: ".$xml['compute_time']."sec - temps DB: ".$xml['db_time']."sec</h5>";
 
 ?>
