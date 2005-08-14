@@ -49,7 +49,7 @@ $user_time=microtime(TRUE);
 	// Check if session expired
 	if($_SERVER['REQUEST_METHOD'] == 'GET' && !session_is_registered('xml_groups')) {
 		//session_destroy();
-		error("Session expirée. Veuillez recommencer.");
+		error("Session expirée. Veuillez recommencer.<br /><br />Si vous obtenez cette erreur à chaque fois que vous essayez de changer de page, c'est que vous n'acceptez pas les cookies que le site vous envoit.");
 	}
 
 	// If this is the initial request
@@ -79,8 +79,6 @@ $user_time=microtime(TRUE);
 		}
 	
 		trim($explicitopen_arg);
-		//print($explicitopen_arg . "<br />\n");
-
 
 		$cmd_initial=$SOPTI_EXEC . " --html make";
 		$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays" );
@@ -148,62 +146,62 @@ $user_time=microtime(TRUE);
 			$_SESSION['xml_groups']=$xml_groups;
 		}
 	}
-	else {
-		//echo "We are in GET (first=".$_GET['first'].") (".session_name().")<br />";
+
+	// GET method, use $_SESSION['xml_groups']
+
+	$show = 10;
+	$xml = simplexml_load_string($_SESSION['xml_groups']);
+
+	$schedule_array=array();
+	foreach($xml->schedule as $sch) {
+		array_push($schedule_array, $sch);
 	}
-		$show = 10;
-		$xml = simplexml_load_string($_SESSION['xml_groups']);
-		
-		$schedule_array=array();
-		foreach($xml->schedule as $sch) {
-			array_push($schedule_array, $sch);
-		}
-		echo "<p style=\"width: 150px; background-color: black; color: white; padding: 2px; text-align: center;\">".count($schedule_array)." horaires trouvés</p>\n";
-		$full_result_count = count($schedule_array);
-		if(!$full_result_count) {
-			error("Aucun horaire trouvé.<br /><br />Solutions possibles:<br />- Changer ou enlever certains cours pour éviter les conflits<br />- Ouvrir davantage de sections");
-		}
-		$current_page = (int)$_GET['page'];
-		if($current_page < 0) {
-			$current_page = 0;
-		}
-		$first = $current_page*$show+1;
-		$page_count = (int)($full_result_count/$show);
-		if($full_result_count % $show) {
-			$page_count++;
-		}
+	echo "<p style=\"width: 150px; background-color: black; color: white; padding: 2px; text-align: center;\">".count($schedule_array)." horaires trouvés</p>\n";
+	$full_result_count = count($schedule_array);
+	if(!$full_result_count) {
+		error("Aucun horaire trouvé.<br /><br />Solutions possibles:<br />- Changer ou enlever certains cours pour éviter les conflits<br />- Ouvrir davantage de sections");
+	}
+	$current_page = (int)$_GET['page'];
+	if($current_page < 0) {
+		$current_page = 0;
+	}
+	$first = $current_page*$show+1;
+	$page_count = (int)($full_result_count/$show);
+	if($full_result_count % $show) {
+		$page_count++;
+	}
 
-		$schedno=0;
-		for($i=$first-1; $i<$first-1+$show; $i++) {
-			if($i >= $full_result_count) {
-				break;
-			}
-			print_schedule($schedule_array[$i], $i+1);
+	$schedno=0;
+	for($i=$first-1; $i<$first-1+$show; $i++) {
+		if($i >= $full_result_count) {
+			break;
 		}
+		print_schedule($schedule_array[$i], $i+1);
+	}
 
-		if($page_count > 1) {
-			echo "<div class=\"page_browser\">";
-			echo "<p>Aller à la page:</p>\n";
-			if($current_page-1 >= 0) {
-				echo "<a href=\"make.php?page=".($current_page-1)."\">&lt;&lt; Précédente</a> ";
-			}
-			for($i=0; $i < $page_count; $i++) {
-				if($i == $current_page) {
-					echo ($i+1)." ";
-				}
-				else {
-					echo "<a href=\"make.php?page=$i\">".($i+1)."</a> ";
-				}
-			}
-			if($current_page+1 < $page_count) {
-				echo "<a href=\"make.php?page=".($current_page+1)."\">Suivante &gt;&gt;</a>";
-			}
-			echo "</div>";
+	if($page_count > 1) {
+		echo "<div class=\"page_browser\">";
+		echo "<p>Aller à la page:</p>\n";
+		if($current_page-1 >= 0) {
+			echo "<a href=\"make.php?page=".($current_page-1)."&".strip_tags(SID)."\">&lt;&lt; Précédente</a> ";
 		}
+		for($i=0; $i < $page_count; $i++) {
+			if($i == $current_page) {
+				echo ($i+1)." ";
+			}
+			else {
+				echo "<a href=\"make.php?page=$i&".strip_tags(SID)."\">".($i+1)."</a> ";
+			}
+		}
+		if($current_page+1 < $page_count) {
+			echo "<a href=\"make.php?page=".($current_page+1)."&".strip_tags(SID)."\">Suivante &gt;&gt;</a>";
+		}
+		echo "</div>";
+	}
 
-		$user_time=microtime(TRUE)-$user_time;
-		echo "<h5 style=\"clear: left;\">Temps php: ".$user_time." sec<br />\n";
-		echo "Engin: version ".$xml['engine_version']." - calculs: ".$xml['compute_time']."sec - temps DB: ".$xml['db_time']."sec</h5>";
+	$user_time=microtime(TRUE)-$user_time;
+	echo "<h5 style=\"clear: left;\">Temps php: ".$user_time." sec<br />\n";
+	echo "Engin: version ".$xml['engine_version']." - calculs: ".$xml['compute_time']."sec - temps DB: ".$xml['db_time']."sec</h5>";
 
 ?>
 

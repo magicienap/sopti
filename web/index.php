@@ -77,7 +77,7 @@ p, dl {
 				<td>
 				</td>
 				<td class=menulink align=right valign=top>
-                    <a><a class=menulink href='http://www.aep.polymtl.ca/accueil.php'>Accueil</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/calendrier.php'>Calendrier</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/exec.php'>Exec</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/ca.php'>C.A.</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/dossier.php'>Dossiers en cours</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/ressources.php'>Ressources</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/contacteznous.php'>Contactez-nous</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/faq.php'>F.A.Q.</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/structure.php'>Infos</a><a class=unmenulink> | <a><a class=menulink href='http://www.aep.polymtl.ca/archive.php'>Archives</a><a class=unmenulink> | <a>				</td>
+                    <a class=menulink href='http://www.aep.polymtl.ca/'>Aller au site web de l'AEP</a></td>
 			</tr>
 
 			<tr>
