@@ -4,10 +4,16 @@
 	}
 
 	table.schedule,table.schedule_weekend {
-		/*border: 2px solid;*/
 		border-collapse: collapse;
 		font-size: 12px;
 		margin: 2px;
+	}
+
+	table.schedule td.whitecorner {
+		border-left-style: none;
+		border-top-style: none;
+		border-right: 1px solid black;
+		border-bottom: 1px solid black;
 	}
 	
 	table.single_period {
@@ -37,8 +43,8 @@
 
 	table.schedule td,table.schedule_weekend td {
 		border-width: 1px;
-		border-style: dotted;
-		border-color: #000000;
+		border-style: solid;
+		border-color: #999999;
 		width: 110px;
 		
 		margin:0px;
@@ -58,7 +64,7 @@
 	table.group_summary {
 		font-size: 12px;
 		border-spacing: 2px;
-		background-color: white;
+		background-color: #eeeeee;
 		clear:left;
 		border-collapse: collapse;
 	}
@@ -70,7 +76,6 @@
 	table.group_summary th {
 		border-width: 0px;
 		border-style: solid;
-		background-color: #ffffff;
 		text-align: center;
 		width: 75px;
 		vertical-align:top;
