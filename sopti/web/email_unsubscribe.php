@@ -371,34 +371,42 @@ else if (isset($_POST["email_request"]))
 	}
 	*/
 	
-	// clear the old entries
-	if (isset($CONFIG_VARS["emailer.maxHashReqTime"]) && isset($CONFIG_VARS["emailer.maxHashIPTime"]))
+	// compute the dates from the configuration file
+	if (isset($CONFIG_VARS["emailer.maxHashReqTime"]))
 	{
 		if (preg_match("/^([\d]{1,2}):([\d]{1,2})$/", $CONFIG_VARS["emailer.maxHashReqTime"], $matches))
 		{
-			$time1= array($matches[1], $matches[2]);
+			$maxHashReqTime= array($matches[1], $matches[2]);
 		}
 		else
 		{
 			error("Erreur dans la configuration, 'emailer.maxHashReqTime' invalide");
 		}
-		
+	}
+	
+	if (isset($CONFIG_VARS["emailer.maxHashIPTime"]))
+	{
 		if (preg_match("/^([\d]{1,2}):([\d]{1,2})$/", $CONFIG_VARS["emailer.maxHashIPTime"], $matches))
 		{
-			$time2= array($matches[1], $matches[2]);
+			$maxHashIPTime= array($matches[1], $matches[2]);
 		}
 		else
 		{
 			error("Erreur dans la configuration, 'emailer.maxHashIPTime' invalide");
 		}
-		
-		if ($time1[0] * 60 + $time1[1] > $time2[0] * 60 + $time2[1])
+	}
+	
+	
+	// clear the old entries
+	if (isset($CONFIG_VARS["emailer.maxHashReqTime"]) && isset($CONFIG_VARS["emailer.maxHashIPTime"]))
+	{
+		if ($maxHashReqTime[0] * 60 + $maxHashReqTime[1] > $maxHashIPTime[0] * 60 + $maxHashIPTime[1])
 		{
-			$time= $time1;
+			$time= $maxHashReqTime;
 		}
 		else
 		{
-			$time= $time2;
+			$time= $maxHashIPTime;
 		}
 		
 		$resultat= mysql_query("
@@ -416,7 +424,7 @@ else if (isset($_POST["email_request"]))
 		from `demandes` 
 		where 
 			`email` = '" . mysql_escape_string($_POST["email"]) . "'" . (isset($CONFIG_VARS["emailer.maxHashReqTime"]) ? " and 
-			`date` > subtime(now(), '" . $CONFIG_VARS["emailer.maxHashReqTime"] . "')" : "")
+			`date` > date_add(now(), interval '-" . (int) $maxHashReqTime[0] . ":" . (int) $maxHashReqTime[1] . "' hour_minute)" : "")
 	) or die('[ ' . __LINE__ . ' ] Query failed: ' . mysql_error());
 	
 	if (!$resultat || mysql_num_rows($resultat) < 1)
@@ -438,7 +446,7 @@ else if (isset($_POST["email_request"]))
 			from `demandes` 
 			where 
 				`ip` = '" . mysql_escape_string($_SERVER["REMOTE_ADDR"]) . "'" . (isset($CONFIG_VARS["emailer.maxHashIPTime"]) ? " and 
-				`date` > subtime(now(), '" . $CONFIG_VARS["emailer.maxHashIPTime"] . "')" : "") . " 
+				`date` > date_add(now(), interval '-" . (int) $maxHashIPTime[0] . ":" . (int) $maxHashIPTime[1] . "' hour_minute)" : "") . " 
 		") or die('[ ' . __LINE__ . ' ] Query failed: ' . mysql_error());
 		
 		if (!$resultat || mysql_num_rows($resultat) < 1)
