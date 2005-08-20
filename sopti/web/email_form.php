@@ -272,7 +272,7 @@ BENRULES;
 	echo <<<BENRULES
 	<p>Vous pouvez maintenant fermer cette fenêtre et retourner à la 
 	génération d'horaire ou vous inscrire pour être notifié pour un	autre groupe.<br>
-	Si vous changez d\'idée, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler cette requête</a>.
+	Si vous changez d'idée, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler cette requête</a>.
 	
 	<form method="GET" action="javascript:window.close();">
 		<input type="submit" value="Fermer cette fenêtre">
