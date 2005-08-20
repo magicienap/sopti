@@ -12,8 +12,8 @@ function print_open_close_form($courses) {
 	mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select database');
 	
 	// Make the query
-	$query_begin = "SELECT courses.symbol AS sym,courses.title AS title,courses_semester.course_type AS coursetype,groups.name AS groupname,groups.theory_or_lab AS grouptl,groups.teacher AS teacher,groups.closed AS closed, groups.unique AS grpunique FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN groups ON groups.course_semester=courses_semester.unique WHERE";
-	$query_end   = " ORDER BY courses.symbol ASC,groups.name ASC,groups.theory_or_lab ASC";
+	$query_begin = "SELECT courses.symbol AS sym,courses.title AS title,courses_semester.course_type AS coursetype,groups.name AS groupname,groups.theory_or_lab AS grouptl,groups.teacher AS teacher,groups.closed AS closed, groups.unique AS grpunique FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN groups ON groups.course_semester=courses_semester.unique INNER JOIN semesters ON courses_semester.semester=semesters.unique WHERE semesters.code='".$CONFIG_VARS["default_semester"]."' AND (";
+	$query_end   = ") ORDER BY courses.symbol ASC,groups.name ASC,groups.theory_or_lab ASC";
 	$query = $query_begin;
 	$first = true;
 	foreach($courses as $course) {
