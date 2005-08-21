@@ -77,7 +77,7 @@ p, dl {
 				<td>
 				</td>
 				<td class=menulink align=right valign=top>
-                    <a class=menulink href='http://www.aep.polymtl.ca/'>Aller au site web de l'AEP</a></td>
+				<a class=menulink href='http://www.aep.polymtl.ca/'>Aller au site web de l'AEP</a></td>
 			</tr>
 
 			<tr>
@@ -95,14 +95,14 @@ p, dl {
 
 <h1>Générateur d'horaires</h1>
 <center><div class="sopti_actions_rect">
-<p><font size="-1">Session en cours:</font><br><strong>hiver 2005</strong>
+<p><font size="-1">Session en cours:</font><br><strong>automne 2005</strong>
 <p><a href="make_form1.php" target="_blank"><font size="+3">Démarrer</font></a><br><font size="-1">(générer des horaires)</font></p>
 <p><a href="listcourses.php" target="_blank">Liste des cours offerts</a>
 <p><a href="email_unsubscribe.php" target="_blank">Se désincrire de la notification par email</a>
 <p><font size="-2">Derni&egrave;re mise &agrave; jour des donn&eacute;es:<br>
 <?php
 require_once('config.php');
-$info = stat($SOPTI_COURSEFILE);
+$info = stat($SOPTI_LASTUPDATE);
 $unix_modif = $info[9];
 $string_modif = date("r", $unix_modif);
 print($string_modif);
@@ -112,27 +112,24 @@ print($string_modif);
 <h2>Nouvelles</h2>
 <div class="sopti_nouvelles_rect">
 <dl>
-<dt><div style="background-color:#f9b771; margin-right: 15px; border-width: 2px; border-style: outset;">7 janvier 2005</div>
-<dd>Nouvelles am&eacute;liorations au programme
-	<ul>
-		<li>On peut maintenant bloquer les cours du soir pour certains jours seulement
-		<li>Option pour maximiser le nombre de jours de cong&eacute;
-		<li>Acc&eacute;l&eacute;ration du programme
-		<li>Corrections de bugs, dont un qui emp&ecirc;chait de choisir certains cours des certificats
-	</ul>
-	- Pierre-Marc
+<dt><div style="background-color:#f9b771; margin-right: 15px; border-width: 2px; border-style: outset;">21 août 2005</div>
+<dd><b>Améliorations au générateur</b><br>
+<ul>
+	<li>Affichage des noms de chargés de cours et de lab
+	<li>Système de notification par email lorsque des places deviennent disponibles dans une section (par Benjamin Poirier, bac génie info)
+	<li>Affichage des résultats par pages
+</ul>
 
-<dt><div style="background-color:#f9b771; margin-right: 15px; border-width: 2px; border-style: outset;">17 d&eacute;cembre 2004</div>
-<dd>Quelques am&eacute;liorations
-	<ul>
-		<li>Support pour l'ouverture et fermeture de sections
-		<li>Optimisations de vitesse
-		<li>Correction d'un bug avec les conflits (merci &agrave; J&eacute;r&ocirc;me Blais-Morin)
-	</ul>
-	Je remercie tous ceux et celles qui nous ont &eacute;crit pour donner leurs commentaires! Plusieurs
-	personnes nous ont soulign&eacute; que le programme est un peu lent. Cette version devrait &ecirc;tre
-	 plus rapide, et nous essaierons d'augmenter encore la vitesse dans l'avenir.<br>- Pierre-Marc
+	<p>Grâce à une excellente collaboration avec le BAA, le générateur d'horaires est maintenant synchronisé avec la base de données officielle de l'École à toutes les 15 minutes.
 
+	<p>Également, grâce à Jean-François Lévesque, VP services de l'AEP, le générateur est maintenant hébergé sur un serveur très rapide.
+
+	<p>Durant la session d'hiver 2005, plus de 2000 personnes ont utilisé le générateur, pour un total de plus de 20 000 requêtes. Plusieurs nous ont envoyé des suggestions d'amélioration, et toutes ces suggestions ont été ajoutées au programme. Continuez à nous envoyer vos idées, elle ont beaucoup d'influence sur le développement du programme.
+
+
+<dt><div style="background-color:#f9b771; margin-right: 15px; border-width: 2px; border-style: outset;">9 août 2005</div>
+<dd>Le générateur d'horaires génère des horaires pour l'automne 2005 depuis ce matin.<br><br>
+	N'oubliez pas que plusieurs cours ont changé à cause de la réorganisation des programmes.
 </dl>
 </div>
 
