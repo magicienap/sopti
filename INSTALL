@@ -18,6 +18,7 @@ Requirements:
 	
 * Compile the program
 	make
+	make parser_prof   # if you want to extract teacher data from the SI xml files
 	
 -> No install feature is implemented at this time
 

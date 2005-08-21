@@ -1,3 +1,13 @@
+sopti-0.15 (2005/08/21)
+* déplacement du code de génération de html dans les php
+* ajout d'une suite de tests
+* ajout d'un module de notification par email par Benjamin Poirier
+* output xml dans l'exécutable sopti pour communiquer avec les php
+* optimisations dans les définitions de tables mysql
+* affichage des noms de profs dans les résultats
+* pagination des résultats
+* amélioration des messages d'erreur
+
 sopti-0.14 (2005/07/24)
 * remplacement de la base de données CSV par une base de données MySQL
 * utilitaire de mise à jour de base de données
