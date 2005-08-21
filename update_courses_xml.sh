@@ -3,6 +3,8 @@ COURSEFILE=data/courses.csv
 CLOSEDFILE=data/closed.csv
 OUTPUTDIR=data/courses_xml
 
+mkdir -p $OUTPUTDIR
+
 $SOPTI listcourses > courses.txt
 echo "Got" `wc -l courses.txt` "courses"
 
