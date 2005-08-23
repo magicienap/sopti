@@ -1,4 +1,38 @@
-sopti-0.12 (2005//)
+sopti-0.15 (2005/08/21)
+* déplacement du code de génération de html dans les php
+* ajout d'une suite de tests
+* ajout d'un module de notification par email par Benjamin Poirier
+* output xml dans l'exécutable sopti pour communiquer avec les php
+* optimisations dans les définitions de tables mysql
+* affichage des noms de profs dans les résultats
+* pagination des résultats
+* amélioration des messages d'erreur
+
+sopti-0.14 (2005/07/24)
+* remplacement de la base de données CSV par une base de données MySQL
+* utilitaire de mise à jour de base de données
+* nettoyage
+* enlever l'action get_open_close_form
+* l'horaire de l'école n'est plus un objet global, mais il est créé par un
+  DBLoader
+* nouveau formulaire pour ouvrir/fermer les sections en php, qui affiche les
+  noms de chargés de cours/lab
+* ajouter un fichier de config
+* meilleure gestion des erreurs dans make_form2.php, buffered output
+* mise a jour documentation
+* nettoyage config.php
+
+sopti-0.13 (2005/06/30)
+* patch de commentaires (Benjamin Poirier)
+* colonnes de periodes libres cliquables dans make_form2 (Benjamin Poirier)
+* nettoyage (Benjamin Poirier)
+* mises a jour documentation
+* nettoyer les fuites de memoire
+
+sopti-0.12.1 (2005/08/23)
+* correction d'un bug avec les group constraints introduit dans 0.12
+
+sopti-0.12 (2005/05/23)
 * ajout des contraintes de groupe
 
 sopti-0.11 (2005/01/06)

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ -e lock ];
+then
+	echo "update locked; quitting" > /dev/stderr;
+	exit 1;
+fi
+
+touch lock;
+
+smbclient //ecole.polymtl.ca/public -N -c 'cd horaire; get horsage.csv courses.csv.new; get fermes.csv closed.csv.new'
+
+if [ ! -s courses.csv.new ];
+then
+	echo "new courses.csv is empty";
+	rm lock;
+	exit 1;
+fi
+
+rm -f courses.csv closed.csv
+mv courses.csv.new courses.csv
+mv closed.csv.new closed.csv
+
+chmod 644 "courses.csv"
+chmod 644 "closed.csv"
+
+rm -f lock
+

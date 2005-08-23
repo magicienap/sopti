@@ -124,7 +124,12 @@ require_once('config.php');
 			}
 		}
 		
-		print $cmd;
+		//print $cmd;
+		//if(is_writable($SOPTI_CMDFILE)) {
+		//	$cmdfile = fopen($SOPTI_CMDFILE, "a");
+		//	fwrite($cmdfile, $cmd."\n");
+		//	fclose($cmdfile);
+		//}
 		passthru($cmd." 2>&1");
 	}
 	else {

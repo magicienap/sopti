@@ -453,8 +453,16 @@ void usage()
 	"    -c <course> - add this course to the schedule\n"
 	"                  (repeat this option for each course)\n"
 	"    -J <objective> - order results by criteria (minholes)\n"
-	"    -T <constraint> - use constraint (noevening)\n"
-	"    -t <argument> - specify the argument for the next constraint\n"
+	"    -T <constraint> - use schedule constraint (noevening)\n"
+	"    -t <argument> - specify the argument for the next schedule constraint\n"
+	"    -G <constraint> - use group constraint ()\n"
+	"    -g <argument> - specify the argument for the next group constraint\n"
+	"\n"
+	"Group constraints:\n"
+	"  * noclosed\n"
+	"  * noperiod\n"
+	"  * explicitopen\n"
+	"  * notbetween\n"
 	"\n";
 	
 	fprintf(stderr, usage_text);
@@ -576,7 +584,7 @@ void make_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<C
 				
 				for(it2=course_to_add->groups_begin(); it2!=course_to_add->groups_end(); it2++) {
 					if((*it2)->lab()) {
-						if(accepted_groups->find(*it) == accepted_groups->end())
+						if(accepted_groups->find(*it2) == accepted_groups->end())
 							continue;
 						
 						StudentSchedule tmps(ss);
