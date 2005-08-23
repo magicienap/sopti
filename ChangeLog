@@ -29,6 +29,9 @@ sopti-0.13 (2005/06/30)
 * mises a jour documentation
 * nettoyer les fuites de memoire
 
+sopti-0.12.1 (2005/08/23)
+* correction d'un bug avec les group constraints introduit dans 0.12
+
 sopti-0.12 (2005/05/23)
 * ajout des contraintes de groupe
 
