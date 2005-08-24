@@ -183,7 +183,7 @@ function print_schedule($sch, $schedno)
 		}
 		$query .= $query_end;
 
-		//echo $query;
+		//error($query);
 	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or admin_error('Query failed: ' . mysql_error());
@@ -277,11 +277,11 @@ function print_schedule($sch, $schedno)
 	
 		// Make the periods query
 
-		$query_begin = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol,periods.time AS time,periods.room AS room,periods.week AS week,periods.weekday AS weekday FROM periods LEFT JOIN groups ON groups.unique=periods.group LEFT JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='H2005' AND (0 ";
+		$query_begin = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol,periods.time AS time,periods.room AS room,periods.week AS week,periods.weekday AS weekday FROM periods LEFT JOIN groups ON groups.unique=periods.group LEFT JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='A2005' AND (0 ";
 		$query_end = ")";
 		$query = $query_begin.$query_periods_cond2.$query_end;
 	
- 		//echo $query;
+ 		//error($query);
 	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or die('Query failed: ' . mysql_error());

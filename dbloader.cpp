@@ -243,7 +243,7 @@ SchoolSchedule * DBLoader::get_ss_with_courses(vector<string> *c)
 		param1 = new char[it->size()*2+1];
 		mysql_real_escape_string(pmysql, param1, it->c_str(), it->size());
 		// TODO: do something for cases where several semesters exist
-		query = make_message("SELECT courses.symbol,courses.title,courses_semester.course_type,courses_semester.unique FROM courses INNER JOIN courses_semester ON courses.unique=courses_semester.course WHERE courses.symbol='%s'", param1);
+		query = make_message("SELECT courses.symbol,courses.title,courses_semester.course_type,courses_semester.unique FROM courses INNER JOIN courses_semester ON courses.unique=courses_semester.course INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='%s' AND courses.symbol='%s'", config_vars["default_semester"].c_str(), param1);
 		delete [] param1;
 		// Do query
 		result = mysql_query(pmysql, query);
@@ -363,6 +363,7 @@ SchoolSchedule * DBLoader::get_ss_with_courses(vector<string> *c)
 	return retval;
 }
 
+/*
 SchoolSchedule * DBLoader::get_ss_with_all(void)
 {
 	char *query;
@@ -397,3 +398,5 @@ SchoolSchedule * DBLoader::get_ss_with_all(void)
 	
 	return retval;
 }
+*/
+
