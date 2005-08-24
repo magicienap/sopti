@@ -135,7 +135,7 @@ $user_time=microtime(TRUE);
 				}
 			}
 		
-			//print $cmd;
+			//error($cmd);
 			$handle = popen($cmd.' 2>&1', 'r');
 			$xml_groups = '';
 			while (!feof($handle)) {
