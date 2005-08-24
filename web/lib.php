@@ -274,10 +274,9 @@ function print_schedule($sch, $schedno)
 
 	global $period_data;
 	if(count($period_data) == 0) {
-	
 		// Make the periods query
 
-		$query_begin = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol,periods.time AS time,periods.room AS room,periods.week AS week,periods.weekday AS weekday FROM periods LEFT JOIN groups ON groups.unique=periods.group LEFT JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='A2005' AND (0 ";
+		$query_begin = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol,periods.time AS time,periods.room AS room,periods.week AS week,periods.weekday AS weekday FROM periods LEFT JOIN groups ON groups.unique=periods.group LEFT JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS['default_semester']."' AND (0 ";
 		$query_end = ")";
 		$query = $query_begin.$query_periods_cond2.$query_end;
 	
@@ -294,7 +293,6 @@ function print_schedule($sch, $schedno)
 				$period_data[$row['symbol']][$row['tol']][$row['grp']]=array();
 			}
 			array_push($period_data[$row['symbol']][$row['tol']][$row['grp']], $row);
-
 		}
 	}
 	
