@@ -1,0 +1,335 @@
+.absimilis 
+{ 
+	font-size:	11px;
+	color:		white;
+}
+.slogan 
+{ 
+	font-size:	12px;
+	font-family:	georgia;
+	color:		#a7a7a7;
+}
+
+table.main
+{
+	width:		760px;
+/*	border: 1px solid black; */
+	padding: 0px;
+	margin: 0px auto;
+}
+
+table.main td {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+
+table.header
+{
+	width:			100%;
+	height:			180px;
+	margin:			0px;
+	padding:		0px;
+	border:			0px;
+	background-image:	url(aep_header755x180.gif); 	
+}
+
+table.footer
+{
+	width:			100%;
+	height:			35px;	
+  	background-image: 	url(aep_footer755x35.gif);
+}
+
+table.section
+{
+	width:		100%;
+	height:		375px;
+	margin-bottom: 	1em;
+	font-size:	12px;
+	font-family:	georgia;
+}
+
+.titre 
+{
+	font-size:		14px;
+	font-family:		georgia;
+	background-color:	black;
+	color:			white;
+	text-align:		center
+}
+
+.texte 
+{
+	font-size:		12px;
+	font-family:		georgia;
+	text-align:		justify;
+	font-weight:		normal;
+}
+
+.menulink 
+{ 
+	font-family:		georgia;
+	font-size:		13px;
+	text-decoration:	none;
+	color:			white;
+	text-align:		right;
+}
+.menulink:hover
+{
+	color:			#F99C39;
+}
+.unmenulink 
+{ 
+	font-family:		georgia;
+	font-size:		13px;
+	text-decoration:	none;
+	color:			white;
+}
+
+.menuarchivelink 
+{ 
+	font-family:		georgia;
+	font-size:		15px;
+	text-decoration:	none;
+	color:			black;
+}
+.menuarchivelink:hover
+{
+	color:			#BDCEE7;
+}
+
+.menuarchivelinkselected
+{ 
+	font-family:		georgia;
+	font-size:		15px;
+	text-decoration:	none;
+	color:			#BDCEE7;
+}
+
+.submenuarchivelink 
+{ 
+	font-family:		georgia;
+	font-size:		13px;
+	text-decoration:	none;
+	color:			black;
+}
+.submenuarchivelink:hover
+{
+	color:			#BDCEE7;
+}
+
+.submenuarchivelinkselected
+{ 
+	font-family:		georgia;
+	font-size:		13px;
+	text-decoration:	none;
+	color:			#BDCEE7;
+}
+
+.linkonorange 
+{ 
+	font-family:		georgia;
+	text-decoration:	none;
+	color:			black;
+}
+.linkonorange:hover
+{
+	color:			#BDCEE7;
+}
+
+.linkongrey
+{ 
+	font-family:		georgia;
+	text-decoration:	none;
+	color:			black;
+}
+.linkongrey:hover
+{
+	color:			#F99C39;
+}
+
+.linkonblue 
+{ 
+	font-family:		georgia;
+	text-decoration:	none;
+	color:			black;
+}
+.linkonblue:hover
+{
+	color:			#F99C39;
+}
+
+
+.menulinkselected
+{ 
+	font-family:		georgia;
+	font-size:		13px;
+	text-decoration:	none;
+	color:			#F99C39;
+}
+
+.arrowslink 
+{ 
+	font-family:		georgia;
+	font-size:		20px;
+	text-decoration:	none;
+	font-weight:		bold;
+	color:			#F99C39;
+}
+
+.arrowslink:hover
+{
+	color:			black;
+}
+
+td.bloc1
+{
+	border-style:		double;
+	border-color:		#C7C7C7;
+	background-color:	#F99C39;
+	background-image:	none;
+	vertical-align:		top;
+	text-align:		justify;
+}
+
+td.bloc2
+{
+	border-style:		double;
+	border-color:		#C0C0C0;
+	background-color:	#f0f0f0;
+	background-image:	none;
+	vertical-align:		top;
+	text-align:		justify;
+}
+
+td.bloc3
+{
+	border-style:		double;
+	border-color:       	#C7C7C7;
+	background-color:   	#BDCEE7;
+	background-image:	none;
+	vertical-align:		top;
+	text-align:		justify;
+}
+
+textarea.bloc2textarea
+{
+	border-style:		none;
+	background-color:	#f0f0f0;
+	background-image:	none;
+	vertical-align:		top;
+	font-size:		12px;
+	font-family:		georgia;
+	text-align:		justify;
+	overFlow:		auto;
+}
+
+textarea.bloc3textarea
+{
+	border-style:		none;
+	background-color:	#BDCEE7;
+	background-image:	none;
+	vertical-align:		top;
+	font-size:		12px;
+	font-family:		georgia;
+	text-align:		justify;
+	overFlow:		auto;
+}
+
+
+table.popup
+{
+	width:			100%;
+	border-style:		double;
+	border-color:       	#C7C7C7;
+	background-color:   	#BDCEE7;
+	background-image:	none
+}
+
+.mini
+{
+	font-size:	11px;
+}
+
+.calendrierheadermois
+{
+	font-family:		georgia;
+	font-size:		20px;
+	font-weight:		bold;
+	text-decoration:	none;
+	vertical-align:		center;
+	text-align:		center;
+	color:			#F99C39;
+}
+
+.calendrierheaderjour
+{
+	font-family:		georgia;
+	font-size:		14px;
+	font-weight:		bold;
+	text-decoration:	none;
+	vertical-align:		center;
+	text-align:		center;
+	width:			14%;
+}
+
+.jour
+{
+	font-family:		georgia;
+	font-size:		12px;
+	font-weight:		bold;
+	text-decoration:	none;
+	vertical-align:		center;
+	text-align:		center;
+}
+
+.jouractivite
+{
+	font-family:		georgia;
+	font-size:		14px;
+	font-weight:		none;
+	text-decoration:	none;
+	color:			#F99C39;
+	vertical-align:		center;
+	text-align:		center;
+}
+
+.jouractivite:hover
+{
+	font-size:		20px;
+}
+
+.jouractivitesoumise
+{
+	font-family:		georgia;
+	font-size:		14px;
+	font-weight:		none;
+	text-decoration:	none;
+	color:			#4472B6;
+	vertical-align:		center;
+	text-align:		center;
+}
+
+.jouractivitesoumise:hover
+{
+	font-size:		20px;
+}
+
+.erreur
+{
+	font-family:		georgia;
+	font-size:		12px;
+	font-weight:		none;
+	text-decoration:	none;
+	color:			#BF1E3A;
+	vertical-align:		center;
+	text-align:		center;
+}
+
+.faq 
+{
+	font-size:		12px;
+	font-family:		georgia;
+	font-weight:		normal;
+}
