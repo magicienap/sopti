@@ -5,3 +5,5 @@ tester les erreurs mysql davantage
 add weekend support
 colorize results
 alterner les teintes de gris pour les heures
+
+print error in make.php if sopti executable not exists

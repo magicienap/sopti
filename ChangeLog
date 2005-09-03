@@ -1,3 +1,7 @@
+sopti-0.16 (2005/09/)
+* correction d'un bug lorsqu'il y a plusieurs sessions dans la DB
+* améliorations au site web
+
 sopti-0.15 (2005/08/21)
 * déplacement du code de génération de html dans les php
 * ajout d'une suite de tests
