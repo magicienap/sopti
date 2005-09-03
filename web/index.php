@@ -65,6 +65,10 @@
 	border: 1px solid black;
 	padding: 10px;
   }
+
+  a img {
+  	border: 0px;
+  }
   </style>
   
 </head>
@@ -123,18 +127,18 @@
 <div class="newsdate">21 août 2005</div>
 
 <div class="newscontents">
-	<b>Améliorations au générateur</b><br>
+	<b>Améliorations au générateur</b><br />
 	<ul>
-		<li>Affichage des noms de chargés de cours et de lab
-		<li>Système de notification par email lorsque des places deviennent disponibles dans une section (par Benjamin Poirier, bac génie info)
-		<li>Affichage des résultats par pages
+		<li>Affichage des noms de chargés de cours et de lab</li>
+		<li>Système de notification par email lorsque des places deviennent disponibles dans une section (par Benjamin Poirier, bac génie info)</li>
+		<li>Affichage des résultats par pages</li>
 	</ul>
 
-	<p>Grâce à une excellente collaboration avec le BAA, le générateur d'horaires est maintenant synchronisé avec la base de données officielle de l'École à toutes les 15 minutes.
+	<p>Grâce à une excellente collaboration avec le BAA, le générateur d'horaires est maintenant synchronisé avec la base de données officielle de l'École à toutes les 15 minutes.</p>
 
-	<p>Également, grâce à Jean-François Lévesque, VP services de l'AEP, le générateur est maintenant hébergé sur un serveur très rapide.
+	<p>Également, grâce à Jean-François Lévesque, VP services de l'AEP, le générateur est maintenant hébergé sur un serveur très rapide.</p>
 
-	<p>Durant la session d'hiver 2005, plus de 2000 personnes ont utilisé le générateur, pour un total de plus de 20 000 requêtes. Plusieurs nous ont envoyé des suggestions d'amélioration, et toutes ces suggestions ont été ajoutées au programme. Continuez à nous envoyer vos idées, elle ont beaucoup d'influence sur le développement du programme.
+	<p>Durant la session d'hiver 2005, plus de 2000 personnes ont utilisé le générateur, pour un total de plus de 20 000 requêtes. Plusieurs nous ont envoyé des suggestions d'amélioration, et toutes ces suggestions ont été ajoutées au programme. Continuez à nous envoyer vos idées, elle ont beaucoup d'influence sur le développement du programme.</p>
 </div>
 
 
@@ -198,5 +202,16 @@
 
 </div>
 
+<p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+       src="http://www.w3.org/Icons/valid-xhtml10"
+       alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+
+    <a href="http://jigsaw.w3.org/css-validator/check/referer">
+   <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+</a>
+</p>
 </body>
 </html>
