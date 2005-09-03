@@ -258,7 +258,7 @@ table.popup
 	font-size:		20px;
 	font-weight:		bold;
 	text-decoration:	none;
-	vertical-align:		center;
+	vertical-align:		middle;
 	text-align:		center;
 	color:			#F99C39;
 }
@@ -269,7 +269,7 @@ table.popup
 	font-size:		14px;
 	font-weight:		bold;
 	text-decoration:	none;
-	vertical-align:		center;
+	vertical-align:		middle;
 	text-align:		center;
 	width:			14%;
 }
@@ -280,7 +280,7 @@ table.popup
 	font-size:		12px;
 	font-weight:		bold;
 	text-decoration:	none;
-	vertical-align:		center;
+	vertical-align:		middle;
 	text-align:		center;
 }
 
@@ -288,10 +288,10 @@ table.popup
 {
 	font-family:		georgia;
 	font-size:		14px;
-	font-weight:		none;
+	font-weight:		normal;
 	text-decoration:	none;
 	color:			#F99C39;
-	vertical-align:		center;
+	vertical-align:		middle;
 	text-align:		center;
 }
 
@@ -304,10 +304,10 @@ table.popup
 {
 	font-family:		georgia;
 	font-size:		14px;
-	font-weight:		none;
+	font-weight:		normal;
 	text-decoration:	none;
 	color:			#4472B6;
-	vertical-align:		center;
+	vertical-align:		middle;
 	text-align:		center;
 }
 
@@ -320,10 +320,10 @@ table.popup
 {
 	font-family:		georgia;
 	font-size:		12px;
-	font-weight:		none;
+	font-weight:		normal;
 	text-decoration:	none;
 	color:			#BF1E3A;
-	vertical-align:		center;
+	vertical-align:		middle;
 	text-align:		center;
 }
 
