@@ -204,227 +204,6 @@ void print_schedule_ascii(StudentSchedule &s)
 	printf("\n");
 }
 
-
-/* ------------------------------------------------------------------
-
-	Function: print_schedule_html
-	Description: Outputs a schedule in html form
-	Parameters: s, the schedule to output
-	Return value: none
-	Notes: none
-
------------------------------------------------------------------- */
-
-void print_schedule_html(StudentSchedule &s)
-{
-	int i,j;
-	
-	// sched_standard[week][day_of_week][period_id][sequential]
-	map< int, vector<ScheduledPeriod> > sched_standard[3][7];
-	// sched_nonstandard[week][day_of_week][hour][sequential]
-	map< int, vector< ScheduledPeriod > > sched_nonstandard[3][7];
-	
-	StudentSchedule::course_list_t::const_iterator it;
-	Group::period_list_t::const_iterator it2;
-	map<int, int>::const_iterator it3;
-	vector<ScheduledPeriod>::const_iterator it4;
-	map< int, vector< ScheduledPeriod > >::const_iterator it5;
-	
-	for(it=s.st_courses_begin(); it!=s.st_courses_end(); it++) {
-		// If has theorical class
-		if((*it)->theory_group) {
-			for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
-				int day_of_week = (*it2)->period_no()/10000-1;
-				int week = (*it2)->week();
-				int hour = (*it2)->period_no()%((day_of_week+1)*10000);
-				ScheduledPeriod schedperiod;
-				
-				schedperiod.course = (*it)->course;
-				schedperiod.group = (*it)->theory_group;
-				schedperiod.period = (*it2);
-				
-				it3 = stdsched_hour2id[stdsched_day2template[day_of_week]].find(hour);
-				if(it3 == stdsched_hour2id[stdsched_day2template[day_of_week]].end()) {
-					sched_nonstandard[week][day_of_week][hour].push_back(schedperiod);
-				}
-				else {
-					sched_standard[week][day_of_week][(*it3).second].push_back(schedperiod);
-				}
-			}
-		}
-		// If has lab class
-		if((*it)->lab_group) {
-			for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
-				int day_of_week = (*it2)->period_no()/10000-1;
-				int week = (*it2)->week();
-				int hour = (*it2)->period_no()%((day_of_week+1)*10000);
-				ScheduledPeriod schedperiod;
-				
-				schedperiod.course = (*it)->course;
-				schedperiod.group = (*it)->lab_group;
-				schedperiod.period = (*it2);
-				
-				it3 = stdsched_hour2id[stdsched_day2template[day_of_week]].find(hour);
-				if(it3 == stdsched_hour2id[stdsched_day2template[day_of_week]].end()) {
-					sched_nonstandard[week][day_of_week][hour].push_back(schedperiod);
-				}
-				else {
-					sched_standard[week][day_of_week][(*it3).second].push_back(schedperiod);
-				}
-			}
-		}
-	}
-	
-	printf("<table class=\"schedule\">\n");
-	
-	// Don't forget the empty column for the hours
-	printf("<tr><td></td>\n");
-	
-	for(i=0; i<5; i++) {
-		printf("<td class=\"weekday\">%s</td>", stdsched_day2name[i]);
-	}
-	
-	printf("</tr>\n");
-
-	bool week_finished=false;
-	bool weekend_finished=false;
-	
-	// For each hour
-	for(i=0;; i++) {
-	
-		if(!week_finished && stdsched_daytemplates[0][i].start == -1)
-			week_finished = true;
-			
-		if(week_finished)
-			break;
-	
-		printf("<tr>\n");
-		// Print hour
-		printf("<td class=\"hour\">");
-		printf("<b>%d:%.2d</b><br>", stdsched_daytemplates[0][i].start/100, stdsched_daytemplates[0][i].start%100);
-
-		printf("</td>\n");
-		
-		for(j=0; j<5; j++) {
-			printf("<td>");
-			
-			// Determine the conflict scheme
-			int conflict_mask=0;
-			if(sched_standard[0][j][i].size() > 1) {
-				// More than one weekly course
-				conflict_mask = ~0;
-			}
-			else if(sched_standard[0][j][i].size() == 1 && (sched_standard[1][j][i].size() > 0 || sched_standard[2][j][i].size() > 0)) {
-				conflict_mask = ~0;
-			}
-			else if(sched_standard[0][j][i].size() == 0) {
-				if(sched_standard[1][j][i].size() > 1) {
-					conflict_mask |= 1;
-				}
-				if(sched_standard[2][j][i].size() > 1) {
-					conflict_mask |= 2;
-				}
-			}
-			
-			// Now print this period
-			for(it4=sched_standard[0][j][i].begin(); it4!=sched_standard[0][j][i].end(); it4++) {
-				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s)</div>\n", conflict_mask?"period_conflict":"period_noconflict", it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
-			}
-			for(it4=sched_standard[1][j][i].begin(); it4!=sched_standard[1][j][i].end(); it4++) {
-				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</div>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
-			}
-			for(it4=sched_standard[2][j][i].begin(); it4!=sched_standard[2][j][i].end(); it4++) {
-				printf("<div class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</div>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
-			}
-			
-			printf("</td>");
-		}
-		printf("</tr>\n");
-	}
-
-	printf("<tr><td class=\"hour\">Heures non standard</td>");
-	for(j=0; j<5; j++) {
-		printf("<td class=\"period\">");
-		for(it5=sched_nonstandard[0][j].begin(); it5!=sched_nonstandard[0][j].end(); it5++) {
-			for(it4=it5->second.begin(); it4!=it5->second.end(); it4++) {
-				printf("<div class=\"%s\">%d:%.2d<br><b>%s</b> (%s)<br>%s (%s)</div>\n", "period_noconflict", (it5->first)/100, (it5->first)%100, it4->course->symbol().c_str(), it4->group->lab()?"Lab":"Th", it4->period->room().c_str(), it4->group->name().c_str());
-			}
-		}
-		printf("</td>");
-		/*
-		for(it4=sched_standard[1][j][i].begin(); it4!=sched_standard[1][j][i].end(); it4++) {
-			printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
-		}
-		for(it4=sched_standard[2][j][i].begin(); it4!=sched_standard[2][j][i].end(); it4++) {
-			printf("<tr><td class=\"%s\"><b>%s</b> (%s)<br>%s (%s) B%d</tr></td>\n", (conflict_mask&(1<<(it4->period->week()-1)))?"period_conflict":"period_noconflict", it4->course->symbol().c_str(),it4->group->lab()?"Lab":"Th", it4->period->room().c_str(),it4->group->name().c_str(), it4->period->week());
-		}
-		*/
-	}
-	printf("</tr>\n");
-	
-	printf("</table>\n");
-	
-	// PRINT WEEKEND SCHEDULE
-/*
-	if(!sched[5].empty() || !sched[6].empty()) {
-		// print only if we have weekend courses
-		
-		printf("<table class=\"schedule_weekend\">\n");
-		
-		// Don't forget the empty column for the hours
-		printf("<tr><td></td>\n");
-		
-		for(i=5; i<7; i++) {
-			printf("<td class=\"weekday\">%s</td>", days_of_week[i]);
-		}
-		
-		printf("</tr>\n");
-	
-		// For each hour
-		for(i=0;; i++) {
-			if(!weekend_finished && hours_weekend[i] == -1)
-				weekend_finished = true;
-			
-			if(weekend_finished)
-				break;
-		
-			printf("<tr>\n");
-			// Print hour
-			printf("<td class=\"hour\">");
-			printf("<b>%d:%.2d</b><br>", hours_weekend[i]/100, hours_weekend[i]%100);
-	
-			printf("</td>\n");
-			
-			for(j=5; j<7; j++) {
-				printf("<td class=\"period\">");
-				if(sched[j].find(hours_weekend[i]) != sched[j].end()) {
-				
-					// If there is only one course
-					if(sched[j][hours_weekend[i]].size() == 1) {
-						printf("%s", sched[j][hours_weekend[i]][0].c_str());
-					}
-					else {
-						unsigned int k;
-						printf("<table class=\"conflict_table\">\n");
-						for(k=0; k<sched[j][hours_weekend[i]].size(); k++) {
-							printf("<tr><td>%s</td></tr>\n", sched[j][hours_weekend[i]][k].c_str());
-						}
-						printf("</table>\n");
-					}
-				}
-				else {
-					printf("&nbsp;");
-				}
-				printf("</td>");
-			}
-			printf("</tr>\n");
-		}
-	
-		printf("</table>\n");
-	}
-	*/
-}
-
 void print_schedule_xml_groupdefs(StudentSchedule &s, float score)
 {
 	StudentSchedule::course_list_t::const_iterator it;
@@ -498,7 +277,6 @@ void usage()
 	"  --configfile <config_file> - specify configuration file explicitly\n"
 	"  --coursefile <course_file> - specify course file explicitly\n"
 	"  --closedfile <closed_file> - specify closed groups file explicitly\n"
-	"  --html - enable html output\n"
 	"\n"
 	"Action options:\n"
 	"  * make\n"
@@ -598,21 +376,6 @@ inline void test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, ve
 	// If we get here, all the constraints were satisfied, therefore, proceed with the recursion
 	make_recurse(schoolsched, ss, remaining_courses, constraints, accepted_groups, solutions);
 }
-
-/*
-inline bool test_group_constraints(Group *group, SchoolCourse *course, vector<GroupConstraint *> *group_constraints)
-{
-	vector<GroupConstraint *>::const_iterator it;
-
-	for(it=group_constraints->begin(); it!=group_constraints->end(); it++) {
-		if(!((**it)(group, course))) {
-			return false;
-		}
-	}
-	
-	return true;
-}
-*/
 
 /* ------------------------------------------------------------------
 
@@ -791,6 +554,7 @@ void make(int argc, char **argv)
 	
 		switch (c) {
 			case 'c':
+				/* TODO: output error in xml */
 				/*
 				if(!schoolsched.course_exists(optarg)) {
 					if(output_fmt == OUTPUT_HTML) {
