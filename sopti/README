@@ -1,10 +1,6 @@
-sopti 0.13 ()
-----------------------
+sopti
+-----
+Dernière mise à jour: 2005/09/05
 
 Sopti est un générateur d'horaires scolaires optimisés. Pour le moment, il est conçu expressément pour les horaires étudiants de l'École Polytechnique de Montréal.
 
-Ce programme est en développement. Par conséquent, un certain nombre de fonctionnalités ne sont pas tout à fait au point, notamment:
-
-  * L'affichage des horaires sous forme ASCII ne supporte pas les conflits
-  
-L'interface web est fiable et testée.
