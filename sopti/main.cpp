@@ -233,26 +233,6 @@ void print_schedule_xml_groupdefs(StudentSchedule &s, float score)
 
 /* ------------------------------------------------------------------
 
-	Function: print_schedule
-	Description: Outputs a schedule
-	Parameters: s, the schedule to output
-	Return value: none
-	Notes: the format of the output will depend on the global
-		variable "output_fmt"
-
------------------------------------------------------------------- */
-
-void print_schedule(StudentSchedule &s)
-{
-	if(output_fmt == OUTPUT_HTML)
-		print_schedule_html(s);
-	else
-		print_schedule_ascii(s);
-}
-
-
-/* ------------------------------------------------------------------
-
 	Function: usage
 	Description: Outputs terse usage information about the program
 	Parameters: none
