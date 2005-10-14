@@ -25,7 +25,7 @@ function admin_error($msg)
 
 <center>
 
-<img src="aep.gif">
+<img src="genhor_sm.png" alt="Générateur d'horaires">
 <p style="font-size: 15px;">Générateur d'horaires</p>
 </center>
 
@@ -63,7 +63,7 @@ function error($msg)
 
 <center>
 
-<img src="aep.gif">
+<img src="genhor_sm.png" alt="Générateur d'horaires">
 <p><font size="+2">Générateur d'horaires</font>
 </center>
 

@@ -30,7 +30,7 @@ if (isset($_GET["unique"]))
 	
 	<div id="header">
 	
-	<img src="aep.gif">
+	<img src="genhor_sm.png" alt="Générateur d'horaires">
 	
 	<h1>Notification par email</h1>
 	
@@ -253,7 +253,7 @@ echo <<<BENRULES
 	
 	<div id="header">
 	
-	<img src="aep.gif">
+	<img src="genhor_sm.png" alt="Générateur d'horaires">
 	
 	<h1>Notification par email</h1>
 	

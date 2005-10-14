@@ -204,7 +204,7 @@ if(strlen($courses_raw) == 0) {
 
 <div id="header">
 
-<img src="aep.gif">
+<img src="genhor_sm.png" alt="Générateur d'horaires">
 
 <h1>Générer des horaires</h1>
 

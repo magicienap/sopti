@@ -40,7 +40,7 @@ if (isset($_GET["email"]) || isset($_GET["hash"]))
 	
 	<div id="header">
 	
-	<img src="aep.gif">
+	<img src="genhor_sm.png" alt="Générateur d'horaires">
 	
 	<h1>Désinscription de la notification par email</h1>
 	
@@ -308,7 +308,7 @@ else if (isset($_POST["action"]))
 	
 	<div id="header">
 	
-	<img src="aep.gif">
+	<img src="genhor_sm.png" alt="Générateur d'horaires">
 	
 	<h1>Désinscription de la notification par email</h1>
 	
@@ -514,7 +514,7 @@ echo <<<BENRULES
 	
 	<div id="header">
 	
-	<img src="aep.gif">
+	<img src="genhor_sm.png" alt="Générateur d'horaires">
 	
 	<h1>Désinscription de la notification par email</h1>
 	
@@ -555,7 +555,7 @@ else
 	
 	<div id="header">
 	
-	<img src="aep.gif">
+	<img src="genhor_sm.png" alt="Générateur d'horaires">
 	
 	<h1>Désinscription de la notification par email</h1>
 	
