@@ -1,6 +1,30 @@
 sopti
 -----
-Dernière mise à jour: 2005/09/05
+Dernière mise à jour: 2005/10/15
 
-Sopti est un générateur d'horaires scolaires optimisés. Pour le moment, il est conçu expressément pour les horaires étudiants de l'École Polytechnique de Montréal.
+Sopti est un générateur d'horaires scolaires optimisés. Pour le moment, il est
+conçu expressément pour les horaires étudiants de l'École Polytechnique de
+Montréal. Il est installé sous le nom de Générateur d'Horaires de
+l'Association des Étudiants de Polytechnique à l'adresse:
+http://horaires.aep.polymtl.ca/
+
+La procédure d'installation se trouve dans le fichier INSTALL.
+
+Ce package contient:
+  - L'engin de génération d'horaires (exécutable sopti)
+  - Un site web php comme interface pour l'engin
+  - Des outils pour télécharger la données d'horaires de Poly
+  - Un module de notification d'utilisateur par email lorsque
+    des places deviennent disponibles dans un groupe (intégré
+    à l'interface php)
+
+Parmi les fonctionnalités du système, on compte:
+    * Possibilité de synchroniser avec les données du Bureau des Affaires
+      Académiques mises à jour aux 16 minutes
+    * La compatibilité avec les cours du bacc, cycles supérieurs, et
+      certificats
+    * Les cours de jour, de soir et de fin de semaine
+    * Avertissements par courriel lorsque des places deviennent disponibles
+      dans les sections qui vous intéressent
+    * La possibilité de générer des horaires avec conflits
 
