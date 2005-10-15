@@ -1,0 +1,7 @@
+# Makefile.svn
+# To make the configure script when using the SVN version, use
+# make -f Makefile.svn
+# to make the configure script 
+
+all:
+	@if ( autoreconf -i ); then echo "Remade configure"; else echo "errror running autoreconf (are autotools installed?)"; fi
