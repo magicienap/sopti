@@ -41,12 +41,18 @@ INSTALLING THE WEB INTERFACE
   Then create teachers.csv
 	./make_teachers_csv.sh
 
-* Populate the SQL database
-	cd db
+* Download data and populate the SQL database
+	cd data
+	./update_smb
+
+	cd ../db
 	./updatedb.pl
 
+* Install cron jobs to run the two previous steps periodically
+
+
 INSTALLING & USING THE EMAILER
-----------------------------
+------------------------------
 * Make sure you have installed the database in the previous section
 
 * In the folder "emailer/", create emailer.conf based on emailer.conf.example 
@@ -54,3 +60,4 @@ INSTALLING & USING THE EMAILER
 
 * Run emailer.py regularly for example when the database is updated 
 	or in a cron job
+
