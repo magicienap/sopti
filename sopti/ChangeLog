@@ -1,6 +1,7 @@
 sopti-0.17
 * changement logos AEP pour logos du générateur
 * ajout de Makefile.svn
+* mises à jour AUTHORS
 
 sopti-0.16 (2005/09/03)
 * correction d'un bug lorsqu'il y a plusieurs sessions dans la DB
