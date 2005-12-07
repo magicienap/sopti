@@ -5,6 +5,7 @@ sopti-0.17 (2005/12/06)
 * mises à jour INSTALL
 * mises à jour README
 * afficher seulement les cours de la session en cours dans listcourses.php
+* mises à jour sopti.conf.example
 
 sopti-0.16 (2005/09/03)
 * correction d'un bug lorsqu'il y a plusieurs sessions dans la DB
