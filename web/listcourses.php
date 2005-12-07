@@ -28,7 +28,7 @@ ob_start();
 base');
 	
 	// Make the query
-	$query = "SELECT courses.symbol AS symbol,courses.title AS title FROM courses ORDER BY courses.symbol";
+	$query = "SELECT courses.symbol AS symbol,courses.title AS title FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS["default_semester"]."' ORDER BY courses.symbol";
 	
 	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
 	mysql_close($dblink);
