@@ -75,7 +75,7 @@
 
 <body>
 
-
+<!--
 <table class="main">
 <tr><td>		<table class="header">
 			<tr style="height: 115px">
@@ -110,7 +110,7 @@
 		</table>
         </td></tr>
 </table>
-
+-->
 <!-- Fin en-tête AEP -->
 
 <div style="width: 125px; padding: 0px; margin: 20px auto;"><img src="genhor_sm.png" alt="Générateur d'horaires" /></div>
