@@ -129,7 +129,7 @@
 <div class="newscontents">
 	<b>Données hiver 2006 disponibles</b><br />
 
-	<p>Le Générateur crée maintenant des horaires pour la session d'hiver 2006.</p>
+	<p>Le Générateur crée maintenant des horaires pour la session d'hiver 2006. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
 
 </div>
 
