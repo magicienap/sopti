@@ -8,7 +8,15 @@ fi
 
 touch lock;
 
+# if you are located outside of the polymtl.ca network but have access to a unix machine inside you can tunnel the connection through ssh (port 6789 is just random)(this is usually an interactive command, you'll have to type your password, look into public keys and ssh agent if you want to automate it):
+#ssh -L 6789:ecole.polymtl.ca:139 user@machine.polymtl.ca
+# smbclient seems to be buggy about using -p to change the port so I've used iptables instead (you need to have root access to do this however)
+# I redirect the connection to the smb share towards the local machine which will send it through the tunnel, this way you don't even have to modify the 'real' smbclient command afterwards, what a bargain!:
+#iptables -t nat -A OUTPUT -d ecole.polymtl.ca -p tcp --dport 139 -j REDIRECT --to-ports 6789
+# if you don't have access to a unix machine at polymtl.ca but are a student there you can register for an account on the STEP (http://step.polymtl.ca). Alternatively, you can try using the VPN.
 smbclient //ecole.polymtl.ca/public -N -c 'cd horaire; get horsage.csv courses.csv.new; get fermes.csv closed.csv.new'
+# if you used the iptables rule above you can remove it now, you can also close the ssh session:
+#iptables -t nat -D OUTPUT -d ecole.polymtl.ca -p tcp --dport 139 -j REDIRECT --to-ports 6789
 
 if [ ! -s courses.csv.new ];
 then
