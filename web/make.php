@@ -54,6 +54,12 @@ $user_time=microtime(TRUE);
 
 	// If this is the initial request
 	if(isset($_POST['courses'])) {
+		// Check executable
+		if(!is_executable($SOPTI_EXEC)) {
+			mail_admin_error("Cannot find sopti executable");
+			admin_error("");
+		}
+	
 		// Counter
 	
 		if(!is_writable($SOPTI_COUNTERFILE)) {
@@ -64,7 +70,7 @@ $user_time=microtime(TRUE);
 			fwrite($counter, date("Y/m/d-H:i:s") . " " . $_SERVER['REMOTE_ADDR'] . "\n");
 			fclose($counter);
 		}
-	
+
 		// Prepare explicitopen arg
 		$openclose_vars_str = $_POST['openclose_vars'];
 		trim($openclose_vars_str);
@@ -80,7 +86,7 @@ $user_time=microtime(TRUE);
 	
 		trim($explicitopen_arg);
 
-		$cmd_initial=$SOPTI_EXEC . " --html make";
+		$cmd_initial=$SOPTI_EXEC . " --configfile '$SOPTI_CONFIG_FILE' --html make";
 		$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays" );
 
 		// Parse

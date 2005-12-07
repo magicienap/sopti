@@ -12,7 +12,7 @@ $SOPTI_COUNTERFILE="$SOPTI_BASE/data/count.txt";
 $SOPTI_CONFIG_FILE="$SOPTI_BASE/sopti.conf";
 
 # The command to execute the sopti executable, with options
-$SOPTI_EXEC="$SOPTI_BASE/sopti --configfile '$SOPTI_CONFIG_FILE'";
+$SOPTI_EXEC="$SOPTI_BASE/sopti";
 
 # This file's timestamp indicates the last data update
 $SOPTI_LASTUPDATE="$SOPTI_BASE/data/courses.csv";
