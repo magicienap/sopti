@@ -115,7 +115,7 @@
 
 <div style="width: 125px; padding: 0px; margin: 20px auto;"><img src="genhor_sm.png" alt="Générateur d'horaires" /></div>
 
-<div style="width: 200px; margin: 20px auto; text-align: center; color: white; background-color: #555555; clear: left;"><p style="font-size: 9px; margin-bottom: 0px;">Session en cours</p><p style="font-size: 20px; margin: 0px;">Automne 2005</p></div>
+<div style="width: 200px; margin: 20px auto; text-align: center; color: white; background-color: #555555; clear: left;"><p style="font-size: 9px; margin-bottom: 0px;">Session en cours</p><p style="font-size: 20px; margin: 0px;">Hiver 2006</p></div>
 
 <div style="font-size:13px; font-family: sans;text-align: center; border: 0px outset blue; margin: 20px auto; padding: 5px; font-weight: bold;">
 	<div style="font-size: 16px; margin: 1px;"><img src="dentwheel.png" alt="" /> <a href="make_form1.php"> Générer des horaires</a></div>
@@ -124,21 +124,13 @@
 </div>
 
 
-<div class="newsdate">21 août 2005</div>
+<div class="newsdate">6 décembre 2005</div>
 
 <div class="newscontents">
-	<b>Améliorations au générateur</b><br />
-	<ul>
-		<li>Affichage des noms de chargés de cours et de lab</li>
-		<li>Système de notification par email lorsque des places deviennent disponibles dans une section (par Benjamin Poirier, bac génie info)</li>
-		<li>Affichage des résultats par pages</li>
-	</ul>
+	<b>Données hiver 2006 disponibles</b><br />
 
-	<p>Grâce à une excellente collaboration avec le BAA, le générateur d'horaires est maintenant synchronisé avec la base de données officielle de l'École à toutes les 15 minutes.</p>
+	<p>Le Générateur crée maintenant des horaires pour la session d'hiver 2006.</p>
 
-	<p>Également, grâce à Jean-François Lévesque, VP services de l'AEP, le générateur est maintenant hébergé sur un serveur très rapide.</p>
-
-	<p>Durant la session d'hiver 2005, plus de 2000 personnes ont utilisé le générateur, pour un total de plus de 20 000 requêtes. Plusieurs nous ont envoyé des suggestions d'amélioration, et toutes ces suggestions ont été ajoutées au programme. Continuez à nous envoyer vos idées, elle ont beaucoup d'influence sur le développement du programme.</p>
 </div>
 
 
