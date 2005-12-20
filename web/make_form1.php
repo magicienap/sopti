@@ -40,7 +40,7 @@ print "Dernière mise a jour du fichier de cours: ".$string_modif
 
 <div class="option_block">
 	<h2>Cours désirés</h2>
-	<p>Écrire les sigles des cours désirés, séparés par un espace. Ex: ING1040 ING1035 ING1010<br>
+	<p>Écrire les sigles des cours désirés, séparés par un espace. Ex: MTH1101 MTH1006 INF1005C<br>
 	<a href="listcourses.php" target="_blank">Voir la liste des cours offerts</a>
 	<p><textarea name="courses" cols="50" rows="2"></textarea>
 </div>
