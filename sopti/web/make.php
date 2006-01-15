@@ -142,7 +142,7 @@ $user_time=microtime(TRUE);
 			}
 		
 			//error($cmd);
-			$handle = popen($cmd.' 2>&1', 'r');
+			$handle = popen($cmd.' 2>/dev/null', 'r');
 			$xml_groups = '';
 			while (!feof($handle)) {
 				$xml_groups .= fread($handle, 8192);
