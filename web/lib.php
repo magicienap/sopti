@@ -1,10 +1,22 @@
 <?php
+error_reporting(0);
 
 require_once('config.php');
 
 $CONFIG_VARS=array();
 
 read_config_file($SOPTI_CONFIG_FILE);
+
+function connect_db()
+{
+	global $CONFIG_VARS;
+
+	$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
+                or admin_error('Could not connect to SQL: ' . mysql_error());
+	mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select database');
+
+	return $dblink;
+}
 
 function admin_error($msg)
 {
@@ -550,9 +562,6 @@ function xorString($string1, $string2)
 	
 	return implode("", $result);
 }
-
-
-read_config_file($SOPTI_CONFIG_FILE);
 
 function getHash($email, $salt=0)
 {
