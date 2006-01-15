@@ -1,3 +1,25 @@
+<?php
+	require_once('lib.php');
+	ob_start();
+
+	$dblink = connect_db();
+
+	$query = "SELECT semesters.pretty_name from semesters where semesters.code='".$CONFIG_VARS["default_semester"]."'";
+	
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+	if(!$result) {
+		admin_error(mysql_error());
+	}
+	if(mysql_num_rows($result) == 0) {
+		admin_error("Did not find pretty name for semester code \"" . $CONFIG_VARS["default_semester"] . "\" in database");
+	}
+	$row = mysql_fetch_row($result);
+
+	$cur_sem_pretty = $row[0];
+
+	mysql_close($dblink);
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 
@@ -75,47 +97,10 @@
 
 <body>
 
-<!--
-<table class="main">
-<tr><td>		<table class="header">
-			<tr style="height: 115px">
-				<td style="width: 48%;">
-				</td>
-				<td style="text-align: right; vertical-align: bottom;">
-					<table style="width: 80%;">
-						<tr style="text-align: right;">
-
-							<td><img src="aep_image1.jpg" alt="" /></td>
-							<td><img src="aep_image2.jpg" alt="" /></td>
-							<td><img src="aep_image3.jpg" alt="" /></td>
-							<td><img src="aep_image4.jpg" alt="" /></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-
-			<tr>
-				<td>
-				</td>
-				<td class="menulink" style="padding-right: 10px;"><a class="menulink" href="http://www.aep.polymtl.ca">Aller au site de l'AEP</a>
-                    	</td>
-
-			</tr>
-
-			<tr>
-                <td class="slogan" style="text-align: right; vertical-align: bottom; height: 100%;" colspan="2">
-					site web officiel de l'Association des étudiants de Polytechnique
-				</td>
-			</tr>
-		</table>
-        </td></tr>
-</table>
--->
-<!-- Fin en-tête AEP -->
 
 <div style="width: 125px; padding: 0px; margin: 20px auto;"><img src="genhor_sm.png" alt="Générateur d'horaires" /></div>
 
-<div style="width: 200px; margin: 20px auto; text-align: center; color: white; background-color: #555555; clear: left;"><p style="font-size: 9px; margin-bottom: 0px;">Session en cours</p><p style="font-size: 20px; margin: 0px;">Hiver 2006</p></div>
+<div style="width: 200px; margin: 20px auto; text-align: center; color: white; background-color: #555555; clear: left;"><p style="font-size: 9px; margin-bottom: 0px;">Session en cours</p><p style="font-size: 20px; margin: 0px;"><?php echo $cur_sem_pretty; ?></p></div>
 
 <div style="font-size:13px; font-family: sans;text-align: center; border: 0px outset blue; margin: 20px auto; padding: 5px; font-weight: bold;">
 	<div style="font-size: 16px; margin: 1px;"><img src="dentwheel.png" alt="" /> <a href="make_form1.php"> Générer des horaires</a></div>
