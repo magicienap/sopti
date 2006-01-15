@@ -8,13 +8,32 @@ fi
 
 touch lock;
 
-# if you are located outside of the polymtl.ca network but have access to a unix machine inside you can tunnel the connection through ssh (port 6789 is just random)(this is usually an interactive command, you'll have to type your password, look into public keys and ssh agent if you want to automate it)
-# if you want to do this, uncomment the next two lines and comment the one below (starting with smbclient //ecole.polymtl.ca/public)
-#ssh -L 6789:ecole.polymtl.ca:139 user@host.polymtl.ca
-#smbclient //127.0.0.1/public -p 6789 -N -c 'cd horaire; get horsage.csv courses.csv.new; get fermes.csv closed.csv.new'
-# if you don't have access to a unix machine at polymtl.ca but are a student there you can register for an account on the STEP (http://step.polymtl.ca). Alternatively, you can try using the VPN.
+# If you are located outside of the polymtl.ca network but have 
+# access to a unix machine inside you can tunnel the connection 
+# through ssh (port 6789 is just random)(this is usually an 
+# interactive command, you'll have to type your password, look into 
+# public keys and ssh agent if you want to automate it)
+# To do this, supply a first argument in the form of [user@]hostname
 
-smbclient //ecole.polymtl.ca/public -N -c 'cd horaire; get horsage.csv courses.csv.new; get fermes.csv closed.csv.new'
+# If you don't have access to a unix machine at polymtl.ca but are a 
+# student there you can register for an account on the STEP 
+# (http://step.polymtl.ca). Alternatively, you can try using the VPN.
+
+if [ "$1" ]
+then
+	ssh -fN -L 6789:ecole.polymtl.ca:139 -o "ControlPath=sshControl-soptiUpdate" -o "ControlMaster=yes" "$1"
+	ssh -o "ControlPath=sshControl-soptiUpdate" -o "ControlMaster=no" -O check "$1" &> /dev/null
+	if [ "$?" -eq "0" ]
+	then
+		smbclient //localhost/public -p 6789 -N -c 'cd horaire; get horsage.csv courses.csv.new; get fermes.csv closed.csv.new'
+		ssh -o "ControlPath=sshControl-soptiUpdate" -o "ControlMaster=no" -O exit "$1"
+	else
+		rm -f sshControl-soptiUpdate
+		touch courses.csv.new closed.csv.new
+	fi
+else
+	smbclient //ecole.polymtl.ca/public -N -c 'cd horaire; get horsage.csv courses.csv.new; get fermes.csv closed.csv.new'
+fi
 
 if [ ! -s courses.csv.new ];
 then
