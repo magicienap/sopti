@@ -10,6 +10,7 @@ read_config_file($SOPTI_CONFIG_FILE);
 function connect_db()
 {
 	global $CONFIG_VARS;
+	global $dblink;
 
 	$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
                 or admin_error('Could not connect to SQL: ' . mysql_error());
@@ -21,6 +22,7 @@ function connect_db()
 function admin_error($msg)
 {
         ob_end_clean();
+
 ?>
 
 
@@ -148,37 +150,23 @@ function print_schedule($sch, $schedno)
 	
 	global $CONFIG_VARS;
 	global $dblink;
-
+	
 	$php_db_time=0;
 	$prof_string="";
 	$php_function_time=microtime(TRUE);
 	
-	// Define the constants
-	$week_hour_codes = array('0830', '0930', '1030', '1130', '1245', '1345', '1445', '1545', '1645');
-	$week_hour_labels = array('8:30', '9:30', '10:30', '11:30', '12:45', '13:45', '14:45', '15:45', '16:45');
-	$week_nighthours_codes = array('1800', '1900', '2000', '2100');
-	$week_nighthours_labels = array('18:00', '19:00', '20:00', '21:00');
-	$week_day_codes = array('LUN', 'MAR', 'MER', 'JEU', 'VEN');
-	$week_day_labels = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
-	$weekend_hour_codes = array('0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700');
-	$weekend_hour_labels = array('8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00');
-	$weekend_day_codes = array('SAM', 'DIM');
-	$weekend_day_labels = array('Samedi', 'Dimanche');
-	
-	$courses_grp_req_done = array();
-	
 	// Parse the input
 	$requested_groups=array();
-	foreach($sch->course as $course) {
-		
+
+	foreach($sch['course'] as $course) {
 		$entry['symbol'] = (string)$course['symbol'];
 		$entry['th_grp'] = (string)$course['theory_grp'];
 		$entry['lab_grp'] = (string)$course['lab_group'];
 		array_push($requested_groups, $entry);
 	}
-
-	if(!$dblink) {
-		$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
+	
+	if(!mysql_ping($dblink)) {
+		$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"], false)
 			or admin_error('Could not connect to SQL: ' . mysql_error());
 		mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select database');
 	}
@@ -198,7 +186,7 @@ function print_schedule($sch, $schedno)
 		//error($query);
 	
 		$tmp=microtime(TRUE);
-		$result = mysql_query($query) or admin_error('Query failed: ' . mysql_error());
+		$result = mysql_query($query, $dblink) or admin_error('Query failed: ' . mysql_errno($dblink) . " " . mysql_error($dblink));
 		$prof_string .= "group sql query: ".(microtime(TRUE)-$tmp)."<br />\n";
 		// Organize the results
 		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -229,7 +217,6 @@ function print_schedule($sch, $schedno)
 	<tr><td colspan="7" style="background-color: black; height: 1px;"></td></tr>
 	
 <?php
-
 	foreach($requested_groups as $req) {
 		if(count($group_data[(string)$req['symbol']]) == 0) {
 			error("Cours introuvable: " . $req['symbol']);
@@ -317,7 +304,61 @@ function print_schedule($sch, $schedno)
 			$schedule_periods = array_merge($schedule_periods, $period_data[$req['symbol']]['L'][$req['lab_grp']]);
 		}
 	}
+
+	draw_schedule($schedule_periods);
+}
+
+function print_room_schedule($room) {
+	global $CONFIG_VARS;
+        $dblink = connect_db();
 	
+	// Make the query
+
+	$query = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol, periods.room as room, periods.time AS time, periods.week AS week,periods.weekday AS weekday FROM periods INNER JOIN groups ON groups.unique=periods.group INNER JOIN courses_semester ON courses_semester.unique=groups.course_semester INNER JOIN courses ON courses.unique=courses_semester.course INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS['default_semester']."' AND periods.room='".mysql_real_escape_string($room, $dblink)."'";
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+
+	$schedule_periods = array();
+	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		array_push($schedule_periods, $row);
+	}
+
+	mysql_close($dblink);
+
+	draw_schedule($schedule_periods);
+}
+
+function print_teacher_schedule($teacher) {
+	global $CONFIG_VARS;
+        $dblink = connect_db();
+	
+	// Make the query
+
+	$query = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol, periods.room as room, periods.time AS time, periods.week AS week,periods.weekday AS weekday FROM periods INNER JOIN groups ON groups.unique=periods.group INNER JOIN courses_semester ON courses_semester.unique=groups.course_semester INNER JOIN courses ON courses.unique=courses_semester.course INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS['default_semester']."' AND groups.teacher='".mysql_real_escape_string($teacher, $dblink)."'";
+	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+
+	$schedule_periods = array();
+	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+		array_push($schedule_periods, $row);
+	}
+
+	mysql_close($dblink);
+
+	draw_schedule($schedule_periods);
+}
+
+function draw_schedule($schedule_periods) {
+	// Define the constants
+	$week_hour_codes = array('0830', '0930', '1030', '1130', '1245', '1345', '1445', '1545', '1645');
+	$week_hour_labels = array('8:30', '9:30', '10:30', '11:30', '12:45', '13:45', '14:45', '15:45', '16:45');
+	$week_nighthours_codes = array('1800', '1900', '2000', '2100');
+	$week_nighthours_labels = array('18:00', '19:00', '20:00', '21:00');
+	$week_day_codes = array('LUN', 'MAR', 'MER', 'JEU', 'VEN');
+	$week_day_labels = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
+	$weekend_hour_codes = array('0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700');
+	$weekend_hour_labels = array('8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00');
+	$weekend_day_codes = array('SAM', 'DIM');
+	$weekend_day_labels = array('Samedi', 'Dimanche');
+
 	foreach($schedule_periods as $row) {
 		
 		// ASSERT : valid days, valid hours
@@ -330,6 +371,7 @@ function print_schedule($sch, $schedno)
 					$week[$row['weekday']][$row['time']] = array();
 				}
 				array_push($week[$row['weekday']][$row['time']], $row);
+				#echo "pushed";
 			}
 			// If is during evening
 			elseif(array_search($row['time'], $week_nighthours_codes) !== FALSE) {
