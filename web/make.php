@@ -157,7 +157,6 @@ $user_time=microtime(TRUE);
 
 	$show = 10;
 	$xml = simplexml_load_string($_SESSION['xml_groups']);
-
 	$schedule_array=array();
 	foreach($xml->schedule as $sch) {
 		array_push($schedule_array, $sch);
@@ -178,11 +177,24 @@ $user_time=microtime(TRUE);
 	}
 
 	$schedno=0;
+	# $sch : the schedule we will print
+	# 
+
 	for($i=$first-1; $i<$first-1+$show; $i++) {
+		$sch = array();
+		$sch['course'] = array();
 		if($i >= $full_result_count) {
 			break;
 		}
-		print_schedule($schedule_array[$i], $i+1);
+		foreach($schedule_array[$i]->course as $xml_c) {
+			$course_tmp['symbol'] = (string)$xml_c['symbol'];
+			$course_tmp['theory_grp'] = (string)$xml_c['theory_grp'];
+			$course_tmp['lab_group'] = (string)$xml_c['lab_group'];
+			array_push($sch['course'], $course_tmp);
+		}
+		$sch['score'] = (string)$schedule_array[$i]['score'];
+
+		print_schedule($sch, $i+1);
 	}
 
 	if($page_count > 1) {

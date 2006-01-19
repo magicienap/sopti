@@ -106,6 +106,8 @@
 	<div style="font-size: 16px; margin: 1px;"><img src="dentwheel.png" alt="" /> <a href="make_form1.php"> Générer des horaires</a></div>
 	<div style="margin: 1px;"><img src="list.png" alt="" /> <a href="listcourses.php"> Liste des cours offerts</a></div>
 	<div style="margin: 1px;"><img src="redx.png" alt="" /> <a href="email_unsubscribe.php"> Se désinscrire de la notification automatique</a></div>
+	<div style="margin: 1px;"><a href="room_form.php"> Horaire d'un local</a></div>
+	<div style="margin: 1px;"><a href="teacher_form.php"> Horaire d'un chargé de cours</a></div>
 </div>
 
 
