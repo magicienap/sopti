@@ -1,6 +1,9 @@
 sopti-0.18 ()
 * changer les exemples de cours dans make_form1.php
 * automatiser l'affichage des sessions sur index.php
+* horaires de profs
+* horaires de locaux
+* cours optionnels
 
 sopti-0.17 (2005/12/06)
 * changement logos AEP pour logos du générateur
