@@ -47,7 +47,7 @@ function print_open_close_form($courses) {
 		}
 	}
 
-	$offsetOCChecks= 0;
+	$offsetOCChecks= 1+count($courses)*2;
 	foreach($group_info as $sym => $entry1)
 	{
 		
@@ -221,7 +221,13 @@ if(strlen($courses_raw) == 0) {
 	<p>
 
 <?php
-	print(htmlentities($courses_raw));
+	//print(htmlentities($courses_raw));
+	echo "<table>\n";
+	echo "<tr><td>Cours</td><td>Oblig</td><td>Option</td></tr>\n";
+	foreach($courses as $course) {
+		echo "<tr><td>$course</td><td><input name=\"obl_".string2varname($course)."\" type=\"radio\" value=\"1\" checked></td><td><input name=\"obl_".string2varname($course)."\" type=\"radio\" value=\"0\"></td></tr>\n";
+	}
+	echo "</table>\n";
 	print("<input type=\"hidden\" name=\"courses\" value=\"" . $courses_raw . "\">");
 ?>
 	
@@ -232,7 +238,8 @@ if(strlen($courses_raw) == 0) {
 	<p><em>L'une ou l'autre de ces options générera la même liste d'horaires.<br>Seul l'ordre dans lequel ils seront affichés sera affecté.</em>
 	<p><input name="order" type="radio" value="minholes" checked> Minimiser les trous
 	<p><input name="order" type="radio" value="maxmorningsleep"> Maximiser les heures de sommeil le matin
-	<p><input name="order" type="radio" value="maxfreedays"> Maximiser le nombre de jours de congé</div>
+	<p><input name="order" type="radio" value="maxfreedays"> Maximiser le nombre de jours de congé
+	<p><input name="order" type="radio" value="maxcourses"> Maximiser le nombre de cours</div>
 
 
 <h2>Conflits</h2>
@@ -289,7 +296,7 @@ print "</tr>\n";
 	
 	<script type="text/javascript">
 		// this is the index of the first checkbox for the schedule, the first form element has index 0
-		scheduleCheckboxOffset= 5;
+		scheduleCheckboxOffset= <?php echo 6+2*count($courses); ?>;
 		colStatus= new Array(<?php echo count($weekdays) ?>);
 		rowStatus= new Array(<?php echo count($week_hours) + 1 ?>);
 		

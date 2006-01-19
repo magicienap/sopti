@@ -46,6 +46,7 @@ class StudentSchedule
 	void add_st_course(StudentCourse g);
 	course_list_t::const_iterator st_courses_begin() { return p_courses.begin(); }
 	course_list_t::const_iterator st_courses_end() { return p_courses.end(); }
+	int course_count(void) { return p_courses.size(); }
 	
 	private:
 	course_list_t p_courses;

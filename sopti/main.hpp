@@ -39,9 +39,7 @@ void print_schedule_ascii(StudentSchedule &s);
 void print_schedule_html(StudentSchedule &s);
 void print_schedule(StudentSchedule &s);
 void usage();
-// inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoolschedule, vector<GroupConstraint *> *group_constraints, set<Group *> *accepted_groups)
-// inline void test_and_recurse(StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
-void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions);
+void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<string> remaining_opt_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions, bool dontaddasis);
 void make(int argc, char **argv);
 string to_variable_name(string s);
 int poly_period_to_time(int period);

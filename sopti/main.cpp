@@ -290,8 +290,8 @@ void usage()
 		requested by the student
 		- schoolschedule, the list of all courses offered by the school
 		- goup_constraints, the list of group constraints as objects
-		- accepted_groups (out), the list of groups that match the
-		constraints
+		- accepted_groups (out), the groups that match the constraints
+		  are added to this set
 	Return value: the list of groups that match the constraints is
 		returned through the parameter "accepted_groups"
 	Notes: none
@@ -338,23 +338,24 @@ inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoo
 		schedule, this is likely obtained from the function
 		test_groups
 		- solutions, (out) the resulting schedules
-	Return value: none
+	Return value: true if a descendant was found, false otherwise
 	Notes: none
 
 ------------------------------------------------------------------ */
 
-inline void test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
+inline bool test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<string> remaining_opt_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions, bool dontaddasis)
 {
 	vector<Constraint *>::iterator it;
 	for(it=constraints->begin(); it!=constraints->end(); it++) {
 		if(!((**it)(ss))) {
 			//debug("constraint failed");
-			return;
+			return false;
 		}
 	}
 	
 	// If we get here, all the constraints were satisfied, therefore, proceed with the recursion
-	make_recurse(schoolsched, ss, remaining_courses, constraints, accepted_groups, solutions);
+	make_recurse(schoolsched, ss, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, dontaddasis);
+	return true;
 }
 
 /* ------------------------------------------------------------------
@@ -379,22 +380,33 @@ inline void test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, ve
 
 ------------------------------------------------------------------ */
 
-void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions)
+void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<string> remaining_opt_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions, bool dontaddasis)
 {
 	SchoolCourse *course_to_add;
+	bool course_opt = false;
 
-	if(remaining_courses.size() == 0) {
-		solutions.push_back(ss);
+	if(remaining_courses.size() == 0 && remaining_opt_courses.size() == 0) {
+		if(!dontaddasis) {
+			solutions.push_back(ss);
+		}
 		return;
 	}
 	
-	course_to_add = schoolsched.course(remaining_courses.back());
-	remaining_courses.pop_back();
+	if(remaining_courses.size()) {
+		course_to_add = schoolsched.course(remaining_courses.back());
+		remaining_courses.pop_back();
+	}
+	else {
+		course_to_add = schoolsched.course(remaining_opt_courses.back());
+		remaining_opt_courses.pop_back();
+		course_opt = true;
+	}
 
 	StudentCourse newcourse;
 	newcourse.course = course_to_add;
 	
 	SchoolCourse::group_list_t::const_iterator it,it2;
+	bool found_descendant = false;
 	
 	if(course_to_add->type() == COURSE_TYPE_THEORYONLY){
 		// This course has only theorical sessions
@@ -408,7 +420,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 				newcourse.theory_group = (*it);
 				newcourse.lab_group = 0;
 				tmps.add_st_course(newcourse);
-				test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
+				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
 			}
 		}
 	}
@@ -423,7 +435,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 				newcourse.theory_group = 0;
 				newcourse.lab_group = (*it);
 				tmps.add_st_course(newcourse);
-				test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
+				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
 			}
 		}
 	}
@@ -447,7 +459,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 						StudentSchedule tmps(ss);
 						newcourse.lab_group = (*it2);
 						tmps.add_st_course(newcourse);
-						test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
+						found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
 					}
 				}
 			}
@@ -471,9 +483,13 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 				
 				newcourse.lab_group = course_to_add->group((*it)->name(), true);
 				tmps.add_st_course(newcourse);
-				test_and_recurse(schoolsched, tmps, remaining_courses, constraints, accepted_groups, solutions);
+				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
 			}
 		}
+	}
+
+	if(course_opt) {
+		test_and_recurse(schoolsched, ss, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, 0);
 	}
 }
 
@@ -494,6 +510,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 void make(int argc, char **argv)
 {
 	vector<string> requested_courses;
+	vector<string> optional_courses;
 	vector<Constraint *> constraints;
 	vector<GroupConstraint *> group_constraints;
 	set<Group *> accepted_groups;
@@ -517,6 +534,7 @@ void make(int argc, char **argv)
 		int option_index = 0;
 		static struct option long_options[] = {
 			{"course", 1, 0, 'c'},
+			{"copt", 1, 0, 'o'},
 			{"count", 1, 0, 'n'},
 			{"objective", 1, 0, 'J'},
 			{"objective-args", 1, 0, 'j'},
@@ -547,6 +565,10 @@ void make(int argc, char **argv)
 				*/
 				requested_courses.push_back(optarg);
 				break;
+
+			case 'o':
+				/* TODO: output error in xml if course not exists */
+				optional_courses.push_back(optarg);
 				
 			case 'n':
 				max_scheds=atoi(optarg);
@@ -561,6 +583,9 @@ void make(int argc, char **argv)
 				}
 				else if(!strcmp(optarg, "maxfreedays")) {
 					objective = new MaxFreeDays();
+				}
+				else if(!strcmp(optarg, "maxcourses")) {
+					objective = new MaxCourses();
 				}
 				else {
 					error("invalid objective");
@@ -616,13 +641,17 @@ void make(int argc, char **argv)
 	// Get a school schedule with the courses we want
 	DBLoader dbl;
 	SchoolSchedule *schoolsched;
+	vector<string> tmp_course_list;
+	tmp_course_list = requested_courses;
+	tmp_course_list.insert(tmp_course_list.end(), optional_courses.begin(), optional_courses.end());
 	db_begin=uepoch();
-	schoolsched = dbl.get_ss_with_courses(&requested_courses);
+	schoolsched = dbl.get_ss_with_courses(&tmp_course_list);
 	db_end=uepoch();
 	
 	// Find acceptable groups
 	compute_begin=uepoch();
 	test_groups(&requested_courses, schoolsched, &group_constraints, &accepted_groups);
+	test_groups(&optional_courses, schoolsched, &group_constraints, &accepted_groups);
 	
 	// Make an empty schedule to begin the recursion with
 	StudentSchedule sched;
@@ -633,7 +662,7 @@ void make(int argc, char **argv)
 	constraints.push_back(&noc);
 	
 	// Find the schedules that respect the objectives and constraints among all possible schedules
-	make_recurse(*schoolsched, sched, requested_courses, &constraints, &accepted_groups, solutions);
+	make_recurse(*schoolsched, sched, requested_courses, optional_courses, &constraints, &accepted_groups, solutions, false);
 	
 	multimap<float, StudentSchedule *> scores;
 	vector<StudentSchedule>::iterator it;
