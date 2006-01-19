@@ -7,6 +7,9 @@ $CONFIG_VARS=array();
 
 read_config_file($SOPTI_CONFIG_FILE);
 
+$group_data = array();
+$period_data = array();
+
 function connect_db()
 {
 	global $CONFIG_VARS;
@@ -172,13 +175,19 @@ function print_schedule($sch, $schedno)
 	}
 
 	global $group_data;
-	if(count($group_data) == 0) {
+	$groups_to_add = array();
+	foreach($requested_groups as $req) {
+		if(!array_key_exists($req['symbol'], $group_data)) {
+			array_push($groups_to_add, $req);
+		}
+	}
+	if(count($groups_to_add) > 0) {
 		// Make the groups query
 		$query_begin = "SELECT courses.symbol AS symbol,courses.title AS title,courses_semester.course_type AS course_type,groups.name AS grp,groups.theory_or_lab AS tol,groups.teacher,groups.places_room,groups.places_group,groups.places_taken,groups.closed AS closed FROM groups LEFT OUTER JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT OUTER JOIN courses ON courses.unique=courses_semester.course LEFT OUTER JOIN semesters ON semesters.unique=courses_semester.semester WHERE";
 		$query_end   = ")";
 		$query = $query_begin;
 		$query .= " semesters.code='" . $CONFIG_VARS['default_semester'] . "' AND (0";
-		foreach($requested_groups as $req) {
+		foreach($groups_to_add as $req) {
 			$query .= " OR courses.symbol='".$req['symbol']."'";
 		}
 		$query .= $query_end;
@@ -272,7 +281,13 @@ function print_schedule($sch, $schedno)
 	}
 
 	global $period_data;
-	if(count($period_data) == 0) {
+	$periods_to_add = array();
+	foreach($requested_groups as $req) {
+		if(!array_key_exists($req['symbol'], $period_data)) {
+			array_push($periods_to_add, $req);
+		}
+	}
+	if(count($periods_to_add) > 0) {
 		// Make the periods query
 
 		$query_begin = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol,periods.time AS time,periods.room AS room,periods.week AS week,periods.weekday AS weekday FROM periods LEFT JOIN groups ON groups.unique=periods.group LEFT JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS['default_semester']."' AND (0 ";
@@ -296,7 +311,7 @@ function print_schedule($sch, $schedno)
 	}
 	
 	$schedule_periods=array();
-        foreach($requested_groups as $req) {
+        foreach($periods_to_add as $req) {
 		if(strlen($req['th_grp'])) {
 			$schedule_periods = array_merge($schedule_periods, $period_data[$req['symbol']]['C'][$req['th_grp']]);
 		}
@@ -634,4 +649,25 @@ function ipcompare ($ip1, $ip2, $mask)
 		return false;
 	}
 }
+
+function string2varname ($str)
+{
+	for($c = 0; $c < strlen($str); $c++) {
+		if(ord($str{$c}) >= ord("A") and ord($str{$c}) <= ord("Z")) {
+			$str{$c} = chr(ord($str{$c}) + ord("a") - ord("A"));
+		}
+		else if(ord($str{$c}) >= ord("0") and ord($str{$c}) <= ord("9")) {
+			if($c == 0) {
+				$str{$c} = "_";
+			}
+		}
+		else {
+			$str{$c} = "_";
+		}
+	}
+
+	return $str;
+}
+
 ?>
+

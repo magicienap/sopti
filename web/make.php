@@ -87,7 +87,7 @@ $user_time=microtime(TRUE);
 		trim($explicitopen_arg);
 
 		$cmd_initial=$SOPTI_EXEC . " --configfile '$SOPTI_CONFIG_FILE' --html make";
-		$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays" );
+		$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays", "maxcourses" );
 
 		// Parse
 		$courses_raw = strtoupper($_POST['courses']);
@@ -106,7 +106,12 @@ $user_time=microtime(TRUE);
 			// Build the command string
 			$cmd=$cmd_initial;
 			foreach ($courses as $key => $val) {
-				$cmd .= " -c ".escapeshellarg($val);
+				if($_POST["obl_".string2varname($val)] == '0') {
+					$cmd .= " --copt ".escapeshellarg($val);
+				}
+				else {
+					$cmd .= " -c ".escapeshellarg($val);
+				}
 			}
 		
 			$result = array_search($_POST['order'], $allowed_objectives);
@@ -150,6 +155,7 @@ $user_time=microtime(TRUE);
 			}
 			pclose($handle);
 			$_SESSION['xml_groups']=$xml_groups;
+			//error($xml_groups);
 		}
 	}
 

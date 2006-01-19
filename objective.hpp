@@ -225,6 +225,14 @@ class MaxFreeDays : public Objective
 	}
 };
 
+class MaxCourses : public Objective
+{
+	public:
+	float operator()(StudentSchedule *s)
+	{
+		return 1./static_cast<float>(s->course_count());
+	}
+};
 
 /* ------------------------------------------------------------------
 

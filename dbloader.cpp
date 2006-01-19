@@ -258,6 +258,9 @@ SchoolSchedule * DBLoader::get_ss_with_courses(vector<string> *c)
 		}
 		
 		row = mysql_fetch_row(res);
+		if(row == 0) {
+			error("unknown course: %s", it->c_str());
+		}
 		// assert only one row
 		// Make the course object
 		SchoolCourse *newcourse = new SchoolCourse(row[0]);
