@@ -310,8 +310,8 @@ function print_schedule($sch, $schedno)
 		}
 	}
 	
-	$schedule_periods=array();
-        foreach($periods_to_add as $req) {
+	$schedule_periods=array(); # periods to add in schedule
+        foreach($requested_groups as $req) {
 		if(strlen($req['th_grp'])) {
 			$schedule_periods = array_merge($schedule_periods, $period_data[$req['symbol']]['C'][$req['th_grp']]);
 		}
