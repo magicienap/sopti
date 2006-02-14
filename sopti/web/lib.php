@@ -275,11 +275,6 @@ function print_schedule($sch, $schedno)
 	echo '</table>';
  	$prof_string .= "print group summary: ".(microtime(TRUE)-$tmp)."<br />\n";
 
-	$query_periods_cond2="";
-	foreach($requested_groups as $req) {
-		$query_periods_cond2 .= "OR courses.symbol='".$req['symbol']."' ";
-	}
-
 	global $period_data;
 	$periods_to_add = array();
 	foreach($requested_groups as $req) {
@@ -287,14 +282,17 @@ function print_schedule($sch, $schedno)
 			array_push($periods_to_add, $req);
 		}
 	}
+
 	if(count($periods_to_add) > 0) {
 		// Make the periods query
 
 		$query_begin = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol,periods.time AS time,periods.room AS room,periods.week AS week,periods.weekday AS weekday FROM periods LEFT JOIN groups ON groups.unique=periods.group LEFT JOIN courses_semester ON courses_semester.unique=groups.course_semester LEFT JOIN courses ON courses.unique=courses_semester.course LEFT JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS['default_semester']."' AND (0 ";
 		$query_end = ")";
-		$query = $query_begin.$query_periods_cond2.$query_end;
-	
- 		//error($query);
+		$query = $query_begin;
+		foreach($periods_to_add as $req) {
+			$query .= "OR courses.symbol='".$req['symbol']."' ";
+		}
+		$query .= $query_end;
 	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
@@ -309,7 +307,7 @@ function print_schedule($sch, $schedno)
 			array_push($period_data[$row['symbol']][$row['tol']][$row['grp']], $row);
 		}
 	}
-	
+
 	$schedule_periods=array(); # periods to add in schedule
         foreach($requested_groups as $req) {
 		if(strlen($req['th_grp'])) {
