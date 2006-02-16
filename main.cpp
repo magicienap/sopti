@@ -386,7 +386,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 	bool course_opt = false;
 
 	if(remaining_courses.size() == 0 && remaining_opt_courses.size() == 0) {
-		if(!dontaddasis) {
+		if(!dontaddasis && ss.course_count()) {
 			solutions.push_back(ss);
 		}
 		return;
