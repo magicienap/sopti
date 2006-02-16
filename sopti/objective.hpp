@@ -234,6 +234,70 @@ class MaxCourses : public Objective
 	}
 };
 
+class MinConflicts : public Objective
+{
+	public:
+	float operator()(StudentSchedule *s)
+	{
+		std::map<int,int> used_periods;
+		
+		StudentSchedule::course_list_t::const_iterator it;
+		Group::period_list_t::const_iterator it2;
+		std::map<int,int>::iterator it3;
+		int c_hours=0;
+		StudentSchedule &sched = *s;
+		
+		// Iterate across all courses in the schedule
+		for(it=sched.st_courses_begin(); it!=sched.st_courses_end(); it++) {
+			if((*it)->theory_group) {
+				// Iterate across all periods of this course
+				for(it2=(*it)->theory_group->periods_begin(); it2!=(*it)->theory_group->periods_end(); it2++) {
+					int week_mask;
+					if((*it2)->week() == 0)
+						week_mask = ~0;
+					else
+						week_mask = (1 << ((*it2)->week()-1));
+						
+					it3 = used_periods.find((*it2)->period_no());
+					if(it3 != used_periods.end()) {
+						if(it3->second & week_mask) {
+							++c_hours;
+						}
+						it3->second |= week_mask;
+					}
+					else {
+						used_periods[(*it2)->period_no()] = week_mask;
+					}
+				}
+			}
+			if((*it)->lab_group) {
+				for(it2=(*it)->lab_group->periods_begin(); it2!=(*it)->lab_group->periods_end(); it2++) {
+					int week_mask;
+					if((*it2)->week() == 0)
+						week_mask = ~0;
+					else
+						week_mask = (1 << ((*it2)->week()-1));
+						
+					it3 = used_periods.find((*it2)->period_no());
+					if(it3 != used_periods.end()) {
+						if(it3->second & week_mask) {
+							++c_hours;
+						}
+						it3->second |= week_mask;
+					}
+					else {
+						used_periods[(*it2)->period_no()] = week_mask;
+					}
+				}
+			}
+		}
+		return (float)c_hours;
+	}
+	
+	private:
+	int p_max_conflict_periods;
+};
+
 /* ------------------------------------------------------------------
 
 	Class: NullObjective

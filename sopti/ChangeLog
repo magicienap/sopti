@@ -4,6 +4,8 @@ sopti-0.18 ()
 * horaires de profs
 * horaires de locaux
 * cours optionnels
+* objectif maximiser le nombre de cours
+* objectif minimiser le nombre de conflits
 
 sopti-0.17 (2005/12/06)
 * changement logos AEP pour logos du générateur

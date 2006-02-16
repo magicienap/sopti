@@ -587,6 +587,9 @@ void make(int argc, char **argv)
 				else if(!strcmp(optarg, "maxcourses")) {
 					objective = new MaxCourses();
 				}
+				else if(!strcmp(optarg, "minconflicts")) {
+					objective = new MinConflicts();
+				}
 				else {
 					error("invalid objective");
 				}
