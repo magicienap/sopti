@@ -239,7 +239,8 @@ if(strlen($courses_raw) == 0) {
 	<p><input name="order" type="radio" value="minholes" checked> Minimiser les trous
 	<p><input name="order" type="radio" value="maxmorningsleep"> Maximiser les heures de sommeil le matin
 	<p><input name="order" type="radio" value="maxfreedays"> Maximiser le nombre de jours de congé
-	<p><input name="order" type="radio" value="maxcourses"> Maximiser le nombre de cours</div>
+	<p><input name="order" type="radio" value="maxcourses"> Maximiser le nombre de cours
+	<p><input name="order" type="radio" value="minconflicts"> Minimiser le nombre de périodes de conflits</div>
 
 
 <h2>Conflits</h2>
