@@ -184,3 +184,30 @@ td.email a.email {
 a.email img {
 	border: 0;
 }
+
+/* Course table */
+
+/* Group open/close form */
+
+table.coursetab {
+        position: relative;
+        left: -2px;
+        border: 0;
+        border-collapse: collapse;
+        margin: 2em 0 0 0;
+	padding: 2px;
+}
+
+table.coursetab td {
+        font-size: 12px;
+        background-color: #eeeeee;
+        border: 2px solid #ffffff;
+	padding: 0.25ex 2em;
+	text-align: center;
+}
+
+table.coursetab th {
+	border: 2px solid #ffffff;
+	background-color: #cccccc;
+	padding: 2px;
+}
