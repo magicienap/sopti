@@ -20,9 +20,13 @@ ob_start();
 $room = $_GET['room'];
 
 echo "<h1>Horaire de la salle ".htmlspecialchars($room, ENT_QUOTES)."</h1>\n";
+echo "<p>".date("Y/m/d H:i:s")."</p>\n";
 
 print_room_schedule($room);
 
 ?>
+
+<p style="clear: left;">Avertissement: Cet horaire est construit à partir de l'horaire général de l'École Polytechnique. Il ne contient que les cours officiellement données à l'École Polytechnique. D'autres activités peuvent occuper un local. Pour connaître l'horaire complet d'un local ou le réserver, communiquer avec le service responsable du local en question.</p>
+
 </body>
 </html>

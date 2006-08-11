@@ -19,7 +19,7 @@ ob_start();
 
 <h1>Horaire de salle</h1>
 
-<pre>
+<p>Sélectionner la salle dans la liste ci-dessous.</p>
 
 <?php
         $dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
@@ -41,8 +41,7 @@ base');
 	}
 ?>
 	</select>
-	<input type="submit">
+	<input type="submit" value="Voir >">
 </form>
-</pre>
 </body>
 </html>
