@@ -159,8 +159,8 @@
 <p><b>Benjamin Poirier</b>, étudiant 1er cycle, génie informatique,</p>
 <div class="indent1">Système d'avertissement par courriel de places disponibles, documentation du code et autres</div>
 
-<p><b>Jean-François Lévesque</b>, VP services de l'AEP</p>
-<div class="indent1">A fourni des ressources matérielles et administratives essentielles au fonctionnement du système</div>
+<p><b>Jean-François Lévesque</b>, VP services de l'AEP 2004-2006</p>
+<div class="indent1">A fourni des ressources matérielles et administratives essentielles au démarrage du projet</div>
 
 
 <h2>Liens</h2>
