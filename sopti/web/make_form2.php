@@ -47,7 +47,7 @@ function print_open_close_form($courses) {
 		}
 	}
 
-	$offsetOCChecks= 1+count($courses)*2;
+	$offsetOCChecks= 2+count($courses)*2;
 	foreach($group_info as $sym => $entry1)
 	{
 		
@@ -198,9 +198,18 @@ if(strlen($courses_raw) == 0) {
 	<title>Générer des horaires - Étape 2</title>
 	<link rel="stylesheet" type="text/css" href="sopti.css">
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<script type="text/javascript" src="overlib_mini.js"><!-- overLIB (c) Erik Bosrup --></script>
+	<script TYPE="text/javascript">
+	<!--
+	  overlib_pagedefaults(VAUTO);
+	//-->
+	</script>
 </head>
 
 <body>
+
+<!-- For overLib -->
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 
 <div id="header">
 
@@ -218,12 +227,13 @@ if(strlen($courses_raw) == 0) {
 
 <h2>Cours demandés</h2>
 <div class="option_block">
-	<p>
+	<p><em>Choisir les cours qui doivent obligatoirement être dans l'horaire et ceux qui sont facultatifs. Si vous voulez simplement un horaire qui comprend tous les cours ci-dessous, laissez-les marqués comme obligatoires.</em></p>
+	<p><em>À quoi servent les cours facultatifs? <a href="javascript:void(0);" onmouseover="return overlib('Si vous avez le choix entre plusieurs cours dans votre cheminement et que vous voulez trouver un horaire optimal qui contient un sous-ensemble de ces cours, inscrivez-les tous dans le formulaire de la page précédente, et marquez-les facultatifs ici. Marquez comme obligatoires les cours que vous voulez absolument. Le générateur vous montrera des horaires avec toutes les combinaisons possibles des cours marqués facultatifs. Ils seront bien sûr triés selon l\'optimisation choisie ci-dessous (ex: minimiser les trous). Cette option est pratique notamment lorsque vous êtes incapable de trouver une combinaison de cours qui n\'entrent pas en conflit ou si l\'optimisation de votre horaire est plus importante que les cours choisis.', WIDTH, 400);" onmouseout="return nd();"><img style="border: none;" src="qmark.png"></a></em></p>
+	<!-- <p><em>Si vous avez le choix entre plusieurs cours dans votre cheminement et que vous voulez trouver un horaire optimal qui contient un sous-ensemble de ces cours, inscrivez-les tous dans le formulaire de la page précédente, et marquez-les facultatifs ici. Marquez comme obligatoires les cours que vous voulez absolument. Le générateur vous montrera des horaires avec toutes les combinaisons possibles de cours optionnels. Ils seront bien sûr triés selon l'optimisation choisie ci-dessous (ex: minimiser les trous).</em></p> -->
 
 <?php
-	//print(htmlentities($courses_raw));
-	echo "<table>\n";
-	echo "<tr><td>Cours</td><td>Oblig</td><td>Option</td></tr>\n";
+	echo "<table class=\"coursetab\">\n";
+	echo "<tr><th class=\"title\">Cours</td><th class=\"title\">Obligatoire</td><th class=\"title\">Facultatif</td></tr>\n";
 	foreach($courses as $course) {
 		echo "<tr><td>$course</td><td><input name=\"obl_".string2varname($course)."\" type=\"radio\" value=\"1\" checked></td><td><input name=\"obl_".string2varname($course)."\" type=\"radio\" value=\"0\"></td></tr>\n";
 	}
@@ -235,18 +245,19 @@ if(strlen($courses_raw) == 0) {
 
 <h2>Type d'optimisation</h2>
 <div class="option_block">
-	<p><em>L'une ou l'autre de ces options générera la même liste d'horaires.<br>Seul l'ordre dans lequel ils seront affichés sera affecté.</em>
-	<p><input name="order" type="radio" value="minholes" checked> Minimiser les trous
-	<p><input name="order" type="radio" value="maxmorningsleep"> Maximiser les heures de sommeil le matin
-	<p><input name="order" type="radio" value="maxfreedays"> Maximiser le nombre de jours de congé
-	<p><input name="order" type="radio" value="maxcourses"> Maximiser le nombre de cours
-	<p><input name="order" type="radio" value="minconflicts"> Minimiser le nombre de périodes de conflits</div>
+	<p><em>L'une ou l'autre de ces options générera la même liste d'horaires.<br>Seul l'ordre dans lequel ils seront affichés sera affecté.</em></p>
+	<p><input name="order" type="radio" value="minholes" checked> Minimiser les trous <a href="javascript:void(0);" onmouseover="return overlib('Affiche en premier les horaires qui minimisent le nombre d\'<b>heures d\'attente</b> entre les cours durant une journée.');" onmouseout="return nd();"><img style="border: none;" src="qmark.png"></a></p>
+	<p><input name="order" type="radio" value="maxmorningsleep"> Maximiser les heures de sommeil le matin <a href="javascript:void(0);" onmouseover="return overlib('Affiche en premier les horaires qui permettent de <b>commencer le plus tard possible</b> le plus de jours possible.');" onmouseout="return nd();"><img style="border: none;" src="qmark.png"></a></p>
+	<p><input name="order" type="radio" value="maxfreedays"> Maximiser le nombre de jours de congé <a href="javascript:void(0);" onmouseover="return overlib('Affiche en premier les horaires qui <b>le plus de jours sans cours</b>.');" onmouseout="return nd();"><img style="border: none;" src="qmark.png"></a></p>
+	<p><input name="order" type="radio" value="maxcourses"> Maximiser le nombre de cours <a href="javascript:void(0);" onmouseover="return overlib('Affiche en premier les horaires qui contiennent <b>le plus de cours</b>.<br /><br />Utile seulement si au moins un cours a été marqué optionnel ci-dessus. Autrement, tous les horaires auront le même nombre de cours.');" onmouseout="return nd();"><img style="border: none;" src="qmark.png"></a></p>
+	<p><input name="order" type="radio" value="minconflicts"> Minimiser le nombre de périodes de conflits <a href="javascript:void(0);" onmouseover="return overlib('Affiche en premier les horaires qui contiennent le moins de conflits.<br /><br />Utile seulement si le <em>nombre maximum de périodes avec conflit</em> ci-dessous est supérieur à zéro. Autrement, tous les horaires générés sont libres de conflits.');" onmouseout="return nd();"><img style="border: none;" src="qmark.png"></a></p>
+</div>
 
 
 <h2>Conflits</h2>
 
 <div class="option_block">
-	<p>Nombre maximum de périodes avec conflit: <input type="text" name="maxconflicts" value="0" size="2">
+	<p>Nombre maximum de périodes avec conflit: <input type="text" name="maxconflicts" value="0" size="2"> <a href="javascript:void(0);" onmouseover="return overlib('Lorsque ce champ vaut 0, seuls des horaires sans conflits sont générés.<br /><br />Lorsque ce champ est supérieur à zéro, les horaires générés peuvent comporter des conflits. Seuls les horaires dont le nombre de périodes comportant des conflits ne dépasse pas la valeur entrée dans ce champ seront affichés.<br /><br />Utilisez ce champ lorsque vous devez absolument prendre certains cours, mais que le générateur ne trouve pas d\'horaire sans conflits. Combinez-le avec <em>Minimiser le nombre de périodes de conflits</em> ci-dessus afin d\'afficher les horaires comportant le moins de conflits d\'abord.');" onmouseout="return nd();"><img style="border: none;" src="qmark.png"></a></p>
 </div>
 
 
