@@ -19,7 +19,7 @@ ob_start();
 
 <h1>Horaire d'un chargé de cours</h1>
 
-<pre>
+<p>Sélectionner le chargé de cours dans la liste ci-dessous.</p>
 
 <?php
         $dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
@@ -43,6 +43,5 @@ base');
 	</select>
 	<input type="submit" value="Voir >">
 </form>
-</pre>
 </body>
 </html>
