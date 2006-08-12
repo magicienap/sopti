@@ -127,6 +127,9 @@ $user_time=microtime(TRUE);
 				$cmd .= " -g '' -G explicitopen";
 			}
 		
+			if( !(is_numeric($_POST['maxconflicts']) and $_POST['maxconflicts'] >= 0)) {
+				error("Le nombre maximum d'heures avec conflit doit être un nombre supérieur ou égal à zéro.");
+			}
 			if($_POST['maxconflicts'] != "") {
 				$cmd .= " --max-conflicts ".escapeshellarg($_POST['maxconflicts']);
 			}
