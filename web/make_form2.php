@@ -47,7 +47,7 @@ function print_open_close_form($courses) {
 		}
 	}
 
-	$offsetOCChecks= 2+count($courses)*2;
+	$offsetOCChecks= 0;
 	foreach($group_info as $sym => $entry1)
 	{
 		
@@ -147,6 +147,7 @@ function print_open_close_form($courses) {
 	
 	echo "<input type=\"hidden\" name=\"openclose_vars\" value=\"" . $openclosevars . "\">";
 	
+	// here's the count for the ocCheckboxOffset: 2 * courses + 1 hidden + 5 optimizations + 1 conflict + 5 * 10 schedule blocks
 	echo '
 		<script type="text/javascript">
 		
@@ -158,7 +159,7 @@ function print_open_close_form($courses) {
 			}
 			
 			// this is the index of the first checkbox for the open close form, the first form element has index 0
-			ocCheckboxOffset= 55;
+			ocCheckboxOffset= ' . 2 * count($courses) + 57 . ';
 			
 			for (i= 0; i < num; i++)
 			{
@@ -308,7 +309,8 @@ print "</tr>\n";
 	
 	<script type="text/javascript">
 		// this is the index of the first checkbox for the schedule, the first form element has index 0
-		scheduleCheckboxOffset= <?php echo 6+2*count($courses); ?>;
+		// here's the count: 2 * courses + 1 hidden + 5 optimizations + 1 conflict
+		scheduleCheckboxOffset= <?php echo 2 * count($courses) + 7; ?>;
 		colStatus= new Array(<?php echo count($weekdays) ?>);
 		rowStatus= new Array(<?php echo count($week_hours) + 1 ?>);
 		
