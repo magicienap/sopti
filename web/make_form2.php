@@ -159,7 +159,7 @@ function print_open_close_form($courses) {
 			}
 			
 			// this is the index of the first checkbox for the open close form, the first form element has index 0
-			ocCheckboxOffset= ' . 2 * count($courses) + 57 . ';
+			ocCheckboxOffset= ' . (2 * count($courses) + 57) . ';
 			
 			for (i= 0; i < num; i++)
 			{
