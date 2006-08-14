@@ -6,6 +6,8 @@ sopti-0.18 ()
 * cours optionnels
 * objectif maximiser le nombre de cours
 * objectif minimiser le nombre de conflits
+* ajouter aide dans l'interface web
+* ajouter option nombre minimum de cours
 
 sopti-0.17 (2005/12/06)
 * changement logos AEP pour logos du générateur

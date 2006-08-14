@@ -147,7 +147,7 @@ function print_open_close_form($courses) {
 	
 	echo "<input type=\"hidden\" name=\"openclose_vars\" value=\"" . $openclosevars . "\">";
 	
-	// here's the count for the ocCheckboxOffset: 2 * courses + 1 hidden + 5 optimizations + 1 conflict + 5 * 10 schedule blocks
+	// here's the count for the ocCheckboxOffset: 2 * courses + 1 hidden + 5 optimizations + 1 conflict + 1 minimum courses + 5 * 10 schedule blocks
 	echo '
 		<script type="text/javascript">
 		
@@ -159,7 +159,7 @@ function print_open_close_form($courses) {
 			}
 			
 			// this is the index of the first checkbox for the open close form, the first form element has index 0
-			ocCheckboxOffset= ' . (2 * count($courses) + 57) . ';
+			ocCheckboxOffset= ' . (2 * count($courses) + 58) . ';
 			
 			for (i= 0; i < num; i++)
 			{
@@ -230,7 +230,6 @@ if(strlen($courses_raw) == 0) {
 <div class="option_block">
 	<p><em>Choisir les cours qui doivent obligatoirement être dans l'horaire et ceux qui sont facultatifs. Si vous voulez simplement un horaire qui comprend tous les cours ci-dessous, laissez-les marqués comme obligatoires.</em></p>
 	<p><em>À quoi servent les cours facultatifs? <a href="javascript:void(0);" onmouseover="return overlib('Si vous avez le choix entre plusieurs cours dans votre cheminement et que vous voulez trouver un horaire optimal qui contient un sous-ensemble de ces cours, inscrivez-les tous dans le formulaire de la page précédente, et marquez-les facultatifs ici. Marquez comme obligatoires les cours que vous voulez absolument. Le générateur vous montrera des horaires avec toutes les combinaisons possibles des cours marqués facultatifs. Ils seront bien sûr triés selon l\'optimisation choisie ci-dessous (ex: minimiser les trous). Cette option est pratique notamment lorsque vous êtes incapable de trouver une combinaison de cours qui n\'entrent pas en conflit ou si l\'optimisation de votre horaire est plus importante que les cours choisis.', WIDTH, 400);" onmouseout="return nd();"><img style="border: none;" src="qmark.png" alt="Point d'interrogation pour aide contextuelle"></a></em></p>
-	<!-- <p><em>Si vous avez le choix entre plusieurs cours dans votre cheminement et que vous voulez trouver un horaire optimal qui contient un sous-ensemble de ces cours, inscrivez-les tous dans le formulaire de la page précédente, et marquez-les facultatifs ici. Marquez comme obligatoires les cours que vous voulez absolument. Le générateur vous montrera des horaires avec toutes les combinaisons possibles de cours optionnels. Ils seront bien sûr triés selon l'optimisation choisie ci-dessous (ex: minimiser les trous).</em></p> -->
 
 <?php
 	echo "<table class=\"coursetab\">\n";
@@ -241,6 +240,7 @@ if(strlen($courses_raw) == 0) {
 	echo "</table>\n";
 	print("<input type=\"hidden\" name=\"courses\" value=\"" . $courses_raw . "\">");
 ?>
+	<p>Nombre minimum de cours dans l'horaire: <input type="text" name="mincoursecount" value="1" size="2"> <a href="javascript:void(0);" onmouseover="return overlib('Indiquer ici le nombre minimum de cours que l\'horaire doit comporter. Cette option est nécessaire seulement lorsque vous avez beaucoup de cours marqués optionnels ci-dessus.');" onmouseout="return nd();"><img style="border: none;" src="qmark.png" alt="Point d'interrogation pour aide contextuelle"></a></p>
 	
 </div>
 
@@ -309,8 +309,8 @@ print "</tr>\n";
 	
 	<script type="text/javascript">
 		// this is the index of the first checkbox for the schedule, the first form element has index 0
-		// here's the count: 2 * courses + 1 hidden + 5 optimizations + 1 conflict
-		scheduleCheckboxOffset= <?php echo 2 * count($courses) + 7; ?>;
+		// here's the count: 2 * courses + 1 hidden + 5 optimizations + 1 conflict + 1 minimum courses
+		scheduleCheckboxOffset= <?php echo 2 * count($courses) + 8; ?>;
 		colStatus= new Array(<?php echo count($weekdays) ?>);
 		rowStatus= new Array(<?php echo count($week_hours) + 1 ?>);
 		
