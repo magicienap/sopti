@@ -343,7 +343,7 @@ inline void test_groups(vector<string> *requested_courses, SchoolSchedule *schoo
 
 ------------------------------------------------------------------ */
 
-inline bool test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<string> remaining_opt_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions, bool dontaddasis)
+inline bool test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<string> remaining_opt_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions, vector<Constraint *> *final_constraints)
 {
 	vector<Constraint *>::iterator it;
 	for(it=constraints->begin(); it!=constraints->end(); it++) {
@@ -354,7 +354,7 @@ inline bool test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, ve
 	}
 	
 	// If we get here, all the constraints were satisfied, therefore, proceed with the recursion
-	make_recurse(schoolsched, ss, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, dontaddasis);
+	make_recurse(schoolsched, ss, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, final_constraints);
 	return true;
 }
 
@@ -380,15 +380,25 @@ inline bool test_and_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, ve
 
 ------------------------------------------------------------------ */
 
-void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<string> remaining_opt_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions, bool dontaddasis)
+void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string> remaining_courses, vector<string> remaining_opt_courses, vector<Constraint *> *constraints, set<Group *> *accepted_groups, vector<StudentSchedule> &solutions, vector<Constraint *> *final_constraints)
 {
 	SchoolCourse *course_to_add;
 	bool course_opt = false;
 
 	if(remaining_courses.size() == 0 && remaining_opt_courses.size() == 0) {
-		if(!dontaddasis && ss.course_count()) {
+		// Test for final constraints
+		vector<Constraint *>::iterator it;
+		for(it = final_constraints->begin(); it!=final_constraints->end(); it++) {
+			if(!(**it)(ss)) {
+				// return, don't add the schedule
+				return;
+			}
+		}
+
+		if(ss.course_count()) {
 			solutions.push_back(ss);
 		}
+		// done with recursion, return
 		return;
 	}
 	
@@ -420,7 +430,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 				newcourse.theory_group = (*it);
 				newcourse.lab_group = 0;
 				tmps.add_st_course(newcourse);
-				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
+				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, final_constraints);
 			}
 		}
 	}
@@ -435,7 +445,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 				newcourse.theory_group = 0;
 				newcourse.lab_group = (*it);
 				tmps.add_st_course(newcourse);
-				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
+				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, final_constraints);
 			}
 		}
 	}
@@ -459,7 +469,7 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 						StudentSchedule tmps(ss);
 						newcourse.lab_group = (*it2);
 						tmps.add_st_course(newcourse);
-						found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
+						found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, final_constraints);
 					}
 				}
 			}
@@ -483,13 +493,13 @@ void make_recurse(SchoolSchedule &schoolsched, StudentSchedule ss, vector<string
 				
 				newcourse.lab_group = course_to_add->group((*it)->name(), true);
 				tmps.add_st_course(newcourse);
-				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, false);
+				found_descendant |= test_and_recurse(schoolsched, tmps, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, final_constraints);
 			}
 		}
 	}
 
 	if(course_opt) {
-		test_and_recurse(schoolsched, ss, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, 0);
+		test_and_recurse(schoolsched, ss, remaining_courses, remaining_opt_courses, constraints, accepted_groups, solutions, final_constraints);
 	}
 }
 
@@ -512,6 +522,7 @@ void make(int argc, char **argv)
 	vector<string> requested_courses;
 	vector<string> optional_courses;
 	vector<Constraint *> constraints;
+	vector<Constraint *> final_constraints; // constraints that are only checked once the schedule is complete
 	vector<GroupConstraint *> group_constraints;
 	set<Group *> accepted_groups;
 	int max_scheds=10;
@@ -599,7 +610,12 @@ void make(int argc, char **argv)
 				break;
 				
 			case 'T':
-				error("unknown constaint (%s)", optarg);
+				if(!strcmp(optarg, "coursecount")) {
+					final_constraints.push_back(new MinimalCourseCount(next_constraint_arg));
+				}
+				else {
+					error("unknown constaint (%s)", optarg);
+				}
 				break;
 				
 			case 't':
@@ -665,7 +681,7 @@ void make(int argc, char **argv)
 	constraints.push_back(&noc);
 	
 	// Find the schedules that respect the objectives and constraints among all possible schedules
-	make_recurse(*schoolsched, sched, requested_courses, optional_courses, &constraints, &accepted_groups, solutions, false);
+	make_recurse(*schoolsched, sched, requested_courses, optional_courses, &constraints, &accepted_groups, solutions, &final_constraints);
 	
 	multimap<float, StudentSchedule *> scores;
 	vector<StudentSchedule>::iterator it;

@@ -133,6 +133,13 @@ $user_time=microtime(TRUE);
 			if($_POST['maxconflicts'] != "") {
 				$cmd .= " --max-conflicts ".escapeshellarg($_POST['maxconflicts']);
 			}
+
+			if(strlen($_POST['mincoursecount']) > 0 and (!is_numeric($_POST['mincoursecount']) or $_POST['mincoursecount'] < 0)) {
+				error("Nombre invalide de cours minimum");
+			}
+			if($_POST['mincoursecount'] != "") {
+				$cmd .= " -t " . escapeshellarg($_POST['mincoursecount']) . " -T coursecount";
+			}
 		
 			// Parse
 			$week_hours = array(830, 930, 1030, 1130, 1245, 1345, 1445, 1545, 1645); 

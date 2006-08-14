@@ -143,3 +143,27 @@ class NoConflicts : public Constraint
 	private:
 	int p_max_conflict_periods;
 };
+
+class MinimalCourseCount : public Constraint
+{
+        public:
+        MinimalCourseCount(std::string s) : Constraint(s) {
+                char *endptr;
+                p_count = strtol(s.c_str(), &endptr, 10);
+                if(*endptr != 0) {
+                        error("Invalid parameter passed to MinimalCourseCount (%s)", s.c_str());
+                }
+        }
+
+        bool operator()(StudentSchedule &sched)
+        {
+                if(sched.course_count() >= p_count) {
+                        return true;
+                }
+                return false;
+        }
+
+        private:
+        long p_count;
+};
+
