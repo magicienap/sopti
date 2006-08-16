@@ -406,10 +406,10 @@ function draw_schedule($schedule_periods) {
 			}
 		}
 		// If is weekend
-		elseif(array_search($row['weekday'], $weekend_day_codes) != FALSE) {
+		elseif(array_search($row['weekday'], $weekend_day_codes) !== FALSE) {
 			$weekend_have=1;
 			// If standard time
-			if(array_search($row['time'], $weekend_hour_codes) != FALSE) {
+			if(array_search($row['time'], $weekend_hour_codes) !== FALSE) {
 				if(!isset($weekend[$row['weekday']][$row['time']])) {
 					$weekend[$row['weekday']][$row['time']] = array();
 				}
@@ -418,7 +418,7 @@ function draw_schedule($schedule_periods) {
 			// If nonstandard time
 			else {
 				$weekend_have_nonstandard=1;
-				if(array_search($row['time'], $weekend_hour_codes) != FALSE) {
+				if(array_search($row['time'], $weekend_hour_codes) !== FALSE) {
 					if(!isset($weekend_nonstd[$row['weekday']][$row['time']])) {
 						$weekend_nonstd[$row['weekday']][$row['time']] = array();
 					}
@@ -434,134 +434,158 @@ function draw_schedule($schedule_periods) {
 	
 	// Draw the week schedule
 	$tmp=microtime(TRUE);
-?>
-<table class="schedule">
-	<tr>
-		<td class="whitecorner"></td>
-		<td class="weekday">Lundi</td>
-		<td class="weekday">Mardi</td>
-		<td class="weekday">Mercredi</td>
-		<td class="weekday">Jeudi</td>
-		<td class="weekday">Vendredi</td>
-	</tr>
-<?php
 
-	$hourcodes = $week_hour_codes;
-	$hourlabels = $week_hour_labels;
-	$daycodes = $week_day_codes;
-	$daylabels = $week_day_labels;
-	if($week_have_evening) {
-		$hourcodes = array_merge($hourcodes, $week_nighthours_codes);
-		$hourlabels = array_merge($hourlabels, $week_nighthours_labels);
-	}
-	for($hourindex=0; $hourindex < count($hourcodes); $hourindex++) {
-		echo "	<tr>\n";
-		echo "		<td class=\"hour\"><b>".$hourlabels[$hourindex]."</b></td>\n";
-		for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
-			echo "		<td>";
-			if(! $week[$daycodes[$dayindex]][$hourcodes[$hourindex]]) {
-				echo "</td>";
-				continue;
-			}
-			// See what kind of conflict we have
-			$conflict=0;
-			$cumul_mask=0;
-			foreach($week[$daycodes[$dayindex]][$hourcodes[$hourindex]] as $period) {
-				if($period['week'] == "A") {
-					$mask=3;	
-				}
-				elseif($period['week'] == "B1") {
-					$mask=1;
-				}
-				elseif($period['week'] == "B2") {
-					$mask=2;
-				}
-				else {
-					admin_error("Invalid week");
-				}
-				if($cumul_mask & $mask) {
-					$conflict |= ($cumul_mask & $mask);
-				}
-				$cumul_mask |= $mask;
-			}
-			// Now print the courses at this hour
-			foreach($week[$daycodes[$dayindex]][$hourcodes[$hourindex]] as $period) {
-				if($period['tol'] == 'C') {
-					$tol = 'TH';
-				}
-				else {
-					$tol = 'LAB';
-				}
-				
-				if($period['week'] == "A") {
-					$b1b2="";
-					$mask=3;
-				}
-				elseif($period['week'] == "B1") {
-					$b1b2=" <b>&lt;B1&gt;</b>";
-					$mask=1;
-				}
-				elseif($period['week'] == "B2") {
-					$b1b2=" <b>&lt;B2&gt;</b>";
-					$mask=2;
-				}
-				else {
-					admin_error("Invalid week");
-				}
-				
-				if($mask & $conflict) {
-					echo "<div class=\"period_conflict\">";
-				}
-				else {
-					echo "<div class=\"period_noconflict\">";
-				}
-				echo "<b>".$period['symbol']."</b> (".$period['grp'].")<br />[".$tol."] ".$period['room'].$b1b2;
-				echo "</div>";
-			}
-			echo "		</td>\n";
+
+	// We pass 2 times in the drawing code. The first one (0) is to draw the week schedule,
+	// the second (1) is for the weekend schedule.
+
+	for($pass=0; $pass<2; $pass++) {
+
+		if($pass == 1 and $weekend_have !== 1) {
+			continue;
 		}
-		echo "	</tr>\n";
-	}
-	if($week_have_nonstandard) {
-		echo "          <td class=\"hour\"><b>Heures non standard</b></td>\n";
-                for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
-			echo "          <td>";
-			if(!count($week_nonstd[$daycodes[$dayindex]])) {
-				echo "</td>";
-				continue;
+
+		if($pass == 0) {
+			echo '<table class="schedule">'."\n";
+			$hourcodes = $week_hour_codes;
+			$hourlabels = $week_hour_labels;
+			$daycodes = $week_day_codes;
+			$daylabels = $week_day_labels;
+	
+			if($week_have_evening) {
+				$hourcodes = array_merge($hourcodes, $week_nighthours_codes);
+				$hourlabels = array_merge($hourlabels, $week_nighthours_labels);
 			}
-			foreach($week_nonstd[$daycodes[$dayindex]] as $time => $periods) {
-				foreach($periods as $period) {
+		}
+		elseif($pass == 1) {
+			echo '<table class="schedule" style="clear:none;">'."\n";
+			$hourcodes = $weekend_hour_codes;
+			$hourlabels = $weekend_hour_labels;
+			$daycodes = $weekend_day_codes;
+			$daylabels = $weekend_day_labels;
+
+			$week = $weekend;
+		}
+
+		// print the day headers on this subschedule
+		echo "<tr>\n";
+		echo "\t".'<td class="whitecorner"></td>'."\n";
+		foreach($daylabels as $lb) {
+			echo "\t".'<td class="weekday">'.$lb.'</td>'."\n";
+		}
+		echo "</tr>\n";
+	
+		for($hourindex=0; $hourindex < count($hourcodes); $hourindex++) {
+			echo "	<tr>\n";
+			echo "		<td class=\"hour\"><b>".$hourlabels[$hourindex]."</b></td>\n";
+			for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
+				echo "		<td>";
+				if(! $week[$daycodes[$dayindex]][$hourcodes[$hourindex]]) {
+					echo "</td>";
+					continue;
+				}
+				// See what kind of conflict we have
+				$conflict=0;
+				$cumul_mask=0;
+				foreach($week[$daycodes[$dayindex]][$hourcodes[$hourindex]] as $period) {
+					if($period['week'] == "A") {
+						$mask=3;	
+					}
+					elseif($period['week'] == "B1") {
+						$mask=1;
+					}
+					elseif($period['week'] == "B2") {
+						$mask=2;
+					}
+					else {
+						admin_error("Invalid week");
+					}
+					if($cumul_mask & $mask) {
+						$conflict |= ($cumul_mask & $mask);
+					}
+					$cumul_mask |= $mask;
+				}
+				// Now print the courses at this hour
+				foreach($week[$daycodes[$dayindex]][$hourcodes[$hourindex]] as $period) {
 					if($period['tol'] == 'C') {
 						$tol = 'TH';
 					}
 					else {
 						$tol = 'LAB';
 					}
-
+					
 					if($period['week'] == "A") {
 						$b1b2="";
+						$mask=3;
 					}
 					elseif($period['week'] == "B1") {
 						$b1b2=" <b>&lt;B1&gt;</b>";
+						$mask=1;
 					}
 					elseif($period['week'] == "B2") {
 						$b1b2=" <b>&lt;B2&gt;</b>";
+						$mask=2;
 					}
 					else {
 						admin_error("Invalid week");
 					}
-				
-					echo "<div class=\"period_noconflict\">";
-					echo "<b><u>".preg_replace("/(.*)(..)/", "$1:$2", $time)."</u><br />".$period['symbol']."</b> (".$period['grp'].")<br />[".$tol."] ".$period['room'].$b1b2;
-					echo "</div>\n";
+					
+					if($mask & $conflict) {
+						echo "<div class=\"period_conflict\">";
+					}
+					else {
+						echo "<div class=\"period_noconflict\">";
+					}
+					echo "<b>".$period['symbol']."</b> (".$period['grp'].")<br />[".$tol."] ".$period['room'].$b1b2;
+					echo "</div>";
 				}
+				echo "		</td>\n";
 			}
-			echo "          </td>\n";
+			echo "	</tr>\n";
 		}
+		if($week_have_nonstandard and $pass == 0) {
+			echo "          <td class=\"hour\"><b>Heures non standard</b></td>\n";
+			for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
+				echo "          <td>";
+				if(!count($week_nonstd[$daycodes[$dayindex]])) {
+					echo "</td>";
+					continue;
+				}
+				foreach($week_nonstd[$daycodes[$dayindex]] as $time => $periods) {
+					foreach($periods as $period) {
+						if($period['tol'] == 'C') {
+							$tol = 'TH';
+						}
+						else {
+							$tol = 'LAB';
+						}
+	
+						if($period['week'] == "A") {
+							$b1b2="";
+						}
+						elseif($period['week'] == "B1") {
+							$b1b2=" <b>&lt;B1&gt;</b>";
+						}
+						elseif($period['week'] == "B2") {
+							$b1b2=" <b>&lt;B2&gt;</b>";
+						}
+						else {
+							admin_error("Invalid week");
+						}
+					
+						echo "<div class=\"period_noconflict\">";
+						echo "<b><u>".preg_replace("/(.*)(..)/", "$1:$2", $time)."</u><br />".$period['symbol']."</b> (".$period['grp'].")<br />[".$tol."] ".$period['room'].$b1b2;
+						echo "</div>\n";
+					}
+				}
+				echo "          </td>\n";
+			}
+	
+		}
+		echo "</table>\n";
 
-	}
-	echo "</table>\n";
+	} // end of pass
+
 	//$php_function_time=microtime(TRUE)-$php_function_time;
 	//$prof_string .= "draw schedule: ".(microtime(TRUE)-$tmp)."<br />\n";
 	//echo "php function time: " . $php_function_time . "<br />".$prof_string."<br />\n";
