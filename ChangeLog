@@ -1,4 +1,4 @@
-sopti-0.18 ()
+sopti-0.18 (2006/08/16)
 * changer les exemples de cours dans make_form1.php
 * automatiser l'affichage des sessions sur index.php
 * horaires de profs
@@ -8,6 +8,7 @@ sopti-0.18 ()
 * objectif minimiser le nombre de conflits
 * ajouter aide dans l'interface web
 * ajouter option nombre minimum de cours
+* réactiver l'affichage des cours de fin de semaine
 
 sopti-0.17 (2005/12/06)
 * changement logos AEP pour logos du générateur
