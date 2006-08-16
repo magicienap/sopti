@@ -110,7 +110,37 @@
 	<div style="margin: 1px;"><a href="teacher_form.php"> Horaire d'un chargé de cours</a></div>
 </div>
 
+<div class="newsdate">16 août 2006</div>
 
+<div class="newscontents">
+        <b>Noms de professeurs disponibles - Automne 2006</b><br />
+
+	        <p>Vous pouvez maintenant voir les noms de professeurs et chargés pour les cours que vous demandez pour l'automne 2006.</p>
+</div>
+
+<br />
+
+
+<div class="newsdate">14 août 2006</div>
+
+<div class="newscontents">
+        <b>Données disponibles - Automne 2006</b><br />
+
+        <p>Vous pouvez maintenant générer des horaires pour l'automne 2006. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
+</div>
+
+<br />
+
+
+<div class="newsdate">17 décembre 2005</div>
+
+<div class="newscontents">
+        <b>Noms de professeurs disponibles</b><br />
+
+	<p>Vous pouvez maintenant voir les noms de professeurs et chargés pour les cours que vous demandez pour l'hiver 2006.</p>
+</div>
+
+<br />
 <div class="newsdate">6 décembre 2005</div>
 
 <div class="newscontents">
