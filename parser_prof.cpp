@@ -177,11 +177,11 @@ void parse_course(string file)
 		if(!xmlStrcmp(val, BAD_CAST "Cours")) {
 			ti.group_type = 0;
 		}
-		else if (!xmlStrcmp(val, BAD_CAST "Travaux Pratiques")){
+		else if (!xmlStrcmp(val, BAD_CAST "Travaux pratiques")){
 			ti.group_type = 1;
 		}
 		else {
-			fprintf(stderr, "error: invalid course type");
+			fprintf(stderr, "error: invalid course type\n");
 			exit(1);
 		}
 		xmlFree(val);
