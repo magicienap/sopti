@@ -2,11 +2,11 @@ integrer le nouveau design web pour index.php
 conversion a xhtml strict
 changer l'exemple de make_form1
 tester les erreurs mysql davantage
-add weekend support
 colorize results
 alterner les teintes de gris pour les heures
-
 print error in make.php if sopti executable not exists
-
-enlever les dontaddasis si inutiles
+faire interface d'administration
+suite de tests
+complétion automatique des noms de cours
+enlever les conflits avec les cours pfe
 faire interface d'administration
