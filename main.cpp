@@ -32,7 +32,6 @@
 #include "schoolschedule.hpp"
 #include "group_constraint.hpp"
 #include "objective.hpp"
-#include "stdsched.h"
 #include "read_csv.hpp"
 #include "dbloader.hpp"
 #include "configfile.hpp"
@@ -894,8 +893,6 @@ int main(int argc, char **argv)
 	parse_command_line(&argc, &argv);
 	parse_config_file(config_file);
 
-	stdsched_init();
-	
 	//load_courses_from_csv(&schoolsched, course_file);
 	//load_closed_from_csv(&schoolsched, closedgroups_file);
 		
