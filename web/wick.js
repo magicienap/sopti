@@ -28,7 +28,7 @@ while(te && !answer) {
 	if	((te.id && (te.id == i)) || (te.className && (te.className == i+"Class"))
 			|| (!t && c && te.className && (te.className == c))
 			|| (!t && c && te.className && (te.className.indexOf(c) != -1))
-			|| (t && te.tagName && (te.tagName.toLowerCase() == t))
+			|| (t && te.tagName && (te.tagName.toUpperCase() == t))
 			|| (obj && (te == obj))
 		) {
 		answer = te;
@@ -229,7 +229,7 @@ function smartInputMatch(cleanValue, value) {
 }//smartInputMatch
 
 function simplify(s) {
-return s.toLowerCase().replace(/^[ \s\f\t\n\r]+/,'').replace(/[ \s\f\t\n\r]+$/,'');
+return s.toUpperCase().replace(/^[ \s\f\t\n\r]+/,'').replace(/[ \s\f\t\n\r]+$/,'');
 //.replace(/[é,è,ê,ë,\u00E9,\u00E8,\u00EA,\u00EB]/gi,"e").replace(/[à,â,\u00E0,\u00E2]/gi,"a").
 }//simplify
 
@@ -253,8 +253,8 @@ return a;
 
 function runMatchingLogic(userInput, standalone) {
 	userInput = simplify(userInput);
-	uifc = userInput.charAt(0).toLowerCase();
-	if (uifc == '"') uifc = (n = userInput.charAt(1)) ? n.toLowerCase() : "z";
+	uifc = userInput.charAt(0).toUpperCase();
+	if (uifc == '"') uifc = (n = userInput.charAt(1)) ? n.toUpperCase() : "Z";
 	if (standalone) userInput = uifc;
 	if (siw) siw.matchCollection = new Array();
 	pointerToCollectionToUse = collection;
@@ -312,7 +312,7 @@ function setSmartInputData() {
 if (siw) {
 orgUserInput = siw.inputBox.value;
 orgUserInput = getUserInputToMatch(orgUserInput);
-userInput = orgUserInput.toLowerCase().replace(/[\r\n\t\f\s]+/gi,' ').replace(/^ +/gi,'').replace(/ +$/gi,'').replace(/ +/gi,' ').replace(/\\/gi,'').replace(/\[/gi,'').replace(/\(/gi,'').replace(/\./gi,'\.').replace(/\?/gi,'');
+userInput = orgUserInput.toUpperCase().replace(/[\r\n\t\f\s]+/gi,' ').replace(/^ +/gi,'').replace(/ +$/gi,'').replace(/ +/gi,' ').replace(/\\/gi,'').replace(/\[/gi,'').replace(/\(/gi,'').replace(/\./gi,'\.').replace(/\?/gi,'');
 if (userInput && (userInput != "") && (userInput != '"')) {
 	runMatchingLogic(userInput);
 }//if userinput not blank and is meaningful
@@ -411,6 +411,9 @@ function activateCurrentSmartInputMatch() {
 	baseValue = getUserInputBase();
 	if ((selIndex = getCurrentlySelectedSmartInputItem()) != null) {
 		addedValue = siw.matchCollection[selIndex].cleanValue;
+		//alert(addedValue);
+		addedValue = addedValue.replace(/ .*/, '');
+		//alert(addedValue);
 		theString = (baseValue ? baseValue : "") + addedValue + ", ";
 		siw.inputBox.value = theString;
 		runMatchingLogic(addedValue, true);

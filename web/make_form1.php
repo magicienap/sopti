@@ -1,12 +1,13 @@
 <?php
 # ob_start();
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/2002/REC-xhtml1-20020801/DTD/xhtml1-strict.dtd">
+
 <html>
 
 <head>
 	<title>Générer des horaires - Étape 1</title>
 	<link rel="stylesheet" type="text/css" href="sopti.css" />
+	<link rel="stylesheet" type="text/css" href="./wick.css" />
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 </head>
 
@@ -40,18 +41,16 @@ print "Dernière mise a jour du fichier de cours: ".$string_modif
 
 <div class="option_block">
 	<h2>Cours désirés</h2>
-	<p>Écrire les sigles des cours désirés, séparés par un espace. Ex: MTH1101 MTH1006 INF1005C<br />
+	<p>Écrire les sigles des cours désirés, séparés par un espace et/ou une virgule. Ex: MTH1101 MTH1006 INF1005C<br />
 	<a href="listcourses.php">Voir la liste des cours offerts</a></p>
-	<p><textarea name="courses" cols="50" rows="2"></textarea></p>
-</div>
-
-
-<div class="option_block">
-	<p><input type="submit" value="Continuer..." /></p>
+	<p><input name=courses class="wickEnabled" type="text" size="80" />&nbsp;&nbsp;<input type="submit" value="Continuer..." /></p>
 </div>
 
 </form>
 
+	<!--<script type="text/javascript" language="JavaScript" src="./courses_wick_data.php"></script>-->
+	<script type="text/javascript" language="JavaScript" src="sample_data1.js"></script>
+	<script type="text/javascript" language="JavaScript" src="./wick.js"></script>
 </body>
 </html>
 
