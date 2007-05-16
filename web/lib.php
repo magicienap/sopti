@@ -551,6 +551,7 @@ function draw_schedule($schedule_periods) {
 					echo "</td>";
 					continue;
 				}
+				ksort($week_nonstd[$daycodes[$dayindex]]);
 				foreach($week_nonstd[$daycodes[$dayindex]] as $time => $periods) {
 					foreach($periods as $period) {
 						if($period['tol'] == 'C') {
