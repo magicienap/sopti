@@ -48,8 +48,7 @@ print "Dernière mise a jour du fichier de cours: ".$string_modif
 
 </form>
 
-	<!--<script type="text/javascript" language="JavaScript" src="./courses_wick_data.php"></script>-->
-	<script type="text/javascript" language="JavaScript" src="sample_data1.js"></script>
+	<script type="text/javascript" language="JavaScript" src="./courses_wick_data.php"></script>
 	<script type="text/javascript" language="JavaScript" src="./wick.js"></script>
 </body>
 </html>
