@@ -21,7 +21,7 @@
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
   <title>Générateur d'horaires</title>
@@ -109,6 +109,26 @@
 	<div style="margin: 1px;"><a href="room_form.php"> Horaire d'un local</a></div>
 	<div style="margin: 1px;"><a href="teacher_form.php"> Horaire d'un chargé de cours</a></div>
 </div>
+<!--
+<div class="newsdate">28 avril 2007</div>
+
+<div class="newscontents">
+        <b>Données disponibles - Été 2007</b><br />
+
+        <p>Le Générateur peut maintenant générer des horaires pour l'été 2007. Tant les cours du trimestre long que du trimestre court fonctionnent.</p>
+</div>
+
+<br />
+
+<div class="newsdate">11 décembre 2006</div>
+
+<div class="newscontents">
+        <b>Données disponibles - Hiver 2007</b><br />
+
+        <p>Vous pouvez maintenant générer des horaires pour l'hiver 2007. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
+</div>
+
+<br />
 
 <div class="newsdate">16 août 2006</div>
 
@@ -149,7 +169,7 @@
 	<p>Le Générateur crée maintenant des horaires pour la session d'hiver 2006. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
 
 </div>
-
+-->
 
 <!--
 <p style="border-bottom: 1px solid black; width: 472px; margin: 3px auto; padding: 0px; text-align: center; background-color: #8CABFF; font-weight: bold;">Générer des horaires</p>
