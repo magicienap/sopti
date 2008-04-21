@@ -7,6 +7,9 @@ db.password ""
 db.schema ""
 
 default_semester "H2005"
+# address used to send errors and admin notifications; not visible to users
+private_admin_email ""
+# user visible admin email - used as From: to send messages
 admin_email ""
 
 # this value should match the one in emailer/emailer.conf
