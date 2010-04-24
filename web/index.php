@@ -203,10 +203,10 @@
 </ul>
 
 <h2>Auteurs</h2>
-<p><b>Pierre-Marc Fournier</b>, étudiant 1er cycle, génie informatique</p>
+<p><b>Pierre-Marc Fournier</b>, étudiant 1er cycle, génie informatique 2003-2007</p>
 <div class="indent1">Directeur du projet</div>
 <div class="indent1">Adresse: pierre-marc.fournier À polymtl.ca (remplacer À par un @)</div>
-<p><b>Benjamin Poirier</b>, étudiant 1er cycle, génie informatique,</p>
+<p><b>Benjamin Poirier</b>, ancien étudiant 1er cycle, génie informatique,</p>
 <div class="indent1">Système d'avertissement par courriel de places disponibles, documentation du code et autres</div>
 
 <p><b>Jean-François Lévesque</b>, VP services de l'AEP 2004-2006</p>

@@ -6,6 +6,7 @@ require_once('config.php');
 $CONFIG_VARS=array();
 
 read_config_file($SOPTI_CONFIG_FILE);
+read_semester_config_file($SOPTI_SEMESTER_CONFIG_FILE);
 
 $group_data = array();
 $period_data = array();
@@ -96,6 +97,16 @@ function error($msg)
 <?php
 
 	exit();
+}
+
+function read_semester_config_file($file)
+{
+	global $CONFIG_VARS;
+
+	$semester = file_get_contents($file, "r");
+	if($semester === FALSE) {
+		error("Impossible de lire le fichier de configuration " . $file);
+	}
 }
 
 function read_config_file($file)

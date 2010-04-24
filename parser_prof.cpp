@@ -24,6 +24,7 @@
 #include <vector>
 #include <string>
 
+#include <string.h>
 
 using namespace std;
 
@@ -165,6 +166,11 @@ void parse_course(string file)
 	}
 	ti.course_symbol = (char *) result->nodesetval->nodeTab[0]->children->content;
 	xmlXPathFreeObject(result);
+
+	/* fix whitespace padding that might be at the end */
+	for(i=ti.course_symbol.length()-1; i>=0; i--)
+		if(ti.course_symbol[i] == ' ')
+			ti.course_symbol[i] = 0;
 	
 	result = xmlXPathEvalExpression(BAD_CAST "/racine/horaire", context);
 	if(xmlXPathNodeSetIsEmpty(result->nodesetval)){

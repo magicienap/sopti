@@ -433,7 +433,7 @@ else if (isset($_POST["email_request"]))
 	}
 	else if (mysql_result($resultat, 0))
 	{
-		error('Vous avez atteint votre nombre maximum de requêtes de désinscription pour cette adresse, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la désinscription ne fonctionne pas.');
+		error('Vous avez atteint votre maximum de requête de désinscription pour cette adresse, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la désinscription ne fonctionne pas.');
 	}
 	
 	// check the ip limit
@@ -455,7 +455,7 @@ else if (isset($_POST["email_request"]))
 		}
 		else if (mysql_result($resultat, 0))
 		{
-			error('Vous avez atteint votre nombre maximum de requêtes de désinscription pour ce poste, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la désinscription ne fonctionne pas.');
+			error('Vous avez atteint votre maximum de requête de désinscription pour ce poste, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la désinscription ne fonctionne pas.');
 		}
 	}
 	

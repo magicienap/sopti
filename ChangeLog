@@ -1,3 +1,9 @@
+sopti-0.19 ()
+* ajouter le script check_new_semester.pl pour notifier
+  l'administrateur quand le trimestre change
+* ajouter l'entrée private_email_admin dans le sopti.conf, adresse
+  qui est utilisée pour envoyer des messages urgents à l'admin
+
 sopti-0.18 (2006/08/16)
 * changer les exemples de cours dans make_form1.php
 * automatiser l'affichage des sessions sur index.php
