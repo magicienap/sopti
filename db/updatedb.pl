@@ -20,6 +20,14 @@ sub warning {
 	print(("\033[1;33mwarning: \033[0m", @_, "\n"));
 }
 
+sub trim($)
+{
+	my $string = shift;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	return $string;
+}
+
 sub retrieve_closed {
 	print("Opening Closed CSV...\n");
 	open(CLOSEDFILE, "<../data/closed.csv") or die("error opening data file");
@@ -114,9 +122,16 @@ sub read_config {
 		
 		$CONFIG{$varname} = $varval;
 	}
+
 	
 	print "Closing config file...\n";
 	close CONFIGFILE;
+	
+	open(SEMFILE, "<" . $CONFIG_DIR . "/semester.conf") or die error("opening semester file");
+	$sem = <SEMFILE>;
+	$sem = trim($sem);
+	close SEMFILE;
+	$CONFIG{'default_semester'} = $sem;
 }
 
 sub main() {
