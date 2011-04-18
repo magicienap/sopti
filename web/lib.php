@@ -107,6 +107,14 @@ function read_semester_config_file($file)
 	if($semester === FALSE) {
 		error("Impossible de lire le fichier de configuration " . $file);
 	}
+
+	$semester = trim($semester);
+
+	if(!preg_match("/[HEA][0-9]{4}/", $semester)) {
+		error("Trimestre invalide");
+	}
+
+	$CONFIG_VARS['default_semester'] = $semester;
 }
 
 function read_config_file($file)
@@ -378,8 +386,10 @@ function draw_schedule($schedule_periods) {
 	$week_nighthours_labels = array('18:00', '19:00', '20:00', '21:00');
 	$week_day_codes = array('LUN', 'MAR', 'MER', 'JEU', 'VEN');
 	$week_day_labels = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
-	$weekend_hour_codes = array('0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700');
-	$weekend_hour_labels = array('8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00');
+	//$weekend_hour_codes = array('0800', '0900', '1000', '1100', '1200', '1300', '1400', '1500', '1600', '1700');
+	//$weekend_hour_labels = array('8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00');
+	$weekend_hour_codes = array();
+	$weekend_hour_labels = array();
 	$weekend_day_codes = array('SAM', 'DIM');
 	$weekend_day_labels = array('Samedi', 'Dimanche');
 
@@ -429,12 +439,10 @@ function draw_schedule($schedule_periods) {
 			// If nonstandard time
 			else {
 				$weekend_have_nonstandard=1;
-				if(array_search($row['time'], $weekend_hour_codes) !== FALSE) {
-					if(!isset($weekend_nonstd[$row['weekday']][$row['time']])) {
-						$weekend_nonstd[$row['weekday']][$row['time']] = array();
-					}
-					array_push($weekend_nonstd[$row['weekday']][$row['time']], $row);
+				if(!isset($weekend_nonstd[$row['weekday']][$row['time']])) {
+					$weekend_nonstd[$row['weekday']][$row['time']] = array();
 				}
+				array_push($weekend_nonstd[$row['weekday']][$row['time']], $row);
 			}
 		}
 		else {
@@ -554,16 +562,22 @@ function draw_schedule($schedule_periods) {
 			}
 			echo "	</tr>\n";
 		}
-		if($week_have_nonstandard and $pass == 0) {
+		if($week_have_nonstandard and $pass == 0 or $weekend_have_nonstandard and $pass == 1) {
+			if ($pass == 0) {
+				$period_set = $week_nonstd;
+			}
+			else {
+				$period_set = $weekend_nonstd;
+			}
 			echo "          <td class=\"hour\"><b>Heures non standard</b></td>\n";
 			for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
 				echo "          <td>";
-				if(!count($week_nonstd[$daycodes[$dayindex]])) {
+				if(!count($period_set[$daycodes[$dayindex]])) {
 					echo "</td>";
 					continue;
 				}
-				ksort($week_nonstd[$daycodes[$dayindex]]);
-				foreach($week_nonstd[$daycodes[$dayindex]] as $time => $periods) {
+				ksort($period_set[$daycodes[$dayindex]]);
+				foreach($period_set[$daycodes[$dayindex]] as $time => $periods) {
 					foreach($periods as $period) {
 						if($period['tol'] == 'C') {
 							$tol = 'TH';

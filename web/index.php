@@ -27,6 +27,9 @@
   <title>Générateur d'horaires</title>
   <link rel="stylesheet" href="aep.css" type="text/css" />
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta property="og:image" content="http://horaires.aep.polymtl.ca/genhor_sm.png"/>
+  <meta property="og:title" content="Générateur d'horaires de l'AEP"/>
+  <meta property="og:description" content="Le Générateur d'horaires est une application web qui permet de vous créer un horaire de cours personnalisé."/>
 
   <style type="text/css">
   body {
@@ -109,6 +112,7 @@
 	<div style="margin: 1px;"><a href="room_form.php"> Horaire d'un local</a></div>
 	<div style="margin: 1px;"><a href="teacher_form.php"> Horaire d'un chargé de cours</a></div>
 </div>
+
 <!--
 <div class="newsdate">28 avril 2007</div>
 
@@ -231,6 +235,10 @@
 
 </div>
 
+       <iframe src="http://www.facebook.com/plugins/like.php?locale=fr_CA&href=http://horaires.aep.polymtl.ca"
+        scrolling="no" frameborder="0"
+        style="border:none; width:450px; height: 80px;"></iframe>
+
 <p>
     <a href="http://validator.w3.org/check?uri=referer"><img
        src="http://www.w3.org/Icons/valid-xhtml10"
@@ -242,5 +250,7 @@
        alt="Valid CSS!" />
 </a>
 </p>
+
+
 </body>
 </html>
