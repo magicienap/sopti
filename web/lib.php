@@ -637,49 +637,11 @@ function array_intersect_key2($array1, $array2)
 } 
 
 
-// note: this is not a real xor, if two characters are the same they will be or'ed to avoid string terminators
-function xorString($string1, $string2)
-{
-	//we make sure string2 is the longest one
-	if (strlen($string1) > strlen($string2))
-	{
-		$temp= $string2;
-		$string2= $string1;
-		$string1= $temp;
-	}
-	
-	$len1= strlen($string1);
-	
-	$i= 0;
-	while($i < strlen($string2))
-	{
-		// if the characters are the same this will generate a string terminator '0' which will eventually cause the crypt function to end before the end of the string, this is not desired
-		if ($string1[$i % $len1] == $string2[$i])
-		{
-			$result[$i]= $string2[$i];
-		}
-		else
-		{
-			$result[$i]= $string1[$i % $len1] ^ $string2[$i];
-		}
-		$i++;
-	}
-	
-	return implode("", $result);
-}
-
-function getHash($email, $salt=0)
+function getHash($email)
 {
 	global $CONFIG_VARS;
 	
-	if ($salt)
-	{
-		return crypt(xorString($email, $CONFIG_VARS["emailer.pepper"]), $salt);
-	}
-	else
-	{
-		return crypt(xorString($email, $CONFIG_VARS["emailer.pepper"]));
-	}
+	return hash_hmac("sha1", $email, $CONFIG_VARS["emailer.pepper"]);
 }
 
 /* by cam at wecreate dot com - http://php.net/manual/en/function.ip2long.php#54953 */

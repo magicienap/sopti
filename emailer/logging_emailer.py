@@ -37,6 +37,9 @@ $name$
 """
 
 from logging import *
+# logging.__all__ doesn't include shutdown, so it is not caught by import *
+# http://docs.python.org/tutorial/modules.html#importing-from-a-package
+from logging import shutdown
 
 # These next tow loops look for an available space between the info 
 # and warning log levels for the summary and dbentries log levels. 

@@ -59,7 +59,8 @@ import urllib
 import re
 
 from configuration import Configuration
-from md5crypt import md5crypt
+import hmac
+import hashlib
 
 def main():
 	# The configuration is merged from the different sources
@@ -143,6 +144,10 @@ def main():
 				notificationGroup.append(notifications.pop(0))
 				continue
 			else:
+				hasher= hmac.new(
+					configuration["general"]["pepper"], 
+					notificationGroup[0]["notifications.email"], 
+					digestmod=hashlib.sha1)
 				# build the notification email
 				if len(notificationGroup) == 1:
 					# for a single notification
@@ -151,8 +156,7 @@ def main():
 						configuration["emailCourse"]["text"] % getTemplateValues(notificationGroup[0]) +
 						(configuration["emailOutro"]["singular"] % {
 							"email" : notificationGroup[0]["notifications.email"], 
-							# a period (.) at the end of the line is also replaced otherwise it is left out of the link by some mail readers
-							"hash" : re.sub("\.$", "&#46;", urllib.quote(md5crypt(xorString(notificationGroup[0]["notifications.email"], configuration["general"]["pepper"]), "".join(random.sample(string.ascii_letters + string.digits, 8))))), 
+							"hash" : hasher.hexdigest(),
 							"baseurl" : configuration["general"]["baseurl"],}))
 					
 					msg["Subject"]= configuration["emailSubject"]["singular"]
@@ -167,7 +171,7 @@ def main():
 						configuration["emailOutro"]["plural"] % {
 							"email" : urllib.quote(notificationGroup[0]["notifications.email"]), 
 							# a period (.) at the end of the line is also replaced otherwise it is left out of the link by some mail readers
-							"hash" : re.sub("\.$", "%2E", urllib.quote(md5crypt(xorString(notificationGroup[0]["notifications.email"], configuration["general"]["pepper"]), "".join(random.sample(string.ascii_letters + string.digits, 8))))), 
+							"hash" : hasher.hexdigest(),
 							"baseurl" : configuration["general"]["baseurl"],})
 					
 					msg["Subject"]= configuration["emailSubject"]["plural"]
@@ -381,29 +385,6 @@ def getTemplateValues(notification):
 		raise(Exception("Unknown course type"))
 	
 	return values
-
-
-def xorString(string1, string2):
-	"""note: this is not a real xor, if two characters are the 
-	same they will be or'ed to avoid string terminators"""
-	if len(string1) > len(string2):
-		temp= string2
-		string2= string1
-		string1= temp
-	
-	len1= len(string1)
-	len2= len(string2)
-	
-	i= 0
-	result= list()
-	while i < len2:
-		if string1[i % len1] == string2[i]:
-			result.append(string2[i])
-		else:
-			result.append(chr(ord(string1[i % len1]) ^ ord(string2[i])))
-		i+= 1
-	
-	return "".join(result)
 
 
 if __name__ == "__main__":
