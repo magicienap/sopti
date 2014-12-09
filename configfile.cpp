@@ -117,6 +117,21 @@ void parse_config_file(string conffile_name)
 	}
 }
 
+void parse_semester_file(string semester_file_name)
+{
+	ifstream semfile;
+
+	semfile.open(semester_file_name.c_str());
+	if(!semfile) {
+		error("Unable to open semester file");
+	}
+
+	string sem;
+	semfile >> sem;
+
+	config_vars["default_semester"] = sem;
+}
+
 /*
 int main()
 {

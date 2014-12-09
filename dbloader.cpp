@@ -1,4 +1,6 @@
 #include <mysql/mysql.h>
+#include <stdlib.h>
+#include <string.h>
 #include "dbloader.hpp"
 #include "make_message.h"
 #include "globals.hpp"

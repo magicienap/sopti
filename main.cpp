@@ -254,8 +254,6 @@ void usage()
 	"  -h, --help - print this help screen and exit\n"
 	"  --version - print version\n"
 	"  --configfile <config_file> - specify configuration file explicitly\n"
-	"  --coursefile <course_file> - specify course file explicitly\n"
-	"  --closedfile <closed_file> - specify closed groups file explicitly\n"
 	"\n"
 	"Action options:\n"
 	"  * make\n"
@@ -761,6 +759,7 @@ int poly_period_to_time(int period)
 void set_default_options()
 {
 	config_file = "sopti.conf";
+	semester_file = "semester.conf";
 }
 
 
@@ -791,6 +790,7 @@ void parse_command_line(int *argc, char ***argv)
 			{"coursefile", required_argument, 0, 'c'},
 			{"closedfile", required_argument, 0, 4},
 			{"configfile", required_argument, 0, 6},
+			{"semesterfile", required_argument, 0, 7},
 			{"html", 0, 0, 3},
 			{0, 0, 0, 0}
 		};
@@ -802,10 +802,6 @@ void parse_command_line(int *argc, char ***argv)
 	
 		switch (c) {
 	
-		case 'c':
-			course_file=optarg;
-			break;
-		
 		case 'h':
 			usage();
 			exit(0);
@@ -813,16 +809,16 @@ void parse_command_line(int *argc, char ***argv)
 			output_fmt = OUTPUT_HTML;
 			break;
 
-		case 4:
-			closedgroups_file=optarg;
-			break;
-			
 		case 5:
 			printf("%s\n", PACKAGE_STRING);
 			exit(0);
 			
 		case 6:
 			config_file=optarg;
+			break;
+
+		case 7:
+			semester_file=optarg;
 			break;
 
 		case '?':
@@ -852,30 +848,6 @@ void parse_command_line(int *argc, char ***argv)
 
 /* ------------------------------------------------------------------
 
-	Function: parse_config_file
-	Description: Read the configuration files and assign option values
-	Parameters: conffile_name, a string representing the
-		configuration file's name
-	Return value: none
-	Notes: this is a work in progress, there's currently no support
-		for configuration files
-
------------------------------------------------------------------- */
-
-/*
-void parse_config_file(string conffile_name)
-{
-	try {
-		config_vars = parse_config_file(conffile_name);
-	}
-	catch {
-		error();
-	}
-}
-*/
-
-/* ------------------------------------------------------------------
-
 	Function: main
 	Description: entry function of the program
 	Parameters: argc & *argv[], the command line argument
@@ -892,6 +864,7 @@ int main(int argc, char **argv)
 	set_default_options();
 	parse_command_line(&argc, &argv);
 	parse_config_file(config_file);
+	parse_semester_file(semester_file);
 
 	//load_courses_from_csv(&schoolsched, course_file);
 	//load_closed_from_csv(&schoolsched, closedgroups_file);

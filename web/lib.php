@@ -3,6 +3,8 @@ error_reporting(0);
 
 require_once('config.php');
 
+header('Content-Type: text/html; charset=ISO-8859-1');
+
 $CONFIG_VARS=array();
 
 read_config_file($SOPTI_CONFIG_FILE);

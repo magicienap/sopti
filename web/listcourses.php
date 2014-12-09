@@ -1,7 +1,6 @@
 <?php
 require_once('config.php');
 require_once('lib.php');
-read_config_file($SOPTI_CONFIG_FILE);
 
 ob_start();
 ?>

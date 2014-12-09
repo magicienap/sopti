@@ -79,9 +79,8 @@ class SchoolCoursePtrSymAlphaOrder
 };
 
 
-string config_file="sopti.conf";
-string course_file="data/courses.csv";
-string closedgroups_file="data/closed.csv";
+string config_file;
+string semester_file;
 string action;
 //SchoolSchedule schoolsched;
 int output_fmt=0;

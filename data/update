@@ -2,14 +2,14 @@
 
 if [ -e lock ];
 then
-	echo "update locked; quitting" > /dev/stderr;
+	echo "update locked; quitting" >&2;
 	exit 1;
 fi
 
 touch lock;
 
-COURSE_URL="http://www.gegi.polymtl.ca/info/lanctot/java/Horsage.csv"
-CLOSED_URL="http://www.gegi.polymtl.ca/info/lanctot/java/Fermes.csv"
+COURSE_URL="http://www.groupes.polymtl.ca/public/Horaire/horsage.csv"
+CLOSED_URL="http://www.groupes.polymtl.ca/public/Horaire/fermes.csv"
 WGETFAIL=0  # false
 
 wget -O "courses.csv.new" $COURSE_URL 2> /dev/null || WGETFAIL=1;
@@ -20,7 +20,7 @@ fi
 
 if [ $WGETFAIL -eq 1 ];
 then
- 	echo "wget failed" > /dev/stderr;
+	echo "wget failed" >&2;
 	rm lock;
 	exit 1;
 fi

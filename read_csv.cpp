@@ -1,6 +1,8 @@
 #include <string>
 #include <fstream>
 
+#include <stdlib.h>
+
 #include "read_csv.hpp"
 #include "globals.hpp"
 #include "schoolschedule.hpp"

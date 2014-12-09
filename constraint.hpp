@@ -19,6 +19,8 @@
 #include <set>
 #include <string>
 
+#include <stdlib.h>
+
 #include "studentschedule.hpp"
 #include "schoolschedule.hpp"
 #include "error.hpp"
