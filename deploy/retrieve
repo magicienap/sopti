@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+LOCAL_SOPTI_ROOT="$(dirname $0)/.."
+
+if [ ! -e "${LOCAL_SOPTI_ROOT}/main.cpp" ]; then
+	echo "Couldn't find main.cpp in what we thought was the local sopti root; something's not right."
+	exit 1
+fi
+
+#rsync -va horaires@horaires.aep.polymtl.ca:sopti/ "${LOCAL_SOPTI_ROOT}"
+rsync -va horaires@horaires.aep.polymtl.ca:www/ "${LOCAL_SOPTI_ROOT}/web"
