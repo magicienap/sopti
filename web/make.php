@@ -47,7 +47,7 @@ $user_time=microtime(TRUE);
 
 <?php
 	// Check if session expired
-	if($_SERVER['REQUEST_METHOD'] == 'GET' && !session_is_registered('xml_groups')) {
+	if($_SERVER['REQUEST_METHOD'] == 'GET' && !isset( $_SESSION['xml_groups'] )) {
 		//session_destroy();
 		error("Session expirée. Veuillez recommencer.<br /><br />Si vous obtenez cette erreur à chaque fois que vous essayez de changer de page, c'est que vous n'acceptez pas les cookies que le site vous envoit.");
 	}
