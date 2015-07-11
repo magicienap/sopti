@@ -14,7 +14,7 @@ CREATE TABLE `courses` (
   `title` char(100) default NULL,
   PRIMARY KEY  (`unique`),
   KEY `symbol` (`symbol`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `courses`
@@ -33,7 +33,7 @@ CREATE TABLE `courses_semester` (
   PRIMARY KEY  (`unique`),
   KEY `semester_index` (`semester`),
   KEY `course_index` (`course`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `courses_semester`
@@ -58,7 +58,7 @@ CREATE TABLE `groups` (
   KEY `name_index` (`name`),
   KEY `tol_index` (`theory_or_lab`),
   KEY `course_semester_index` (`course_semester`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `groups`
@@ -79,7 +79,7 @@ CREATE TABLE `periods` (
   `weekday` char(10) NOT NULL default '',
   PRIMARY KEY  (`unique`),
   KEY `group` (`group`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `periods`
@@ -95,11 +95,11 @@ CREATE TABLE `semesters` (
   `code` char(10) NOT NULL default '',
   `pretty_name` char(15) NOT NULL default '',
   PRIMARY KEY  (`unique`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `semesters`
 --
 
-INSERT INTO `semesters` VALUES (2,'H2005','Hiver 2005');
+INSERT INTO `semesters` VALUES (1,'A2015','Automne 2015');
 
