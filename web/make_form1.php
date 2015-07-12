@@ -2,75 +2,74 @@
 # ob_start();
 require_once("lib.php");
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-<head>
-	<title>Générer des horaires - Étape 1</title>
-	<link rel="stylesheet" type="text/css" href="sopti.css" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<?php include "_head.php"; ?>
+		<title>Étape 1 | Générateur d'horaires de l'AEP | Polytechnique Montréal</title>
+	</head>
 
-<body>
+	<body>
 
-<div id="header">
+		<?php include "_main_navbar.php"; ?>
 
-<img src="genhor_sm.png" alt="Générateur d'horaires" />
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="index.php">Accueil</a></li>
+						<li class="active"><a href="make_form1.php">Générateur d'horaires</a></li>
+            <li><a href="room_form.php">Horaire d'un local</a></li>
+						<li><a href="teacher_form.php">Horaire d'un chargé de cours</a></li>
+            <li><a href="email_unsubscribe.php">Désinscription<br />(notification automatique)</a></li>
+						<li><a href="listcourses.php">Cours offerts</a></li>
+          </ul>
+        </div>
 
-<h1>Générer des horaires</h1>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				  <div class="row en-tete">
+				    <div class="col-md-12 large">
+				      <h1>Générateur d'horaires</h1>
+				    </div>
+				  </div>
 
-<p class="step_current">Étape 1 - Spécifier les cours désirés</p>
-<p class="step_notcurrent">Étape 2 - Choisir les options de génération</p>
-<p class="step_notcurrent">Étape 3 - Visualiser les horaires</p>
+				  <div class="row">
 
-</div>
+				    <div class="btn-group btn-group-justified">
+				      <a href="#" class="btn btn-primary btn-lg active">1. Cours</a>
+				      <a href="#" class="btn btn-primary btn-lg">2. Options</a>
+				      <a href="#" class="btn btn-primary btn-lg">3. Horaires</a>
 
-<form method="get" action="make_form2.php">
+				    </div>
+				  </div>
 
-<?php
-/*
-$course_file="../../sopti_run/data/courses.csv";
+				  <div class="row">
+				    <div class="col-md-offset-2 col-md-8 large">
+							<form method="get" action="make_form2.php">
+								<h2>Cours désirés</h2>
 
-$info = stat($course_file);
-$unix_modif = $info[9];
-$string_modif = date("r", $unix_modif);
+								<div class="form-group">
+									<input type="text" name="courses" class="form-control" style="font-family: monospace;" autofocus="autofocus">
+									<span class="help-block">
+										Écrire les sigles des cours désirés, séparés par un espace. Ex: MTH1101 MTH1007 INF1005C.<br>
+										<a href="listcourses.php">Voir la liste des cours offerts</a>
+									</span>
+								</div>
 
-print "Dernière mise a jour du fichier de cours: ".$string_modif
-*/
-?>
+								<div class="form-group" style="text-align: center;">
+									<button type="submit" class="btn btn-lg btn-primary">
+										<i class="fa fa-arrow-right"></i>&nbsp;&nbsp;&nbsp;Continuer
+									</button>
+								</div>
 
-<div class="option_block">
-	<h2>Cours désirés</h2>
-	<p>Écrire les sigles des cours désirés, séparés par un espace. Ex: MTH1101 MTH1006 INF1005C<br />
-	<a href="listcourses.php">Voir la liste des cours offerts</a></p>
-	<p><textarea name="courses" cols="50" rows="2"></textarea></p>
-</div>
+							</form>
+				    </div>
+				  </div>
 
+				</div>
+      </div>
+    </div>
 
-<div class="option_block">
-	<p><input type="submit" value="Continuer..." /></p>
-</div>
-
-</form>
-
-</body>
+	</body>
 </html>
-
-<?php
-# $html = ob_get_clean();
-
-# // Specify configuration
-# $config = array(
-	# 'indent' => true, 
-	# 'output-xhtml' => true, 
-	# 'wrap' => 75, 
-	# 'vertical-space' => true);
-
-# // Tidy
-# $tidy = new tidy;
-# $tidy->parseString($html, $config, 'latin1');
-# $tidy->cleanRepair();
-
-# // Output
-# echo $tidy;
-?>

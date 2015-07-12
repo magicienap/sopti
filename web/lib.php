@@ -122,7 +122,7 @@ function read_semester_config_file($file)
 function read_config_file($file)
 {
 	global $CONFIG_VARS;
-	
+
 	$handle = fopen($file, "r");
 	if($handle == FALSE) {
 		error("Impossible d'ouvrir le fichier de configuration " . $file);
@@ -130,7 +130,7 @@ function read_config_file($file)
 	while (!feof($handle)) {
 		$line = fgets($handle, 4096);
 		$origline = $line;
-		
+
 		// Remove final newline
 		$line = rtrim($line, "\n");
 		// Remove comments
@@ -171,14 +171,14 @@ function print_schedule($sch, $schedno)
 {
 	// TODO: ensure at least one group
 	// TODO: check valid combination of lab/theory groups
-	
+
 	global $CONFIG_VARS;
 	global $dblink;
-	
+
 	$php_db_time=0;
 	$prof_string="";
 	$php_function_time=microtime(TRUE);
-	
+
 	// Parse the input
 	$requested_groups=array();
 
@@ -188,7 +188,7 @@ function print_schedule($sch, $schedno)
 		$entry['lab_grp'] = (string)$course['lab_group'];
 		array_push($requested_groups, $entry);
 	}
-	
+
 	if(!mysql_ping($dblink)) {
 		$dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"], false)
 			or admin_error('Could not connect to SQL: ' . mysql_error());
@@ -213,8 +213,6 @@ function print_schedule($sch, $schedno)
 		}
 		$query .= $query_end;
 
-		//error($query);
-	
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query, $dblink) or admin_error('Query failed: ' . mysql_errno($dblink) . " " . mysql_error($dblink));
 		$prof_string .= "group sql query: ".(microtime(TRUE)-$tmp)."<br />\n";
@@ -230,22 +228,25 @@ function print_schedule($sch, $schedno)
 			}
 		}
 	}
-	
+
 	// print the group summary
 	$tmp=microtime(TRUE);
 ?>
-	<table class="group_summary" style="width: 675px;">
-	<tr><td colspan="7">
-		<table width="100%" border="0" style="background-color:#777777; font-size: 14px;">
-			<tr>
-				<td style="background-color: #777777; text-align: left; color: white;"><span style="font-size: 9px;">Horaire</span> <b><?php echo $schedno; ?></b></td><td style="text-align: right; background-color: #777777; color: white;"><span style="font-size: 9px;">Score:</span> <b><?php printf("%.3f %%", 100.0/($sch['score']+1.0)); ?></b></td>
-			</tr>
-		</table>
-	</td></tr>
-	<tr><th rowspan="2">Sigle</th><th rowspan="2">Titre</th><th colspan="2">Théorie</th><th colspan="2">Lab</th></tr>
-	<tr><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader"></th></tr>
-	<tr><td colspan="7" style="background-color: black; height: 1px;"></td></tr>
-	
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<span class="pull-right">Score&nbsp;: <?php printf("%.3f %%", 100.0/($sch['score']+1.0)); ?></span>
+		<h2 class="panel-title">Horaire <?php echo $schedno; ?></h2>
+	</div>
+
+	<div class="panel-body">
+
+		<table class="table table-bordered table-condensed table-striped">
+			<thead>
+				<tr style="text-transform: uppercase;"><th rowspan="2" style=" text-align: center; vertical-align: top;">Sigle</th><th style=" text-align: center; vertical-align: top;" rowspan="2">Titre</th><th style=" text-align: center; vertical-align: top; padding-bottom: 0;" colspan="2">Théorie</th><th style=" text-align: center; vertical-align: top; padding-bottom: 0;" colspan="2">Lab</th></tr>
+				<tr><th style="text-align: center; padding-top: 0;">Section</th><th style="text-align: center; padding-top: 0;">Chargé</th><th style="text-align: center; padding-top: 0;">Section</th><th style="text-align: center; padding-top: 0;">Chargé</th></tr>
+			</thead>
+
 <?php
 	foreach($requested_groups as $req) {
 		if(count($group_data[(string)$req['symbol']]) == 0) {
@@ -275,7 +276,7 @@ function print_schedule($sch, $schedno)
 			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
 				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);
 			}
-			
+
 			echo "	<tr class=\"course_row\"><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
 		}
 		elseif($group_data[$req['symbol']]['course_type'] == 'TLS') {
@@ -285,7 +286,7 @@ function print_schedule($sch, $schedno)
 			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
 				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);
 			}
-			
+
 			echo "	<tr class=\"course_row\"><td>".$req['symbol']."</td><td>".$group_data[$req['symbol']]['title']."</td><td>".$req['th_grp']."</td><td>".$group_data[$req['symbol']]['theory'][$req['th_grp']]['teacher']."</td><td>".$req['lab_grp']."</td><td>".$group_data[$req['symbol']]['lab'][$req['lab_grp']]['teacher']."</td></tr>\n";
 		}
 		else {
@@ -314,7 +315,7 @@ function print_schedule($sch, $schedno)
 			$query .= "OR courses.symbol='".$req['symbol']."' ";
 		}
 		$query .= $query_end;
-	
+
 		$tmp=microtime(TRUE);
 		$result = mysql_query($query) or die('Query failed: ' . mysql_error());
 		$prof_string .= "period sql query: ".(microtime(TRUE)-$tmp)."<br />\n";
@@ -340,12 +341,15 @@ function print_schedule($sch, $schedno)
 	}
 
 	draw_schedule($schedule_periods);
+
+	echo '  </div>';
+	echo '</div>';
 }
 
 function print_room_schedule($room) {
 	global $CONFIG_VARS;
         $dblink = connect_db();
-	
+
 	// Make the query
 
 	$query = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol, periods.room as room, periods.time AS time, periods.week AS week,periods.weekday AS weekday FROM periods INNER JOIN groups ON groups.unique=periods.group INNER JOIN courses_semester ON courses_semester.unique=groups.course_semester INNER JOIN courses ON courses.unique=courses_semester.course INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS['default_semester']."' AND periods.room='".mysql_real_escape_string($room, $dblink)."'";
@@ -364,7 +368,7 @@ function print_room_schedule($room) {
 function print_teacher_schedule($teacher) {
 	global $CONFIG_VARS;
         $dblink = connect_db();
-	
+
 	// Make the query
 
 	$query = "SELECT courses.symbol AS symbol,groups.name AS grp,groups.theory_or_lab AS tol, periods.room as room, periods.time AS time, periods.week AS week,periods.weekday AS weekday FROM periods INNER JOIN groups ON groups.unique=periods.group INNER JOIN courses_semester ON courses_semester.unique=groups.course_semester INNER JOIN courses ON courses.unique=courses_semester.course INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS['default_semester']."' AND groups.teacher='".mysql_real_escape_string($teacher, $dblink)."'";
@@ -396,9 +400,9 @@ function draw_schedule($schedule_periods) {
 	$weekend_day_labels = array('Samedi', 'Dimanche');
 
 	foreach($schedule_periods as $row) {
-		
+
 		// ASSERT : valid days, valid hours
-		
+
 		// If is week
 		if(array_search($row['weekday'], $week_day_codes) !== FALSE) {
 			// If is during day
@@ -415,7 +419,7 @@ function draw_schedule($schedule_periods) {
 				if(!isset($week[$row['weekday']][$row['time']])) {
 					$week[$row['weekday']][$row['time']] = array();
 				}
-			
+
 				array_push($week[$row['weekday']][$row['time']], $row);
 			}
 			// If is nonstandard time
@@ -424,7 +428,7 @@ function draw_schedule($schedule_periods) {
 				if(!isset($week[$row['weekday']][$row['time']])) {
 					$week_nonstd[$row['weekday']][$row['time']] = array();
 				}
-		
+
 				array_push($week_nonstd[$row['weekday']][$row['time']], $row);
 			}
 		}
@@ -452,7 +456,7 @@ function draw_schedule($schedule_periods) {
 		}
 	}
 	$prof_string .= "process period query results: ".(microtime(TRUE)-$tmp)."<br />\n";
-	
+
 	// Draw the week schedule
 	$tmp=microtime(TRUE);
 
@@ -467,19 +471,39 @@ function draw_schedule($schedule_periods) {
 		}
 
 		if($pass == 0) {
-			echo '<table class="schedule">'."\n";
+?>
+			<table class="table table-bordered table-condensed table-striped" style="width: auto; margin: 0 auto;">
+				<colgroup>
+					<col style="width: 10%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+				</colgroup>
+ <?php
 			$hourcodes = $week_hour_codes;
 			$hourlabels = $week_hour_labels;
 			$daycodes = $week_day_codes;
 			$daylabels = $week_day_labels;
-	
+
 			if($week_have_evening) {
 				$hourcodes = array_merge($hourcodes, $week_nighthours_codes);
 				$hourlabels = array_merge($hourlabels, $week_nighthours_labels);
 			}
 		}
 		elseif($pass == 1) {
-			echo '<table class="schedule" style="clear:none;">'."\n";
+?>
+			<table class="table table-bordered table-condensed table-striped" style="width: auto; margin: 0 auto;">
+				<colgroup>
+					<col style="width: 10%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+					<col style="width: 18%;"></col>
+				</colgroup>
+ <?php
 			$hourcodes = $weekend_hour_codes;
 			$hourlabels = $weekend_hour_labels;
 			$daycodes = $weekend_day_codes;
@@ -489,16 +513,16 @@ function draw_schedule($schedule_periods) {
 		}
 
 		// print the day headers on this subschedule
-		echo "<tr>\n";
-		echo "\t".'<td class="whitecorner"></td>'."\n";
+		echo "<thead><tr>\n";
+		echo "\t".'<th></th>'."\n";
 		foreach($daylabels as $lb) {
-			echo "\t".'<td class="weekday">'.$lb.'</td>'."\n";
+			echo "\t".'<th style="text-align: center;">'.$lb.'</th>'."\n";
 		}
-		echo "</tr>\n";
-	
+		echo "</tr></thead>\n";
+
 		for($hourindex=0; $hourindex < count($hourcodes); $hourindex++) {
 			echo "	<tr>\n";
-			echo "		<td class=\"hour\"><b>".$hourlabels[$hourindex]."</b></td>\n";
+			echo "		<th style=\"background-color: #efefef; text-align: right; padding-right: 5px;\">".$hourlabels[$hourindex]."</th>\n";
 			for($dayindex=0; $dayindex < count($daycodes); $dayindex++) {
 				echo "		<td>";
 				if(! $week[$daycodes[$dayindex]][$hourcodes[$hourindex]]) {
@@ -510,7 +534,7 @@ function draw_schedule($schedule_periods) {
 				$cumul_mask=0;
 				foreach($week[$daycodes[$dayindex]][$hourcodes[$hourindex]] as $period) {
 					if($period['week'] == "A") {
-						$mask=3;	
+						$mask=3;
 					}
 					elseif($period['week'] == "B1") {
 						$mask=1;
@@ -534,7 +558,7 @@ function draw_schedule($schedule_periods) {
 					else {
 						$tol = 'LAB';
 					}
-					
+
 					if($period['week'] == "A") {
 						$b1b2="";
 						$mask=3;
@@ -550,7 +574,7 @@ function draw_schedule($schedule_periods) {
 					else {
 						admin_error("Invalid week");
 					}
-					
+
 					if($mask & $conflict) {
 						echo "<div class=\"period_conflict\">";
 					}
@@ -587,7 +611,7 @@ function draw_schedule($schedule_periods) {
 						else {
 							$tol = 'LAB';
 						}
-	
+
 						if($period['week'] == "A") {
 							$b1b2="";
 						}
@@ -600,7 +624,7 @@ function draw_schedule($schedule_periods) {
 						else {
 							admin_error("Invalid week");
 						}
-					
+
 						echo "<div class=\"period_noconflict\">";
 						echo "<b><u>".preg_replace("/(.*)(..)/", "$1:$2", $time)."</u><br />".$period['symbol']."</b> (".$period['grp'].")<br />[".$tol."] ".$period['room'].$b1b2;
 						echo "</div>\n";
@@ -608,7 +632,7 @@ function draw_schedule($schedule_periods) {
 				}
 				echo "          </td>\n";
 			}
-	
+
 		}
 		echo "</table>\n";
 
@@ -625,24 +649,24 @@ function draw_schedule($schedule_periods) {
    by Benjamin Poirier
 */
 
-function array_intersect_key2($array1, $array2) 
-{ 
-	$output= array(); 
-     
-	foreach ($array1 as $key => $value) { 
-		if (array_key_exists($key, $array2)) { 
+function array_intersect_key2($array1, $array2)
+{
+	$output= array();
+
+	foreach ($array1 as $key => $value) {
+		if (array_key_exists($key, $array2)) {
 			$output[$key]= $value;
-		} 
-	} 
-     
-	return $output; 
-} 
+		}
+	}
+
+	return $output;
+}
 
 
 function getHash($email)
 {
 	global $CONFIG_VARS;
-	
+
 	return hash_hmac("sha1", $email, $CONFIG_VARS["emailer.pepper"]);
 }
 
@@ -651,7 +675,7 @@ function ipcompare ($ip1, $ip2, $mask)
 {
 	$masked1 = ip2long($ip1) & ip2long($mask); // bitwise AND of $ip1 with the mask
 	$masked2 = ip2long($ip2) & ip2long($mask); // bitwise AND of $ip2 with the mask
-	
+
 	if ($masked1 == $masked2)
 	{
 		return true;
@@ -682,4 +706,3 @@ function string2varname ($str)
 }
 
 ?>
-
