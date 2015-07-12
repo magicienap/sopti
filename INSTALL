@@ -15,11 +15,16 @@ Requirements:
 	
 * Enter the sopti directory and run the configure script
 	cd sopti-xx
-	./configure
+	mkdir build
+	cd build
+	../configure
 	
 * Compile the program
 	make
-	make parser_prof   # if you want to extract teacher data from the SI xml files
+	# If you want to extract teacher data from the SI xml files
+	cd src
+	make parser_prof
+	cd ..
 	
 -> No install feature is implemented at this time
 

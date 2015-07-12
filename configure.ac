@@ -12,4 +12,8 @@ AC_CHECK_FUNCS(getopt_long)
 #AC_CHECK_LIB(mysqlclient15, mysql_real_connect)
 AM_CONDITIONAL(NEED_GETOPT_LONG, test $ac_cv_func_getopt_long = no)
 
-AC_OUTPUT([Makefile])
+AC_CONFIG_FILES([
+  Makefile
+  src/Makefile
+])
+AC_OUTPUT

@@ -1,0 +1,27 @@
+# Automake
+
+Makefile.in
+
+# Autoconf
+
+/aclocal.m4
+/autom4te.cache
+/compile
+/configure
+/depcomp
+/install-sh
+/missing
+/config.h.in
+/config.h
+
+# Sopti
+
+courses.txt
+data/count.txt
+data/closed.csv
+data/courses.csv
+data/courses_xml/
+data/teachers.csv
+semester.conf
+sopti.conf
+web/config.php
