@@ -84,7 +84,7 @@ $user_time=microtime(TRUE);
 			}
 		}
 	
-		trim($explicitopen_arg);
+		$explicitopen_arg = trim($explicitopen_arg);
 
 		$cmd_initial=$SOPTI_EXEC . " --configfile '$SOPTI_CONFIG_FILE' --semesterfile '$SOPTI_SEMESTER_CONFIG_FILE' --html make";
 		$allowed_objectives = array( "minholes", "maxmorningsleep", "maxfreedays", "maxcourses", "minconflicts" );
