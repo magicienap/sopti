@@ -9,7 +9,7 @@ ob_start();
 
 <head>
 	<title>Horaire de salle</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" type="text/css" href="make.css" />
 	<link rel="stylesheet" type="text/css" href="sopti.css" />
 </head>
@@ -19,7 +19,7 @@ ob_start();
 <?php
 $teacher = $_GET['teacher'];
 
-echo "<h1>Horaire d'un chargé de cours</h1>\n";
+echo "<h1>Horaire d'un chargÃ© de cours</h1>\n";
 echo "<h2>".htmlspecialchars($teacher, ENT_QUOTES)."</h2>\n";
 echo "<p>".date("Y/m/d H:i:s")."</p>\n";
 
@@ -27,7 +27,7 @@ print_teacher_schedule($teacher);
 
 ?>
 
-<p style="clear: left;">Avertissement: Cet horaire est construit à partir de l'horaire général de l'École Polytechnique. Il ne contient que les charges de cours données à l'École Polytechnique. Il n'a aucun caractère officiel.</p>
+<p style="clear: left;">Avertissement: Cet horaire est construit Ã  partir de l'horaire gÃ©nÃ©ral de l'Ã‰cole Polytechnique. Il ne contient que les charges de cours donnÃ©es Ã  l'Ã‰cole Polytechnique. Il n'a aucun caractÃ¨re officiel.</p>
 
 </body>
 </html>

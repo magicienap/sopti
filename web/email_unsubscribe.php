@@ -14,16 +14,16 @@ if (isset($_GET["email"]) || isset($_GET["hash"]))
 {
 	if (!isset($_GET["email"]))
 	{
-		error("Email manquant, vérifier le lien utilisé ou refaire la demande par email");
+		error("Email manquant, vÃ©rifier le lien utilisÃ© ou refaire la demande par email");
 	}
 	else if (!isset($_GET["hash"]))
 	{
-		error("Hash manquant, vérifier le lien utilisé ou refaire la demande par email");
+		error("Hash manquant, vÃ©rifier le lien utilisÃ© ou refaire la demande par email");
 	}
 	
 	if ($_GET["hash"] != getHash($_GET["email"]))
 	{
-		error("Hash invalide, vérifier le lien utilisé ou refaire la demande par email");
+		error("Hash invalide, vÃ©rifier le lien utilisÃ© ou refaire la demande par email");
 		# error("This will help debugging: " . htmlentities(urlencode(getHash($_GET["email"])), ENT_QUOTES));
 	}
 	
@@ -31,22 +31,22 @@ if (isset($_GET["email"]) || isset($_GET["hash"]))
 	<html>
 	
 	<head>
-		<title>Désinscription de la notification par email - Étape 1</title>
+		<title>DÃ©sinscription de la notification par email - Ã‰tape 1</title>
 		<link rel="stylesheet" type="text/css" href="sopti.css">
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	</head>
 	
 	<body>
 	
 	<div id="header">
 	
-	<img src="genhor_sm.png" alt="Générateur d'horaires">
+	<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
 	
-	<h1>Désinscription de la notification par email</h1>
+	<h1>DÃ©sinscription de la notification par email</h1>
 	
-	<p class="step_notcurrent">Étape 0 - Code d'accès
-	<p class="step_current">Étape 1 - Choisir les demandes à annuler
-	<p class="step_notcurrent">Étape 2 - Confirmation
+	<p class="step_notcurrent">Ã‰tape 0 - Code d'accÃ¨s
+	<p class="step_current">Ã‰tape 1 - Choisir les demandes Ã  annuler
+	<p class="step_notcurrent">Ã‰tape 2 - Confirmation
 	
 	</div>
 	
@@ -55,7 +55,7 @@ if (isset($_GET["email"]) || isset($_GET["hash"]))
 	<h2>Demandes en attente</h2>
 	<div class="option_block">
 		<p>
-		Veuillez sélectionner les demandes que vous désirez annuler:<br>
+		Veuillez sÃ©lectionner les demandes que vous dÃ©sirez annuler:<br>
 BENRULES;
 	
 	echo '<input type="hidden" name="email" value="' . htmlentities($_GET["email"], ENT_QUOTES) . '">';
@@ -96,17 +96,17 @@ BENRULES;
 		error("Vous n'avez aucune demande de notification en attente");
 	}
 	
-	echo '<a href="javascript:openOCChecks(0,' . mysql_num_rows($resultat) . ')" class="oclink">(Sélectionner toutes les demandes)</a><br/>';
+	echo '<a href="javascript:openOCChecks(0,' . mysql_num_rows($resultat) . ')" class="oclink">(SÃ©lectionner toutes les demandes)</a><br/>';
 	
 	# while($cours= mysql_fetch_assoc($resultat))
 	# {	
 		# if ($cours["courses_semester.course_type"] == "TLS")
 		# {
-			# $typeCours= "combinée théorie et laboratoire";
+			# $typeCours= "combinÃ©e thÃ©orie et laboratoire";
 		# }
 		# else if ($cours["groups.theory_or_lab"] == "C")
 		# {
-			# $typeCours= "théorique";
+			# $typeCours= "thÃ©orique";
 		# }
 		# else if ($cours["groups.theory_or_lab"] == "L")
 		# {
@@ -153,13 +153,13 @@ BENRULES;
 		}
 		
 		echo '<table class="openclose">';
-		echo '<tr><td class="title"><div class="title">' . $sym . "<br>" . $course_info[$sym]["title"] . '<br><a href="http://www.polymtl.ca/etudes/cours/details.php?sigle=' . $sym . '" target="_blank">Détails et horaire du cours</a></div></td></tr>';
+		echo '<tr><td class="title"><div class="title">' . $sym . "<br>" . $course_info[$sym]["title"] . '<br><a href="http://www.polymtl.ca/etudes/cours/details.php?sigle=' . $sym . '" target="_blank">DÃ©tails et horaire du cours</a></div></td></tr>';
 		
 		foreach(array_intersect_key2($entry1, $types_to_consider) as $type => $entry2)
 		{
 			// compute the contents of $group_type_string
 			if($course_info[$sym]["type"] == 'T' && $type == 'C') {
-				$group_type_string = "Théorique";
+				$group_type_string = "ThÃ©orique";
 				$cb_name_prefix = 't';
 			}
 			elseif($course_info[$sym]["type"] == 'L' && $type == 'L') {
@@ -167,11 +167,11 @@ BENRULES;
 				$cb_name_prefix = 'l';
 			}
 			elseif($course_info[$sym]["type"] == 'TL' && $type == 'C') {
-				$group_type_string = "Théorique et laboratoire";
+				$group_type_string = "ThÃ©orique et laboratoire";
 				$cb_name_prefix = 't';
 			}
 			elseif($course_info[$sym]["type"] == 'TLS' && $type == 'C') {
-				$group_type_string = "Théorique";
+				$group_type_string = "ThÃ©orique";
 				$cb_name_prefix = 't';
 			}
 			elseif($course_info[$sym]["type"] == 'TLS' && $type == 'L') {
@@ -184,7 +184,7 @@ BENRULES;
 			
 			$nbOCChecks= count($entry2);
 			
-			echo '<tr><td class="type">' . $group_type_string . '<br><a href="javascript:openOCChecks(' . $offsetOCChecks . ',' . $nbOCChecks . ')" class="oclink">(Sélectionner toutes les demandes de ce cours)</a></td></tr>';
+			echo '<tr><td class="type">' . $group_type_string . '<br><a href="javascript:openOCChecks(' . $offsetOCChecks . ',' . $nbOCChecks . ')" class="oclink">(SÃ©lectionner toutes les demandes de ce cours)</a></td></tr>';
 			$offsetOCChecks+= $nbOCChecks;
 			
 			foreach($entry2 as $groupname => $entry3) {
@@ -205,7 +205,7 @@ BENRULES;
 				{
 					// If theory and lab same, we must specify 2 teachers,
 					// therefore we indicate which one is 'theory' and 'lab'
-					echo "<b>Théorie:</b> " . $entry3["teacherT"];
+					echo "<b>ThÃ©orie:</b> " . $entry3["teacherT"];
 					echo "<br><b>Lab:</b> " . $entry3["teacherL"];
 				}
 				else if($type == 'C')
@@ -244,7 +244,7 @@ BENRULES;
 	
 	<h2>Terminer</h2>
 	<div class="option_block">
-		<p style="width:400px;"><b>Attention</b><br>Si vous continuez, les demandes que vous avez sélectionnées seront retirées du système.
+		<p style="width:400px;"><b>Attention</b><br>Si vous continuez, les demandes que vous avez sÃ©lectionnÃ©es seront retirÃ©es du systÃ¨me.
 		<p><input type="submit" value="Soumettre" name="action">
 	</div>
 	
@@ -259,16 +259,16 @@ else if (isset($_POST["action"]))
 {
 	if (!isset($_POST["email"]))
 	{
-		error("Email manquant, vérifier le lien utilisé ou refaire la demande par email");
+		error("Email manquant, vÃ©rifier le lien utilisÃ© ou refaire la demande par email");
 	}
 	else if (!isset($_POST["hash"]))
 	{
-		error("Hash manquant, vérifier le lien utilisé ou refaire la demande par email");
+		error("Hash manquant, vÃ©rifier le lien utilisÃ© ou refaire la demande par email");
 	}
 	
 	if ($_POST["hash"] != getHash($_POST["email"]))
 	{
-		error("Hash invalide, vérifier le lien utilisé ou refaire la demande par email");
+		error("Hash invalide, vÃ©rifier le lien utilisÃ© ou refaire la demande par email");
 		#error("This will help debugging: " . htmlentities(urlencode(getHash($_GET["email"])), ENT_QUOTES));
 	}
 	
@@ -281,7 +281,7 @@ else if (isset($_POST["action"]))
 	
 	if (count($groupList) < 1)
 	{
-		error("Vous n'avez sélectionné aucune demande");
+		error("Vous n'avez sÃ©lectionnÃ© aucune demande");
 	}
 	
 	$resultat= mysql_query("
@@ -292,29 +292,29 @@ else if (isset($_POST["action"]))
 	
 	if (!$resultat)
 	{
-		error("Erreur de requête sur la base de données: " . mysql_error());
+		error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 	}
 	
 	echo <<<BENRULES
 	<html>
 	
 	<head>
-		<title>Désinscription de la notification par email - Étape 2</title>
+		<title>DÃ©sinscription de la notification par email - Ã‰tape 2</title>
 		<link rel="stylesheet" type="text/css" href="sopti.css">
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	</head>
 	
 	<body>
 	
 	<div id="header">
 	
-	<img src="genhor_sm.png" alt="Générateur d'horaires">
+	<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
 	
-	<h1>Désinscription de la notification par email</h1>
+	<h1>DÃ©sinscription de la notification par email</h1>
 	
-	<p class="step_notcurrent">Étape 0 - Code d'accès
-	<p class="step_notcurrent">Étape 1 - Choisir les demandes à annuler
-	<p class="step_current">Étape 2 - Confirmation
+	<p class="step_notcurrent">Ã‰tape 0 - Code d'accÃ¨s
+	<p class="step_notcurrent">Ã‰tape 1 - Choisir les demandes Ã  annuler
+	<p class="step_current">Ã‰tape 2 - Confirmation
 	
 	</div>
 	
@@ -324,13 +324,13 @@ else if (isset($_POST["action"]))
 BENRULES;
 	
 	$nbrows= mysql_affected_rows();
-	echo 'Vous avez été désinscrit de ' . htmlentities($nbrows, ENT_QUOTES) . ($nbrows < 2 ? ' demande.' : ' demandes.');
+	echo 'Vous avez Ã©tÃ© dÃ©sinscrit de ' . htmlentities($nbrows, ENT_QUOTES) . ($nbrows < 2 ? ' demande.' : ' demandes.');
 	
 	echo <<<BENRULES
-	<p>Vous pouvez maintenant fermer cette fenêtre et retourner à la 
-	génération d'horaire ou vous inscrire pour être notifié pour un	autre groupe.
+	<p>Vous pouvez maintenant fermer cette fenÃªtre et retourner Ã  la 
+	gÃ©nÃ©ration d'horaire ou vous inscrire pour Ãªtre notifiÃ© pour un	autre groupe.
 	<form method="GET" action="javascript:window.close();">
-		<input type="submit" value="Fermer cette fenêtre">
+		<input type="submit" value="Fermer cette fenÃªtre">
 	</form>
 	</div>
 	
@@ -352,7 +352,7 @@ else if (isset($_POST["email_request"]))
 		error("L'adresse email que vous avez fournie est invalide");
 	}
 	
-	// Note: décommenter ici pour avertir tout de suite la personne si elle n'a aucune requête en attente, ça pourrait être exploité par une personne qui voudrait savoir si une autre à des requêtes en attente
+	// Note: dÃ©commenter ici pour avertir tout de suite la personne si elle n'a aucune requÃªte en attente, Ã§a pourrait Ãªtre exploitÃ© par une personne qui voudrait savoir si une autre Ã  des requÃªtes en attente
 	/*
 	$resultat= mysql_query("
 		select 
@@ -363,11 +363,11 @@ else if (isset($_POST["email_request"]))
 	
 	if (!$resultat || mysql_num_rows($resultat) < 1)
 	{
-		error("Erreur de requête sur la base de données: " . mysql_error());
+		error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 	}
 	else if (mysql_result($resultat, 0) < 1)
 	{
-		error("Vous n'avez aucune requête en attente.");
+		error("Vous n'avez aucune requÃªte en attente.");
 	}
 	*/
 	
@@ -429,11 +429,11 @@ else if (isset($_POST["email_request"]))
 	
 	if (!$resultat || mysql_num_rows($resultat) < 1)
 	{
-		error("Erreur de requête sur la base de données: " . mysql_error());
+		error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 	}
 	else if (mysql_result($resultat, 0))
 	{
-		error('Vous avez atteint votre maximum de requête de désinscription pour cette adresse, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la désinscription ne fonctionne pas.');
+		error('Vous avez atteint votre maximum de requÃªte de dÃ©sinscription pour cette adresse, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la dÃ©sinscription ne fonctionne pas.');
 	}
 	
 	// check the ip limit
@@ -451,11 +451,11 @@ else if (isset($_POST["email_request"]))
 		
 		if (!$resultat || mysql_num_rows($resultat) < 1)
 		{
-			error("Erreur de requête sur la base de données: " . mysql_error());
+			error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 		}
 		else if (mysql_result($resultat, 0))
 		{
-			error('Vous avez atteint votre maximum de requête de désinscription pour ce poste, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la désinscription ne fonctionne pas.');
+			error('Vous avez atteint votre maximum de requÃªte de dÃ©sinscription pour ce poste, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si la dÃ©sinscription ne fonctionne pas.');
 		}
 	}
 	
@@ -475,52 +475,52 @@ else if (isset($_POST["email_request"]))
 
 	$message= "Bonjour,
 
-Vous avez fait une demande pour vous désinscire de la notification par email sur le site du générateur d'horaires.
-Pour ce faire vous n'avez qu'à suivre ce lien:
+Vous avez fait une demande pour vous dÃ©sinscire de la notification par email sur le site du gÃ©nÃ©rateur d'horaires.
+Pour ce faire vous n'avez qu'Ã  suivre ce lien:
 " . $CONFIG_VARS["baseURL"] . "/email_unsubscribe.php?email=" . urlencode($_POST["email"]) . "&hash=" . preg_replace("/\.$/", "%2E", urlencode(getHash($_POST["email"]))) . "
-à partir de cette page vous pourrez choisir les notifications desquelles vous souhaitez vous désincrire.
+Ã  partir de cette page vous pourrez choisir les notifications desquelles vous souhaitez vous dÃ©sincrire.
 
-Vous pouvez aussi aller vérifier vos possibilités d'horaire à nouveau sur le site du générateur d'horaires:
+Vous pouvez aussi aller vÃ©rifier vos possibilitÃ©s d'horaire Ã  nouveau sur le site du gÃ©nÃ©rateur d'horaires:
 " . $CONFIG_VARS["baseURL"] . "
 
-Merci d'avoir utilisé le générateur d'horaires.
-Vous pouvez nous faire part de vos commentaires à l'adresse 
+Merci d'avoir utilisÃ© le gÃ©nÃ©rateur d'horaires.
+Vous pouvez nous faire part de vos commentaires Ã  l'adresse 
 " . $CONFIG_VARS["admin_email"] . "
 
--L'équipe du générateur d'horaires
+-L'Ã©quipe du gÃ©nÃ©rateur d'horaires
 
-(Si vous avez reçu ce message sans en avoir fait la demande, prière de nous en faire part à l'adresse " . $CONFIG_VARS["admin_email"] . ")
+(Si vous avez reÃ§u ce message sans en avoir fait la demande, priÃ¨re de nous en faire part Ã  l'adresse " . $CONFIG_VARS["admin_email"] . ")
 ";
 	
 	$message= wordwrap($message, 70);
 	
-	$headers= "From: Générateur d'horaires de l'AEP <" . $CONFIG_VARS["admin_email"] . ">";
+	$headers= "From: GÃ©nÃ©rateur d'horaires de l'AEP <" . $CONFIG_VARS["admin_email"] . ">";
 	
-	if (!mail($_POST["email"], "Désinscription de la notification par email", $message, $headers))
+	if (!mail($_POST["email"], "DÃ©sinscription de la notification par email", $message, $headers))
 	{
-		error("Le email n'a pu être envoyé avec succès");
+		error("Le email n'a pu Ãªtre envoyÃ© avec succÃ¨s");
 	}
 	
 echo <<<BENRULES
 	<html>
 	
 	<head>
-		<title>Désinscription de la notification par email - Étape 0</title>
+		<title>DÃ©sinscription de la notification par email - Ã‰tape 0</title>
 		<link rel="stylesheet" type="text/css" href="sopti.css">
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	</head>
 	
 	<body>
 	
 	<div id="header">
 	
-	<img src="genhor_sm.png" alt="Générateur d'horaires">
+	<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
 	
-	<h1>Désinscription de la notification par email</h1>
+	<h1>DÃ©sinscription de la notification par email</h1>
 	
-	<p class="step_current">Étape 0 - Code d'accès
-	<p class="step_notcurrent">Étape 1 - Choisir les demandes à annuler
-	<p class="step_notcurrent">Étape 2 - Confirmation
+	<p class="step_current">Ã‰tape 0 - Code d'accÃ¨s
+	<p class="step_notcurrent">Ã‰tape 1 - Choisir les demandes Ã  annuler
+	<p class="step_notcurrent">Ã‰tape 2 - Confirmation
 	
 	</div>
 	
@@ -529,8 +529,8 @@ echo <<<BENRULES
 		<p>
 BENRULES;
 	
-	echo 'Un email à été envoyé à votre adresse, ' . htmlentities($_POST["email"], ENT_QUOTES) . ', vous devriez le recevoir d\'ici quelques minutes.<br>
-		Si jamais cela ne fonctionne pas, veuillez nous contacter à l\'addresse <a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>';
+	echo 'Un email Ã  Ã©tÃ© envoyÃ© Ã  votre adresse, ' . htmlentities($_POST["email"], ENT_QUOTES) . ', vous devriez le recevoir d\'ici quelques minutes.<br>
+		Si jamais cela ne fonctionne pas, veuillez nous contacter Ã  l\'addresse <a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>';
 	
 	echo <<<BENRULES
 	</div>
@@ -546,36 +546,36 @@ else
 	<html>
 	
 	<head>
-		<title>Désinscription de la notification par email - Étape 0</title>
+		<title>DÃ©sinscription de la notification par email - Ã‰tape 0</title>
 		<link rel="stylesheet" type="text/css" href="sopti.css">
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	</head>
 	
 	<body>
 	
 	<div id="header">
 	
-	<img src="genhor_sm.png" alt="Générateur d'horaires">
+	<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
 	
-	<h1>Désinscription de la notification par email</h1>
+	<h1>DÃ©sinscription de la notification par email</h1>
 	
-	<p class="step_current">Étape 0 - Code d'accès
-	<p class="step_notcurrent">Étape 1 - Choisir les demandes à annuler
-	<p class="step_notcurrent">Étape 2 - Confirmation
+	<p class="step_current">Ã‰tape 0 - Code d'accÃ¨s
+	<p class="step_notcurrent">Ã‰tape 1 - Choisir les demandes Ã  annuler
+	<p class="step_notcurrent">Ã‰tape 2 - Confirmation
 	
 	</div>
 	
-	<h2>Code d'accès</h2>
+	<h2>Code d'accÃ¨s</h2>
 	<div class="option_block" style="width: 600px;">
 	<p>
-		Pour annuler les demandes que vous avez déjà faites il vous faut utiliser un lien comportant un code
-		d'accès spécifique à votre email.
+		Pour annuler les demandes que vous avez dÃ©jÃ  faites il vous faut utiliser un lien comportant un code
+		d'accÃ¨s spÃ©cifique Ã  votre email.
 		<ul>
-		<li>	Si vous avez déjà reçu une notification, le lien vous à été fourni dans le email
+		<li>	Si vous avez dÃ©jÃ  reÃ§u une notification, le lien vous Ã  Ã©tÃ© fourni dans le email
 		et vous pouvez l'utiliser.
-		<li>Si vous n'avez pas encore reçu de notification ou si vous n'avez plus accès à un email de notification précédent
-		le système peut vous envoyer un email avec le lien à utiliser. Une fois que vous aurez reçu ce email vous n'avez qu'à
-		suivre le lien pour vous désinscrire des notifications qui ne vous sont plus utiles.<br><br>
+		<li>Si vous n'avez pas encore reÃ§u de notification ou si vous n'avez plus accÃ¨s Ã  un email de notification prÃ©cÃ©dent
+		le systÃ¨me peut vous envoyer un email avec le lien Ã  utiliser. Une fois que vous aurez reÃ§u ce email vous n'avez qu'Ã 
+		suivre le lien pour vous dÃ©sinscrire des notifications qui ne vous sont plus utiles.<br><br>
 		<form action="email_unsubscribe.php" method="POST">
 BENRULES;
 

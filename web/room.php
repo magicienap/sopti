@@ -9,7 +9,7 @@ ob_start();
 
 <head>
 	<title>Horaire de salle</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" type="text/css" href="make.css" />
 	<link rel="stylesheet" type="text/css" href="sopti.css" />
 </head>
@@ -26,7 +26,7 @@ print_room_schedule($room);
 
 ?>
 
-<p style="clear: left;">Avertissement: Cet horaire est construit à partir de l'horaire général de l'École Polytechnique. Il ne contient que les cours officiellement données à l'École Polytechnique. D'autres activités peuvent occuper un local. Pour connaître l'horaire complet d'un local ou le réserver, communiquer avec le service responsable du local en question.</p>
+<p style="clear: left;">Avertissement: Cet horaire est construit Ã  partir de l'horaire gÃ©nÃ©ral de l'Ã‰cole Polytechnique. Il ne contient que les cours officiellement donnÃ©es Ã  l'Ã‰cole Polytechnique. D'autres activitÃ©s peuvent occuper un local. Pour connaÃ®tre l'horaire complet d'un local ou le rÃ©server, communiquer avec le service responsable du local en question.</p>
 
 </body>
 </html>

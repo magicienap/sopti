@@ -12,14 +12,14 @@ ob_start();
 <head>
 	<title>Horaire de salle</title>
 	<link rel="stylesheet" type="text/css" href="listcourses.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
 <body>
 
 <h1>Horaire de salle</h1>
 
-<p>Sélectionner la salle dans la liste ci-dessous.</p>
+<p>SÃ©lectionner la salle dans la liste ci-dessous.</p>
 
 <?php
         $dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])

@@ -6,22 +6,22 @@ require_once("lib.php");
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-	<title>Générer des horaires - Étape 1</title>
+	<title>GÃ©nÃ©rer des horaires - Ã‰tape 1</title>
 	<link rel="stylesheet" type="text/css" href="sopti.css" />
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
 <body>
 
 <div id="header">
 
-<img src="genhor_sm.png" alt="Générateur d'horaires" />
+<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires" />
 
-<h1>Générer des horaires</h1>
+<h1>GÃ©nÃ©rer des horaires</h1>
 
-<p class="step_current">Étape 1 - Spécifier les cours désirés</p>
-<p class="step_notcurrent">Étape 2 - Choisir les options de génération</p>
-<p class="step_notcurrent">Étape 3 - Visualiser les horaires</p>
+<p class="step_current">Ã‰tape 1 - SpÃ©cifier les cours dÃ©sirÃ©s</p>
+<p class="step_notcurrent">Ã‰tape 2 - Choisir les options de gÃ©nÃ©ration</p>
+<p class="step_notcurrent">Ã‰tape 3 - Visualiser les horaires</p>
 
 </div>
 
@@ -35,13 +35,13 @@ $info = stat($course_file);
 $unix_modif = $info[9];
 $string_modif = date("r", $unix_modif);
 
-print "Dernière mise a jour du fichier de cours: ".$string_modif
+print "DerniÃ¨re mise a jour du fichier de cours: ".$string_modif
 */
 ?>
 
 <div class="option_block">
-	<h2>Cours désirés</h2>
-	<p>Écrire les sigles des cours désirés, séparés par un espace. Ex: MTH1101 MTH1006 INF1005C<br />
+	<h2>Cours dÃ©sirÃ©s</h2>
+	<p>Ã‰crire les sigles des cours dÃ©sirÃ©s, sÃ©parÃ©s par un espace. Ex: MTH1101 MTH1006 INF1005C<br />
 	<a href="listcourses.php">Voir la liste des cours offerts</a></p>
 	<p><textarea name="courses" cols="50" rows="2"></textarea></p>
 </div>

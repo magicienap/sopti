@@ -23,25 +23,25 @@ if (isset($_GET["unique"]))
 	<head>
 		<title>Notification par email</title>
 		<link rel="stylesheet" type="text/css" href="sopti.css">
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	</head>
 	
 	<body>
 	
 	<div id="header">
 	
-	<img src="genhor_sm.png" alt="Générateur d'horaires">
+	<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
 	
 	<h1>Notification par email</h1>
 	
-	<p class="step_current">Étape 1 - Spécifier le email
-	<p class="step_notcurrent">Étape 2 - Confirmation
+	<p class="step_current">Ã‰tape 1 - SpÃ©cifier le email
+	<p class="step_notcurrent">Ã‰tape 2 - Confirmation
 	
 	</div>
 	
 	<form method="POST" action="email_form.php">
 	
-	<h2>Groupe demandé</h2>
+	<h2>Groupe demandÃ©</h2>
 	<div class="option_block">
 		<p>
 BENRULES;
@@ -65,23 +65,23 @@ BENRULES;
 	
 	if (!mysql_num_rows($resultat))
 	{
-		error("Le groupe demandé n'a pas été trouvé, veuillez réessayer en cliquant sur un des liens de la deuxième page du système de génération d'hoaires");
+		error("Le groupe demandÃ© n'a pas Ã©tÃ© trouvÃ©, veuillez rÃ©essayer en cliquant sur un des liens de la deuxiÃ¨me page du systÃ¨me de gÃ©nÃ©ration d'hoaires");
 	}
 	
 	$cours= mysql_fetch_assoc($resultat);
 	
 	if ($cours["groups.closed"] != 1)
 	{
-		error("Ce groupe est déjà ouvert, vous pouvez aller vous inscrire tout de suite!");
+		error("Ce groupe est dÃ©jÃ  ouvert, vous pouvez aller vous inscrire tout de suite!");
 	}
 	
 	if ($cours["courses_semester.course_type"] == "TL")
 	{
-		$typeCours= "combinée théorie et laboratoire";
+		$typeCours= "combinÃ©e thÃ©orie et laboratoire";
 	}
 	else if ($cours["groups.theory_or_lab"] == "C")
 	{
-		$typeCours= "théorique";
+		$typeCours= "thÃ©orique";
 	}
 	else if ($cours["groups.theory_or_lab"] == "L")
 	{
@@ -103,7 +103,7 @@ BENRULES;
 	
 	<h2>Adresse email</h2>
 	<div class="option_block">
-		<p>Adresse email où envoyer la notification:<br>
+		<p>Adresse email oÃ¹ envoyer la notification:<br>
 BENRULES;
 	
 	if (isset($_COOKIE["email_notification"]))
@@ -120,7 +120,7 @@ BENRULES;
 	
 	<h2>Terminer</h2>
 	<div class="option_block">
-		<p style="width:400px;"><b>Attention</b><br>Ce système sert seulement à vous avertir lorsqu'une section devient ouverte, il ne peut pas faire le changement pour vous. Il est possible que quelqu'un d'autre s'inscrive entre le moment ou une place devient disponible et le moment ou vous recevez le email. Faites vite!
+		<p style="width:400px;"><b>Attention</b><br>Ce systÃ¨me sert seulement Ã  vous avertir lorsqu'une section devient ouverte, il ne peut pas faire le changement pour vous. Il est possible que quelqu'un d'autre s'inscrive entre le moment ou une place devient disponible et le moment ou vous recevez le email. Faites vite!
 		<p><input type="submit" value="Soumettre" name="action">
 	</div>
 	
@@ -145,18 +145,18 @@ else if (isset($_POST["action"]))
 	
 	if (!$resultat)
 	{
-		error("Erreur de requête sur la base de données: " . mysql_error());
+		error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 	}
 	else if (mysql_num_rows($resultat) < 1)
 	{
-		error("Le groupe demandé n'a pas été trouvé");
+		error("Le groupe demandÃ© n'a pas Ã©tÃ© trouvÃ©");
 	}
 	
 	$cours= mysql_fetch_assoc($resultat);
 	
 	if ($cours["groups.closed"] != 1)
 	{
-		error("Ce groupe est déjà ouvert, vous pouvez aller vous inscrire tout de suite!");
+		error("Ce groupe est dÃ©jÃ  ouvert, vous pouvez aller vous inscrire tout de suite!");
 	}
 	
 	if (!isset($_POST["email"]))
@@ -182,11 +182,11 @@ else if (isset($_POST["action"]))
 	
 	if (!$resultat || mysql_num_rows($resultat) < 1)
 	{
-		error("Erreur de requête sur la base de données: " . mysql_error());
+		error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 	}
 	else if (mysql_result($resultat, 0) > 0)
 	{
-		error('Vous avez déjà une requête en attente pour ce groupe, si vous le désirez, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler</a> cette requête.');
+		error('Vous avez dÃ©jÃ  une requÃªte en attente pour ce groupe, si vous le dÃ©sirez, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler</a> cette requÃªte.');
 	}
 	
 	// check the request limit
@@ -199,11 +199,11 @@ else if (isset($_POST["action"]))
 	
 	if (!$resultat || mysql_num_rows($resultat) < 1)
 	{
-		error("Erreur de requête sur la base de données: " . mysql_error());
+		error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 	}
 	else if (mysql_result($resultat, 0))
 	{
-		error('Vous avez atteint votre maximum de demandes en attente, si vous le désirez, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler</a> certaines de vos autres demandes d\'abord puis revenir ajouter celle-ci.');
+		error('Vous avez atteint votre maximum de demandes en attente, si vous le dÃ©sirez, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler</a> certaines de vos autres demandes d\'abord puis revenir ajouter celle-ci.');
 	}
 	
 	// check the ip limit
@@ -219,11 +219,11 @@ else if (isset($_POST["action"]))
 		
 		if (!$resultat || mysql_num_rows($resultat) < 1)
 		{
-			error("Erreur de requête sur la base de données: " . mysql_error());
+			error("Erreur de requÃªte sur la base de donnÃ©es: " . mysql_error());
 		}
 		else if (mysql_result($resultat, 0))
 		{
-			error('Vous avez atteint votre maximum de demandes en attente pour ce poste, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si vous désirez ajouter d\'autres demandes');
+			error('Vous avez atteint votre maximum de demandes en attente pour ce poste, veuillez communiquer avec nous (<a href="mailto:' . $CONFIG_VARS["admin_email"] . '">' . $CONFIG_VARS["admin_email"] . '</a>) si vous dÃ©sirez ajouter d\'autres demandes');
 		}
 	}
 	
@@ -244,21 +244,21 @@ echo <<<BENRULES
 	<html>
 	
 	<head>
-		<title>Notification par email - Étape 2</title>
+		<title>Notification par email - Ã‰tape 2</title>
 		<link rel="stylesheet" type="text/css" href="sopti.css">
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	</head>
 	
 	<body>
 	
 	<div id="header">
 	
-	<img src="genhor_sm.png" alt="Générateur d'horaires">
+	<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
 	
 	<h1>Notification par email</h1>
 	
-	<p class="step_notcurrent">Étape 1 - Spécifier le email
-	<p class="step_current">Étape 2 - Confirmation
+	<p class="step_notcurrent">Ã‰tape 1 - SpÃ©cifier le email
+	<p class="step_current">Ã‰tape 2 - Confirmation
 	
 	</div>
 	
@@ -267,15 +267,15 @@ echo <<<BENRULES
 		<p>
 BENRULES;
 
-	echo 'Une demande de notification a été ajoutée à la liste sous le email ' . htmlentities($_POST["email"], ENT_QUOTES) . '.';
+	echo 'Une demande de notification a Ã©tÃ© ajoutÃ©e Ã  la liste sous le email ' . htmlentities($_POST["email"], ENT_QUOTES) . '.';
 	
 	echo <<<BENRULES
-	<p>Vous pouvez maintenant fermer cette fenêtre et retourner à la 
-	génération d'horaire ou vous inscrire pour être notifié pour un	autre groupe.<br>
-	Si vous changez d'idée, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler cette requête</a>.
+	<p>Vous pouvez maintenant fermer cette fenÃªtre et retourner Ã  la 
+	gÃ©nÃ©ration d'horaire ou vous inscrire pour Ãªtre notifiÃ© pour un	autre groupe.<br>
+	Si vous changez d'idÃ©e, vous pouvez <a href="email_unsubscribe.php" target="_blank">annuler cette requÃªte</a>.
 	
 	<form method="GET" action="javascript:window.close();">
-		<input type="submit" value="Fermer cette fenêtre">
+		<input type="submit" value="Fermer cette fenÃªtre">
 	</form>
 	</div>
 	
@@ -285,7 +285,7 @@ BENRULES;
 }
 else
 {
-	error("Le groupe demandé n'a pas été spécifié, veuillez réessayer en cliquant sur un des liens de la deuxième page du système de génération d'hoaires");
+	error("Le groupe demandÃ© n'a pas Ã©tÃ© spÃ©cifiÃ©, veuillez rÃ©essayer en cliquant sur un des liens de la deuxiÃ¨me page du systÃ¨me de gÃ©nÃ©ration d'hoaires");
 }
 
 # $html = ob_get_clean();

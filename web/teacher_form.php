@@ -10,16 +10,16 @@ ob_start();
 <html>
 
 <head>
-	<title>Horaire d'un chargé de cours</title>
+	<title>Horaire d'un chargÃ© de cours</title>
 	<link rel="stylesheet" type="text/css" href="listcourses.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
 <body>
 
-<h1>Horaire d'un chargé de cours</h1>
+<h1>Horaire d'un chargÃ© de cours</h1>
 
-<p>Sélectionner le chargé de cours dans la liste ci-dessous.</p>
+<p>SÃ©lectionner le chargÃ© de cours dans la liste ci-dessous.</p>
 
 <?php
         $dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])

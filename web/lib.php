@@ -3,7 +3,7 @@ error_reporting(0);
 
 require_once('config.php');
 
-header('Content-Type: text/html; charset=ISO-8859-1');
+header('Content-Type: text/html; charset=UTF-8');
 
 $CONFIG_VARS=array();
 
@@ -36,17 +36,17 @@ function admin_error($msg)
 <html>
 
 <head>
-  <title>Générateur d'horaires - Erreur interne</title>
+  <title>GÃ©nÃ©rateur d'horaires - Erreur interne</title>
   <link rel="stylesheet" type="text/css" href="sopti.css">
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
 <body>
 
 <center>
 
-<img src="genhor_sm.png" alt="Générateur d'horaires">
-<p style="font-size: 15px;">Générateur d'horaires</p>
+<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
+<p style="font-size: 15px;">GÃ©nÃ©rateur d'horaires</p>
 </center>
 
 <div style="background-color: #ffbbbb;">
@@ -54,7 +54,7 @@ function admin_error($msg)
 <p align="center"><?php echo $msg; ?></p>
 </div>
 
-<p align="center">L'administrateur a été informé de cette erreur.
+<p align="center">L'administrateur a Ã©tÃ© informÃ© de cette erreur.
 </body>
 </html>
 
@@ -74,17 +74,17 @@ function error($msg)
 <html>
 
 <head>
-  <title>Générateur d'horaires - Erreur</title>
+  <title>GÃ©nÃ©rateur d'horaires - Erreur</title>
   <link rel="stylesheet" type="text/css" href="sopti.css">
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
 <body>
 
 <center>
 
-<img src="genhor_sm.png" alt="Générateur d'horaires">
-<p><font size="+2">Générateur d'horaires</font>
+<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires">
+<p><font size="+2">GÃ©nÃ©rateur d'horaires</font>
 </center>
 
 <div style="background-color: #ffbbbb;">
@@ -92,7 +92,7 @@ function error($msg)
 <p align="center"><?php echo $msg; ?></p>
 </div>
 
-<p align="center">Si possible, utiliser le bouton précédent de votre navigateur pour revenir en arrière et corriger l'erreur.
+<p align="center">Si possible, utiliser le bouton prÃ©cÃ©dent de votre navigateur pour revenir en arriÃ¨re et corriger l'erreur.
 </body>
 </html>
 
@@ -242,8 +242,8 @@ function print_schedule($sch, $schedno)
 			</tr>
 		</table>
 	</td></tr>
-	<tr><th rowspan="2">Sigle</th><th rowspan="2">Titre</th><th colspan="2">Théorie</th><th colspan="2">Lab</th></tr>
-	<tr><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader">Section</th><th class="subheader">Chargé</th><th class="subheader"></th></tr>
+	<tr><th rowspan="2">Sigle</th><th rowspan="2">Titre</th><th colspan="2">ThÃ©orie</th><th colspan="2">Lab</th></tr>
+	<tr><th class="subheader">Section</th><th class="subheader">ChargÃ©</th><th class="subheader">Section</th><th class="subheader">ChargÃ©</th><th class="subheader"></th></tr>
 	<tr><td colspan="7" style="background-color: black; height: 1px;"></td></tr>
 	
 <?php
@@ -266,11 +266,11 @@ function print_schedule($sch, $schedno)
 		}
 		elseif($group_data[$req['symbol']]['course_type'] == 'TL') {
 		        if($req['th_grp'] != $req['lab_grp']) {
-				error("Horaire illégal; th_grp != lab_grp pour un cours TL");
+				error("Horaire illÃ©gal; th_grp != lab_grp pour un cours TL");
 			}
 
 			if(!isset($group_data[$req['symbol']]['theory'][$req['th_grp']])) {
-				error("Groupe théorique introuvable: " . $req['symbol'] . "/" . $req['th_grp']);
+				error("Groupe thÃ©orique introuvable: " . $req['symbol'] . "/" . $req['th_grp']);
 			}
 			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
 				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);
@@ -280,7 +280,7 @@ function print_schedule($sch, $schedno)
 		}
 		elseif($group_data[$req['symbol']]['course_type'] == 'TLS') {
 			if(!isset($group_data[$req['symbol']]['theory'][$req['th_grp']])) {
-				error("Groupe théorique introuvable: " . $req['symbol'] . "/" . $req['th_grp']);
+				error("Groupe thÃ©orique introuvable: " . $req['symbol'] . "/" . $req['th_grp']);
 			}
 			if(!isset($group_data[$req['symbol']]['lab'][$req['lab_grp']])) {
 				error("Groupe lab introuvable: " . $req['symbol'] . "/" . $req['lab_grp']);

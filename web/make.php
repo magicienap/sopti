@@ -19,37 +19,37 @@ $user_time=microtime(TRUE);
 	<title>Horaires</title>
 	<link rel="stylesheet" type="text/css" href="make.css" />
 	<link rel="stylesheet" type="text/css" href="sopti.css" />
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
 <body>
 
 <div id="header">
 
-<img src="genhor_sm.png" alt="Générateur d'horaires" />
+<img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires" />
 
-<h1>Générer des horaires</h1>
+<h1>GÃ©nÃ©rer des horaires</h1>
 
-<p class="step_notcurrent">&Eacute;tape 1 - Spécifier les cours désirés</p>
-<p class="step_notcurrent">&Eacute;tape 2 - Choisir les options de génération</p>
+<p class="step_notcurrent">&Eacute;tape 1 - SpÃ©cifier les cours dÃ©sirÃ©s</p>
+<p class="step_notcurrent">&Eacute;tape 2 - Choisir les options de gÃ©nÃ©ration</p>
 <p class="step_current">&Eacute;tape 3 - Visualiser les horaires</p>
 
 </div>
 
 <h2>Horaires</h2>
 <div class="option_block" style="width:600px;">
-<p>Voici les horaires correspondant aux options sélectionnées. Ils sont affichés en ordre décroissant de préférence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Pour changer les options, utiliser le bouton Précédent de votre navigateur.</p>
+<p>Voici les horaires correspondant aux options sÃ©lectionnÃ©es. Ils sont affichÃ©s en ordre dÃ©croissant de prÃ©fÃ©rence, selon l'objectif que vous avez choisi (ex: minimisation des trous). Pour changer les options, utiliser le bouton PrÃ©cÃ©dent de votre navigateur.</p>
 
-<p>Pour choisir officiellement un horaire, vous devez visiter votre dossier étudiant. Vous trouverez un lien sur la page d'accueil du générateur d'horaires.</p>
+<p>Pour choisir officiellement un horaire, vous devez visiter votre dossier Ã©tudiant. Vous trouverez un lien sur la page d'accueil du gÃ©nÃ©rateur d'horaires.</p>
 
-<p>Merci d'utiliser le générateur d'horaires de l'AEP!</p>
+<p>Merci d'utiliser le gÃ©nÃ©rateur d'horaires de l'AEP!</p>
 </div>
 
 <?php
 	// Check if session expired
 	if($_SERVER['REQUEST_METHOD'] == 'GET' && !isset( $_SESSION['xml_groups'] )) {
 		//session_destroy();
-		error("Session expirée. Veuillez recommencer.<br /><br />Si vous obtenez cette erreur à chaque fois que vous essayez de changer de page, c'est que vous n'acceptez pas les cookies que le site vous envoit.");
+		error("Session expirÃ©e. Veuillez recommencer.<br /><br />Si vous obtenez cette erreur Ã  chaque fois que vous essayez de changer de page, c'est que vous n'acceptez pas les cookies que le site vous envoit.");
 	}
 
 	// If this is the initial request
@@ -128,7 +128,7 @@ $user_time=microtime(TRUE);
 			}
 		
 			if( !(is_numeric($_POST['maxconflicts']) and $_POST['maxconflicts'] >= 0)) {
-				error("Le nombre maximum d'heures avec conflit doit être un nombre supérieur ou égal à zéro.");
+				error("Le nombre maximum d'heures avec conflit doit Ãªtre un nombre supÃ©rieur ou Ã©gal Ã  zÃ©ro.");
 			}
 			if($_POST['maxconflicts'] != "") {
 				$cmd .= " --max-conflicts ".escapeshellarg($_POST['maxconflicts']);
@@ -177,10 +177,10 @@ $user_time=microtime(TRUE);
 	foreach($xml->schedule as $sch) {
 		array_push($schedule_array, $sch);
 	}
-	echo "<p style=\"width: 150px; background-color: black; color: white; padding: 2px; text-align: center;\">".count($schedule_array)." horaires trouvés</p>\n";
+	echo "<p style=\"width: 150px; background-color: black; color: white; padding: 2px; text-align: center;\">".count($schedule_array)." horaires trouvÃ©s</p>\n";
 	$full_result_count = count($schedule_array);
 	if(!$full_result_count) {
-		error("Aucun horaire trouvé.<br /><br />Solutions possibles:<br />- Changer ou enlever certains cours pour éviter les conflits<br />- Ouvrir davantage de sections");
+		error("Aucun horaire trouvÃ©.<br /><br />Solutions possibles:<br />- Changer ou enlever certains cours pour Ã©viter les conflits<br />- Ouvrir davantage de sections");
 	}
 	$current_page = (int)$_GET['page'];
 	if($current_page < 0) {
@@ -215,9 +215,9 @@ $user_time=microtime(TRUE);
 
 	if($page_count > 1) {
 		echo "<div class=\"page_browser\">";
-		echo "<p>Aller à la page:</p>\n";
+		echo "<p>Aller Ã  la page:</p>\n";
 		if($current_page-1 >= 0) {
-			echo "<a href=\"make.php?page=".($current_page-1)."&".strip_tags(SID)."\">&lt;&lt; Précédente</a> ";
+			echo "<a href=\"make.php?page=".($current_page-1)."&".strip_tags(SID)."\">&lt;&lt; PrÃ©cÃ©dente</a> ";
 		}
 		for($i=0; $i < $page_count; $i++) {
 			if($i == $current_page) {

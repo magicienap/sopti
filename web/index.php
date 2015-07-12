@@ -24,12 +24,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-  <title>Générateur d'horaires</title>
+  <title>GÃ©nÃ©rateur d'horaires</title>
   <link rel="stylesheet" href="aep.css" type="text/css" />
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta property="og:image" content="http://horaires.aep.polymtl.ca/genhor_sm.png"/>
-  <meta property="og:title" content="Générateur d'horaires de l'AEP"/>
-  <meta property="og:description" content="Le Générateur d'horaires est une application web qui permet de vous créer un horaire de cours personnalisé."/>
+  <meta property="og:title" content="GÃ©nÃ©rateur d'horaires de l'AEP"/>
+  <meta property="og:description" content="Le GÃ©nÃ©rateur d'horaires est une application web qui permet de vous crÃ©er un horaire de cours personnalisÃ©."/>
 
   <style type="text/css">
   body {
@@ -101,85 +101,85 @@
 <body>
 
 
-<div style="width: 125px; padding: 0px; margin: 20px auto;"><img src="genhor_sm.png" alt="Générateur d'horaires" /></div>
+<div style="width: 125px; padding: 0px; margin: 20px auto;"><img src="genhor_sm.png" alt="GÃ©nÃ©rateur d'horaires" /></div>
 
 <div style="width: 200px; margin: 20px auto; text-align: center; color: white; background-color: #555555; clear: left;"><p style="font-size: 9px; margin-bottom: 0px;">Session en cours</p><p style="font-size: 20px; margin: 0px;"><?php echo $cur_sem_pretty; ?></p></div>
 
 <div style="font-size:13px; font-family: sans;text-align: center; border: 0px outset blue; margin: 20px auto; padding: 5px; font-weight: bold;">
-	<div style="font-size: 16px; margin: 1px;"><img src="dentwheel.png" alt="" /> <a href="make_form1.php"> Générer des horaires</a></div>
+	<div style="font-size: 16px; margin: 1px;"><img src="dentwheel.png" alt="" /> <a href="make_form1.php"> GÃ©nÃ©rer des horaires</a></div>
 	<div style="margin: 1px;"><img src="list.png" alt="" /> <a href="listcourses.php"> Liste des cours offerts</a></div>
-	<div style="margin: 1px;"><img src="redx.png" alt="" /> <a href="email_unsubscribe.php"> Se désinscrire de la notification automatique</a></div>
+	<div style="margin: 1px;"><img src="redx.png" alt="" /> <a href="email_unsubscribe.php"> Se dÃ©sinscrire de la notification automatique</a></div>
 	<div style="margin: 1px;"><a href="room_form.php"> Horaire d'un local</a></div>
-	<div style="margin: 1px;"><a href="teacher_form.php"> Horaire d'un chargé de cours</a></div>
+	<div style="margin: 1px;"><a href="teacher_form.php"> Horaire d'un chargÃ© de cours</a></div>
 </div>
 
 <!--
 <div class="newsdate">28 avril 2007</div>
 
 <div class="newscontents">
-        <b>Données disponibles - Été 2007</b><br />
+        <b>DonnÃ©es disponibles - Ã‰tÃ© 2007</b><br />
 
-        <p>Le Générateur peut maintenant générer des horaires pour l'été 2007. Tant les cours du trimestre long que du trimestre court fonctionnent.</p>
+        <p>Le GÃ©nÃ©rateur peut maintenant gÃ©nÃ©rer des horaires pour l'Ã©tÃ© 2007. Tant les cours du trimestre long que du trimestre court fonctionnent.</p>
 </div>
 
 <br />
 
-<div class="newsdate">11 décembre 2006</div>
+<div class="newsdate">11 dÃ©cembre 2006</div>
 
 <div class="newscontents">
-        <b>Données disponibles - Hiver 2007</b><br />
+        <b>DonnÃ©es disponibles - Hiver 2007</b><br />
 
-        <p>Vous pouvez maintenant générer des horaires pour l'hiver 2007. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
+        <p>Vous pouvez maintenant gÃ©nÃ©rer des horaires pour l'hiver 2007. Les noms des professeurs et chargÃ©s de cours ne sont pas encore disponibles.</p>
 </div>
 
 <br />
 
-<div class="newsdate">16 août 2006</div>
+<div class="newsdate">16 aoÃ»t 2006</div>
 
 <div class="newscontents">
         <b>Noms de professeurs disponibles - Automne 2006</b><br />
 
-	        <p>Vous pouvez maintenant voir les noms de professeurs et chargés pour les cours que vous demandez pour l'automne 2006.</p>
+	        <p>Vous pouvez maintenant voir les noms de professeurs et chargÃ©s pour les cours que vous demandez pour l'automne 2006.</p>
 </div>
 
 <br />
 
 
-<div class="newsdate">14 août 2006</div>
+<div class="newsdate">14 aoÃ»t 2006</div>
 
 <div class="newscontents">
-        <b>Données disponibles - Automne 2006</b><br />
+        <b>DonnÃ©es disponibles - Automne 2006</b><br />
 
-        <p>Vous pouvez maintenant générer des horaires pour l'automne 2006. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
+        <p>Vous pouvez maintenant gÃ©nÃ©rer des horaires pour l'automne 2006. Les noms des professeurs et chargÃ©s de cours ne sont pas encore disponibles.</p>
 </div>
 
 <br />
 
 
-<div class="newsdate">17 décembre 2005</div>
+<div class="newsdate">17 dÃ©cembre 2005</div>
 
 <div class="newscontents">
         <b>Noms de professeurs disponibles</b><br />
 
-	<p>Vous pouvez maintenant voir les noms de professeurs et chargés pour les cours que vous demandez pour l'hiver 2006.</p>
+	<p>Vous pouvez maintenant voir les noms de professeurs et chargÃ©s pour les cours que vous demandez pour l'hiver 2006.</p>
 </div>
 
 <br />
-<div class="newsdate">6 décembre 2005</div>
+<div class="newsdate">6 dÃ©cembre 2005</div>
 
 <div class="newscontents">
-	<b>Données hiver 2006 disponibles</b><br />
+	<b>DonnÃ©es hiver 2006 disponibles</b><br />
 
-	<p>Le Générateur crée maintenant des horaires pour la session d'hiver 2006. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
+	<p>Le GÃ©nÃ©rateur crÃ©e maintenant des horaires pour la session d'hiver 2006. Les noms des professeurs et chargÃ©s de cours ne sont pas encore disponibles.</p>
 
 </div>
 -->
 
 <!--
-<p style="border-bottom: 1px solid black; width: 472px; margin: 3px auto; padding: 0px; text-align: center; background-color: #8CABFF; font-weight: bold;">Générer des horaires</p>
+<p style="border-bottom: 1px solid black; width: 472px; margin: 3px auto; padding: 0px; text-align: center; background-color: #8CABFF; font-weight: bold;">GÃ©nÃ©rer des horaires</p>
 
 <p style="text-align: center; font-size: 12px; width:450px; margin: 0px auto; border: 1px solid black; padding: 10px;">
-	<em>Écrire les sigles des cours désirés, séparés par un espace.</em><br />
+	<em>Ã‰crire les sigles des cours dÃ©sirÃ©s, sÃ©parÃ©s par un espace.</em><br />
 	<span style="font-size: 10px;">Ex: ING1040 ING1035 ING1010</span><br />
 	<textarea cols="30" rows="2"></textarea><br />
 	<button>Continuer...</button>
@@ -190,41 +190,41 @@
 
 <h2>Qu'est-ce que c'est?</h2>
 
-<p>Le générateur d'horaires de l'AEP est une application web qui vous crée un horaire de cours en fonction de vos besoins.</p>
+<p>Le gÃ©nÃ©rateur d'horaires de l'AEP est une application web qui vous crÃ©e un horaire de cours en fonction de vos besoins.</p>
  
-<p>Pour l'utiliser, vous entrez les cours que vous désirez suivre, et le système vous affiche la liste de tous les horaires qui pourraient vous convenir. Vous n'avez qu'à en choisir un, puis à appliquer les modifications à votre dossier étudiant. Cliquez sur Générer des horaires ci-dessus pour commencer!</p>
+<p>Pour l'utiliser, vous entrez les cours que vous dÃ©sirez suivre, et le systÃ¨me vous affiche la liste de tous les horaires qui pourraient vous convenir. Vous n'avez qu'Ã  en choisir un, puis Ã  appliquer les modifications Ã  votre dossier Ã©tudiant. Cliquez sur GÃ©nÃ©rer des horaires ci-dessus pour commencer!</p>
 
-<p>Vous avez aussi accès à des fonctions plus avancées. Si vous souhaitez minimiser les "trous" dans votre horaire, maximiser le sommeil le matin, ou avoir certaines périodes de votre choix libres, vous n'avez qu'à sélectionner l'option correspondante. Les horaires seront alors réordonnés et filtrés pour correspondre à votre préférence. Vous trouverez encore plus d'options pour personnaliser votre horaire dans le formulaire.</p>
+<p>Vous avez aussi accÃ¨s Ã  des fonctions plus avancÃ©es. Si vous souhaitez minimiser les "trous" dans votre horaire, maximiser le sommeil le matin, ou avoir certaines pÃ©riodes de votre choix libres, vous n'avez qu'Ã  sÃ©lectionner l'option correspondante. Les horaires seront alors rÃ©ordonnÃ©s et filtrÃ©s pour correspondre Ã  votre prÃ©fÃ©rence. Vous trouverez encore plus d'options pour personnaliser votre horaire dans le formulaire.</p>
 
-<p>De plus, le système vous offre:</p>
+<p>De plus, le systÃ¨me vous offre:</p>
 <ul>
-	<li>Des horaires basés sur les données les plus récentes du BAA (synchronisation aux 15 minutes)</li>
-	<li>Les cours du bacc, cycles supérieurs, et certificats</li>
+	<li>Des horaires basÃ©s sur les donnÃ©es les plus rÃ©centes du BAA (synchronisation aux 15 minutes)</li>
+	<li>Les cours du bacc, cycles supÃ©rieurs, et certificats</li>
 	<li>Les cours de jour, de soir et de fin de semaine</li>
-	<li>Un système qui vous avertit par courriel lorsque des places deviennent disponibles dans les sections qui vous intéressent</li>
-	<li>La possibilité de générer des horaires avec conflits</li>
-	<li>Une disponibilité du système durant toute la session</li>
+	<li>Un systÃ¨me qui vous avertit par courriel lorsque des places deviennent disponibles dans les sections qui vous intÃ©ressent</li>
+	<li>La possibilitÃ© de gÃ©nÃ©rer des horaires avec conflits</li>
+	<li>Une disponibilitÃ© du systÃ¨me durant toute la session</li>
 </ul>
 
 <h2>Auteurs</h2>
-<p><b>Pierre-Marc Fournier</b>, étudiant 1er cycle, génie informatique 2003-2007</p>
+<p><b>Pierre-Marc Fournier</b>, Ã©tudiant 1er cycle, gÃ©nie informatique 2003-2007</p>
 <div class="indent1">Directeur du projet</div>
-<div class="indent1">Adresse: pierre-marc.fournier À polymtl.ca (remplacer À par un @)</div>
-<p><b>Benjamin Poirier</b>, ancien étudiant 1er cycle, génie informatique,</p>
-<div class="indent1">Système d'avertissement par courriel de places disponibles, documentation du code et autres</div>
+<div class="indent1">Adresse: pierre-marc.fournier Ã€ polymtl.ca (remplacer Ã€ par un @)</div>
+<p><b>Benjamin Poirier</b>, ancien Ã©tudiant 1er cycle, gÃ©nie informatique,</p>
+<div class="indent1">SystÃ¨me d'avertissement par courriel de places disponibles, documentation du code et autres</div>
 
-<p><b>Jean-François Lévesque</b>, VP services de l'AEP 2004-2006</p>
-<div class="indent1">A fourni des ressources matérielles et administratives essentielles au démarrage du projet</div>
+<p><b>Jean-FranÃ§ois LÃ©vesque</b>, VP services de l'AEP 2004-2006</p>
+<div class="indent1">A fourni des ressources matÃ©rielles et administratives essentielles au dÃ©marrage du projet</div>
 
 
 <h2>Liens</h2>
-<p> D'autres sites utiles concernant les horaires dans la communauté de Poly.</p>
+<p> D'autres sites utiles concernant les horaires dans la communautÃ© de Poly.</p>
 <dl>
-	<dt><a href="https://www4.polymtl.ca/poly/poly.html">Dossier étudiant</a></dt>
+	<dt><a href="https://www4.polymtl.ca/poly/poly.html">Dossier Ã©tudiant</a></dt>
 		<dd>Pour enregistrer vos modifications d'horaires</dd>
 	<dt><a href="http://www.gegi.polymtl.ca/info/lanctot/java/ccref.htm">CCREF</a></dt>
-		<dd>Pour une autre opinion, un autre générateur d'horaires</dd>
-	<dt><a href="http://www.polymtl.ca/baa/">Bureau des affaires académiques</a></dt>
+		<dd>Pour une autre opinion, un autre gÃ©nÃ©rateur d'horaires</dd>
+	<dt><a href="http://www.polymtl.ca/baa/">Bureau des affaires acadÃ©miques</a></dt>
 		<dd>Calendriers, choix de cours, informations diverses</dd>
 	<dt><a href="http://www.cgmi.polymtl.ca/fabhor.asp">Fabrication d'horaires au CGM</a></dt>
 		<dd>Site permettant d'afficher votre horaire dans un beau format</dd>
