@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 """
 Emailer.py version 0.1
@@ -373,10 +373,10 @@ def getTemplateValues(notification):
 		"name" : notification["groups.name"],}
 	
 	if notification["courses_semester.course_type"] == "TL":
-		values["theory_or_lab"]= "combinée théorique et laboratoire"
-		values["teacher"]= "\n\tThéorie: %s\n\tLab: %s" % (notification["groupsT.teacher"], notification["groupsL.teacher"],)
+		values["theory_or_lab"]= "combinÃ©e thÃ©orique et laboratoire"
+		values["teacher"]= "\n\tThÃ©orie: %s\n\tLab: %s" % (notification["groupsT.teacher"], notification["groupsL.teacher"],)
 	elif notification["groups.theory_or_lab"] == "C":
-		values["theory_or_lab"]= "théorique"
+		values["theory_or_lab"]= "thÃ©orique"
 		values["teacher"]= notification["groupsT.teacher"]
 	elif notification["groups.theory_or_lab"] == "L":
 		values["theory_or_lab"]= "laboratoire"

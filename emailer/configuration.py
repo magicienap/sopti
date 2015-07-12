@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 """
 Emailer.py version 0.1
@@ -100,21 +100,21 @@ class Configuration(singletonmixin.Singleton):
 			"name" : "School Schedule Optimizer",}
 		
 		configEmailSubject= {
-			"singular" : "Le groupe que vous avez demand� est disponible",
-			"plural" : "Les groupes que vous avez demand�s sont disponibles",}
+			"singular" : "Le groupe que vous avez demandÃ© est disponible",
+			"plural" : "Les groupes que vous avez demandÃ©s sont disponibles",}
 		configEmailIntro= {
 			"singular" :
 			"""Bonjour,
 			
-			Le groupe que vous avez demand� est maintenant disponible. Voici 
-			l'information � propos de ce groupe:
+			Le groupe que vous avez demandÃ© est maintenant disponible. Voici 
+			l'information Ã  propos de ce groupe:
 			
 			""",
 			"plural" :
 			"""Bonjour,
 			
-			Les groupes que vous avez demand�s sont maintenant disponibles. 
-			Voici les informations � propos de ces groupes:
+			Les groupes que vous avez demandÃ©s sont maintenant disponibles. 
+			Voici les informations Ã  propos de ces groupes:
 			
 			""",}
 		# %(_info_)s string format elements will be replace with the 
@@ -129,48 +129,48 @@ class Configuration(singletonmixin.Singleton):
 			""",}
 		configEmailOutro= {
 			"singular" :
-			"""Si vous souhaitez toujours vous inscrire � ce groupe veuillez aller 
-			faire le changement dans votre dossier �tudiant le plus rapidement
+			"""Si vous souhaitez toujours vous inscrire Ã  ce groupe veuillez aller 
+			faire le changement dans votre dossier Ã©tudiant le plus rapidement
 			possible puisque d'autres personnes peuvent aussi s'inscrire.
 			
-			Vous pouvez acc�der au dossier �tudiant � cette adresse:
+			Vous pouvez accÃ©der au dossier Ã©tudiant Ã  cette adresse:
 			https://www4.polymtl.ca/poly/poly.html
 			
-			Vous pouvez aussi aller v�rifier vos possibilit�s d'horaire � nouveau
-			sur le site du g�n�rateur d'horaires:
+			Vous pouvez aussi aller vÃ©rifier vos possibilitÃ©s d'horaire Ã  nouveau
+			sur le site du gÃ©nÃ©rateur d'horaires:
 			%(baseurl)
 			
-			Si vous avez d'autre demandes en attente que vous d�sirer annuler
-			vous pouvez le faire en allant � l'adresse suivante:
+			Si vous avez d'autre demandes en attente que vous dÃ©sirer annuler
+			vous pouvez le faire en allant Ã  l'adresse suivante:
 			%(baseurl)/email_unsubscribe.php?email=%(email)&hash=%(hash)
 			
-			Merci d'avoir utilis� le g�n�rateur d'horaires.
-			Vous pouvez nous faire part de vos commentaires � l'adresse 
+			Merci d'avoir utilisÃ© le gÃ©nÃ©rateur d'horaires.
+			Vous pouvez nous faire part de vos commentaires Ã  l'adresse 
 			horaires@step.polymtl.ca
 			
-			-L'�quipe du g�n�rateur d'horaires
+			-L'Ã©quipe du gÃ©nÃ©rateur d'horaires
 			""",
 			"plural" :
-			"""Si vous souhaitez toujours vous inscrire � ces groupes veuillez aller 
-			faire les changements dans votre dossier �tudiant le plus rapidement
+			"""Si vous souhaitez toujours vous inscrire Ã  ces groupes veuillez aller 
+			faire les changements dans votre dossier Ã©tudiant le plus rapidement
 			possible puisque d'autres personnes peuvent aussi s'inscrire.
 			
-			Vous pouvez acc�der au dossier �tudiant � cette adresse:
+			Vous pouvez accÃ©der au dossier Ã©tudiant Ã  cette adresse:
 			https://www4.polymtl.ca/poly/poly.html
 			
-			Vous pouvez aussi aller v�rifier vos possibilit�s d'horaire � nouveau
-			sur le site du g�n�rateur d'horaires:
+			Vous pouvez aussi aller vÃ©rifier vos possibilitÃ©s d'horaire Ã  nouveau
+			sur le site du gÃ©nÃ©rateur d'horaires:
 			%(baseurl)
 			
-			Si vous avez d'autre demandes en attente que vous d�sirer annuler
-			vous pouvez le faire en allant � l'adresse suivante:
+			Si vous avez d'autre demandes en attente que vous dÃ©sirer annuler
+			vous pouvez le faire en allant Ã  l'adresse suivante:
 			%(baseurl)/email_unsubscribe.php?email=%(email)&hash=%(hash)
 			
-			Merci d'avoir utilis� le g�n�rateur d'horaires.
-			Vous pouvez nous faire part de vos commentaires � l'adresse 
+			Merci d'avoir utilisÃ© le gÃ©nÃ©rateur d'horaires.
+			Vous pouvez nous faire part de vos commentaires Ã  l'adresse 
 			horaires@step.polymtl.ca
 			
-			-L'�quipe du g�n�rateur d'horaires
+			-L'Ã©quipe du gÃ©nÃ©rateur d'horaires
 			""",}
 		# ^^^^^^^^^^^^^^^^^ Modify the values ABOVE ^^^^^^^^^^^^^^^^^ #
 		# =========== to change the default configuration =========== #

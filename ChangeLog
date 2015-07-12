@@ -1,8 +1,8 @@
 sopti-0.19 ()
 * ajouter le script check_new_semester.pl pour notifier
   l'administrateur quand le trimestre change
-* ajouter l'entrée private_email_admin dans le sopti.conf, adresse
-  qui est utilisée pour envoyer des messages urgents à l'admin
+* ajouter l'entrÃ©e private_email_admin dans le sopti.conf, adresse
+  qui est utilisÃ©e pour envoyer des messages urgents Ã  l'admin
 
 sopti-0.18 (2006/08/16)
 * changer les exemples de cours dans make_form1.php
@@ -14,40 +14,40 @@ sopti-0.18 (2006/08/16)
 * objectif minimiser le nombre de conflits
 * ajouter aide dans l'interface web
 * ajouter option nombre minimum de cours
-* réactiver l'affichage des cours de fin de semaine
+* rÃ©activer l'affichage des cours de fin de semaine
 
 sopti-0.17 (2005/12/06)
-* changement logos AEP pour logos du générateur
+* changement logos AEP pour logos du gÃ©nÃ©rateur
 * ajout de Makefile.svn
-* mises à jour AUTHORS
-* mises à jour INSTALL
-* mises à jour README
+* mises Ã  jour AUTHORS
+* mises Ã  jour INSTALL
+* mises Ã  jour README
 * afficher seulement les cours de la session en cours dans listcourses.php
-* mises à jour sopti.conf.example
+* mises Ã  jour sopti.conf.example
 
 sopti-0.16 (2005/09/03)
 * correction d'un bug lorsqu'il y a plusieurs sessions dans la DB
-* améliorations au site web
+* amÃ©liorations au site web
 
 sopti-0.15 (2005/08/21)
-* déplacement du code de génération de html dans les php
+* dÃ©placement du code de gÃ©nÃ©ration de html dans les php
 * ajout d'une suite de tests
 * ajout d'un module de notification par email par Benjamin Poirier
-* output xml dans l'exécutable sopti pour communiquer avec les php
-* optimisations dans les définitions de tables mysql
-* affichage des noms de profs dans les résultats
-* pagination des résultats
-* amélioration des messages d'erreur
+* output xml dans l'exÃ©cutable sopti pour communiquer avec les php
+* optimisations dans les dÃ©finitions de tables mysql
+* affichage des noms de profs dans les rÃ©sultats
+* pagination des rÃ©sultats
+* amÃ©lioration des messages d'erreur
 
 sopti-0.14 (2005/07/24)
-* remplacement de la base de données CSV par une base de données MySQL
-* utilitaire de mise à jour de base de données
+* remplacement de la base de donnÃ©es CSV par une base de donnÃ©es MySQL
+* utilitaire de mise Ã  jour de base de donnÃ©es
 * nettoyage
 * enlever l'action get_open_close_form
-* l'horaire de l'école n'est plus un objet global, mais il est créé par un
+* l'horaire de l'Ã©cole n'est plus un objet global, mais il est crÃ©Ã© par un
   DBLoader
 * nouveau formulaire pour ouvrir/fermer les sections en php, qui affiche les
-  noms de chargés de cours/lab
+  noms de chargÃ©s de cours/lab
 * ajouter un fichier de config
 * meilleure gestion des erreurs dans make_form2.php, buffered output
 * mise a jour documentation
@@ -67,20 +67,20 @@ sopti-0.12 (2005/05/23)
 * ajout des contraintes de groupe
 
 sopti-0.11 (2005/01/06)
-* corrections et améliorations esthétiques
-* ajouts au fichier ChangeLog, récemment négligé
+* corrections et amÃ©liorations esthÃ©tiques
+* ajouts au fichier ChangeLog, rÃ©cemment nÃ©gligÃ©
 * correction d'un bug d'affichage d'heure non standard
 * support pour enlever les cours du soir de certains jours seulement
-* maximisation du nombre de jours de congé
+* maximisation du nombre de jours de congÃ©
 * diminution d'environ 20% de la taille de la page d'horaires
 * correction d'un bug avec les cours dont le sigle comprend un -
-* nouveau script d'update de données résistant aux pannes réseau
+* nouveau script d'update de donnÃ©es rÃ©sistant aux pannes rÃ©seau
 
 sopti-0.10
 * support pour ouverture et fermeture de sections
-* améliorations esthétiques
+* amÃ©liorations esthÃ©tiques
 
 sopti-0.9
 * ajout de config.php
-* modifications cosmétiques aux php pour site AEP
+* modifications cosmÃ©tiques aux php pour site AEP
 * correction d'un bug dans le support pour les conflits

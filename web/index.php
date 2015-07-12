@@ -114,68 +114,6 @@
 </div>
 
 <!--
-<div class="newsdate">28 avril 2007</div>
-
-<div class="newscontents">
-        <b>Données disponibles - Été 2007</b><br />
-
-        <p>Le Générateur peut maintenant générer des horaires pour l'été 2007. Tant les cours du trimestre long que du trimestre court fonctionnent.</p>
-</div>
-
-<br />
-
-<div class="newsdate">11 décembre 2006</div>
-
-<div class="newscontents">
-        <b>Données disponibles - Hiver 2007</b><br />
-
-        <p>Vous pouvez maintenant générer des horaires pour l'hiver 2007. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
-</div>
-
-<br />
-
-<div class="newsdate">16 août 2006</div>
-
-<div class="newscontents">
-        <b>Noms de professeurs disponibles - Automne 2006</b><br />
-
-	        <p>Vous pouvez maintenant voir les noms de professeurs et chargés pour les cours que vous demandez pour l'automne 2006.</p>
-</div>
-
-<br />
-
-
-<div class="newsdate">14 août 2006</div>
-
-<div class="newscontents">
-        <b>Données disponibles - Automne 2006</b><br />
-
-        <p>Vous pouvez maintenant générer des horaires pour l'automne 2006. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
-</div>
-
-<br />
-
-
-<div class="newsdate">17 décembre 2005</div>
-
-<div class="newscontents">
-        <b>Noms de professeurs disponibles</b><br />
-
-	<p>Vous pouvez maintenant voir les noms de professeurs et chargés pour les cours que vous demandez pour l'hiver 2006.</p>
-</div>
-
-<br />
-<div class="newsdate">6 décembre 2005</div>
-
-<div class="newscontents">
-	<b>Données hiver 2006 disponibles</b><br />
-
-	<p>Le Générateur crée maintenant des horaires pour la session d'hiver 2006. Les noms des professeurs et chargés de cours ne sont pas encore disponibles.</p>
-
-</div>
--->
-
-<!--
 <p style="border-bottom: 1px solid black; width: 472px; margin: 3px auto; padding: 0px; text-align: center; background-color: #8CABFF; font-weight: bold;">Générer des horaires</p>
 
 <p style="text-align: center; font-size: 12px; width:450px; margin: 0px auto; border: 1px solid black; padding: 10px;">
