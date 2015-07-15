@@ -1,3 +1,12 @@
+/*
+ * Gris:   #efefef
+ * Bleu:   #51ade5
+ * Vert:   #8cc83c
+ * Orange: #fa961e
+ * Rouge:  #c00
+ * Noir:   #333
+ */
+
 body {
   padding-top: 50px;
   color: #333;
@@ -32,7 +41,6 @@ body {
     z-index: 1000;
     display: block;
     padding: 20px;
-    //padding-top: 9px;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #333;
@@ -120,16 +128,8 @@ a, a:hover, a:focus {
 .panel-default > .panel-heading {
   background-color: #efefef;
   border-color: #efefef;
-  /*background-color: #51ade5;
-  border-color: #51ade5;*/
   background-color: #8cc83c;
   border-color: #8cc83c;
-  /*background-color: #fa961e;
-  border-color: #fa961e;*/
-  /*background-color: #c00;
-  border-color: #c00;*/
-  /*background-color: #333;
-  border-color: #333;*/
   color: white;
 }
 
@@ -147,4 +147,11 @@ thead tr {
 
 .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
   background-color: #599509;
+}
+
+pre {
+  background-color: #efefef;
+  color: #333;
+  border: none;
+  background-color: transparent;
 }

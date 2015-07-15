@@ -1,41 +1,46 @@
 <?php
-require_once('config.php');
-require_once('lib.php');
-
-ob_start();
+  require_once('config.php');
+  require_once('lib.php');
+  require_once('lib/templates.php');
+  ob_start();
 ?>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?php begin_page('Cours offerts'); ?>
+<?php main_navbar(); ?>
 
-<head>
-	<title>Cours offerts</title>
-	<link rel="stylesheet" type="text/css" href="listcourses.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
+<div class="container-fluid">
+  <div class="row">
+    <?php main_sidebar('cours_offerts'); ?>
 
-<body>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <div class="row en-tete">
+        <div class="col-md-12 large">
+          <h1>Liste des cours offerts</h1>
+        </div>
+      </div>
 
-<h1>Liste des cours offerts</h1>
-
-<pre>
-
+      <div class="row">
+        <div class="col-md-12 large">
+          <pre style="margin-top: 20px;">
 <?php
-        $dblink = mysql_connect($CONFIG_VARS["db.host"], $CONFIG_VARS["db.username"], $CONFIG_VARS["db.password"])
-                or admin_error('Could not connect to SQL: ' . mysql_error());
-        mysql_select_db($CONFIG_VARS["db.schema"]) or die('Could not select data
-base');
-	
-	// Make the query
-	$query = "SELECT courses.symbol AS symbol,courses.title AS title FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS["default_semester"]."' ORDER BY courses.symbol";
-	
-	$result = mysql_query($query) or die('Query failed: ' . mysql_error());
-	mysql_close($dblink);
-	
-	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-		echo $row["symbol"] . " " . $row["title"] . "\n";
-	}
+  $dblink = connect_db();
+
+  // Make the query
+  $query = "SELECT courses.symbol AS symbol,courses.title AS title FROM courses INNER JOIN courses_semester ON courses_semester.course=courses.unique INNER JOIN semesters ON semesters.unique=courses_semester.semester WHERE semesters.code='".$CONFIG_VARS["default_semester"]."' ORDER BY courses.symbol";
+
+  $result = mysql_query($query) or die('Query failed: ' . mysql_error());
+  mysql_close($dblink);
+
+  while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    echo $row["symbol"] . " " . $row["title"] . "\n";
+  }
 ?>
-</pre>
-</body>
-</html>
+          </pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<?php end_page(); ?>
