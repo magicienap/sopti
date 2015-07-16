@@ -68,7 +68,6 @@ sub retrieve_teachers {
 	my $teacher_data;
 	while(<TEACHERFILE>) {
 		chomp;
-		$_ = utf8($_)->latin1;
 		$_ =~ s/[\n\r]*$//s;
 		my @fields = split(/;/);
 		
