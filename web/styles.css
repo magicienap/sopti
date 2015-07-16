@@ -155,3 +155,16 @@ pre {
   border: none;
   background-color: transparent;
 }
+
+
+.period_conflict, .period_noconflict {
+  margin-bottom: 10px;
+}
+
+.period_conflict:last-child, .period_noconflict:last-child {
+  margin-bottom: 0;
+}
+
+.period_conflict {
+  background-color: #FAA
+}

@@ -440,8 +440,8 @@ if(strlen($courses_raw) == 0) {
             </div>
 
             <div class="panel panel-default">
-              <div class="panel-heading">
-                <h2 class="panel-title">Avertissement</h2>
+              <div class="panel-heading" style="background-color: #C00; border-color: #C00;">
+                <h2 class="panel-title"><i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;&nbsp;Avertissement</h2>
               </div>
 
               <div class="panel-body">
